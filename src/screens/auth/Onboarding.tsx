@@ -9,7 +9,9 @@ import { colors } from "@src/resources/color/color";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { onboardingScreens } from "@src/constants/onboarding";
 
-export const Onboarding = ({}: AuthScreenProps<authScreenNames.ONBOARDING>) => {
+export const Onboarding = ({
+  navigation,
+}: AuthScreenProps<authScreenNames.ONBOARDING>) => {
   const [currIndex, setCurrIndex] = useState<number>(0);
   return (
     <Screen bgColor={colors.black}>
@@ -48,7 +50,7 @@ export const Onboarding = ({}: AuthScreenProps<authScreenNames.ONBOARDING>) => {
           />
           <CustomButton
             title='Login'
-            onPress={() => {}}
+            onPress={() => navigation.navigate(authScreenNames.LOGIN)}
             buttonType='Solid'
             red
             textWhite
@@ -70,7 +72,7 @@ export const Onboarding = ({}: AuthScreenProps<authScreenNames.ONBOARDING>) => {
                     currIndex === index ? colors.red : colors.white,
                   marginHorizontal: moderateScale(5),
                   padding:
-                    currIndex === index ? moderateScale(7) : moderateScale(5),
+                    currIndex === index ? moderateScale(7) : moderateScale(4),
                 }}
               />
             ))}
