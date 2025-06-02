@@ -10,9 +10,9 @@ import { Controller, useForm } from "react-hook-form";
 import { loginFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "@src/form/validation/rules";
-import { KeyboardDismissal } from "../Keyboard-Dismissal";
 import { loginOptions } from "@src/constants/login";
 import { Image } from "expo-image";
+import { ScrollContainer } from "../ScrollContainer";
 
 export const Login = ({
   navigation,
@@ -43,7 +43,7 @@ export const Login = ({
         </CustomText>
       </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
-        <KeyboardDismissal style={styles.formContainer}>
+        <ScrollContainer style={styles.formContainer}>
           <CustomText type='semi-bold' size={18} red>
             Login
           </CustomText>
@@ -85,7 +85,9 @@ export const Login = ({
             name='password'
             defaultValue=''
           />
-          <TouchableOpacity style={styles.forgotPasswordBtn}>
+          <TouchableOpacity
+            style={styles.forgotPasswordBtn}
+            onPress={() => navigation.navigate(authScreenNames.PASSWORD_RESET)}>
             <CustomText type='medium' size={14} black>
               Forgot password?
             </CustomText>
@@ -126,13 +128,19 @@ export const Login = ({
             <CustomText type='medium' size={13} lightGray>
               Don't have an account?
             </CustomText>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(authScreenNames.SIGN_UP)}>
               <CustomText type='medium' size={13} red>
                 Sign Up
               </CustomText>
             </TouchableOpacity>
           </View>
-        </KeyboardDismissal>
+          <View
+            style={{
+              paddingVertical: DVH(10),
+            }}
+          />
+        </ScrollContainer>
       </Screen>
     </Screen>
   );
