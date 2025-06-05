@@ -1,35 +1,33 @@
-import { authScreenNames } from "@src/navigation";
-import { AuthScreenProps } from "@src/router/types";
 import React from "react";
 import { Screen } from "../Screen";
+import { AuthScreenProps } from "@src/router/types";
+import { authScreenNames } from "@src/navigation";
 import { StyleSheet, View } from "react-native";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
-import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
-import { Controller, useForm } from "react-hook-form";
-import { passwordResetFormTypes } from "@src/form/schema/types";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { passwordResetValidationSchema } from "@src/form/validation/rules";
 import { Image } from "expo-image";
-import { BackArrowBtn } from "@src/common/BackArrowBtn";
+import { Controller, useForm } from "react-hook-form";
+import { passwordUpdateFormTypes } from "@src/form/schema/types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { passwordUpdateValidationSchema } from "@src/form/validation/rules";
+import { ScrollContainer } from "../ScrollContainer";
+import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
 
-export const PasswordReset = ({
+export const PasswordUpdate = ({
   navigation,
-}: AuthScreenProps<authScreenNames.PASSWORD_RESET>) => {
+}: AuthScreenProps<authScreenNames.PASSWORD_UPDATE>) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<passwordResetFormTypes>({
+  } = useForm<passwordUpdateFormTypes>({
     mode: "onChange",
-    resolver: yupResolver(passwordResetValidationSchema),
+    resolver: yupResolver(passwordUpdateValidationSchema),
   });
 
-  const onSubmit = (data: passwordResetFormTypes) => {
+  const onSubmit = (data: passwordUpdateFormTypes) => {
     if (data) {
-      navigation.navigate(authScreenNames.VERIFY_EMAIL, {
-        email: data?.email,
-      });
+      console.log(data);
     }
   };
 
@@ -43,47 +41,62 @@ export const PasswordReset = ({
         />
       </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
-        <CustomText type='medium' size={22} black style={styles.formTitle}>
-          {`Forgot Password\nand Continue`}
-        </CustomText>
-        <View style={styles.formContainer}>
+        <ScrollContainer style={styles.formContainer}>
+          <CustomText type='medium' size={22} black style={styles.formTitle}>
+            {`Reset Password`}
+          </CustomText>
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Email'
+                title='Password'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                error={errors?.email?.message}
-                type='custom'
-                placeholder='Your email'
+                error={errors?.password?.message}
+                type='password'
+                placeholder='Your password'
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='email-address'
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='email'
+            name='password'
+            defaultValue=''
+          />
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Confirm Password'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.confirm_password?.message}
+                type='password'
+                placeholder='Your confirm password'
+                placeHolderTextColor={"#BDBDBD"}
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='confirm_password'
             defaultValue=''
           />
           <CustomButton
-            title='Submit Now'
+            title='Continue'
             red
             textWhite
             buttonType='Solid'
             textSize={16}
             textType='medium'
             onPress={handleSubmit(onSubmit)}
-            btnStyle={styles.submitBtn}
+            btnStyle={styles.signUpBtn}
           />
-
-          <BackArrowBtn
-            title='Back to Login'
-            onPressBackArrow={() => navigation.goBack()}
-            color={colors.black}
-            style={styles.backArrowBtn}
+          <View
+            style={{
+              paddingVertical: DVH(5),
+            }}
           />
-        </View>
+        </ScrollContainer>
       </Screen>
     </Screen>
   );
@@ -115,24 +128,19 @@ const styles = StyleSheet.create({
     borderTopRightRadius: moderateScale(40),
     paddingVertical: moderateScale(30),
   },
+  formContainer: {
+    gap: moderateScale(20),
+  },
   formTitle: {
     textAlign: "center",
-  },
-  formContainer: {
-    marginTop: moderateScale(20),
-    justifyContent: "center",
-    alignItems: "center",
   },
   input: {
     backgroundColor: "transparent",
     borderWidth: DVW(0.3),
     borderColor: "#BDBDBD",
   },
-  submitBtn: {
+  signUpBtn: {
     paddingVertical: moderateScale(17),
-    marginTop: moderateScale(20),
-  },
-  backArrowBtn: {
-    paddingVertical: moderateScale(10),
+    marginVertical: moderateScale(10),
   },
 });

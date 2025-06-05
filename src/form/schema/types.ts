@@ -12,3 +12,8 @@ export type signUpFormTypes = {
 export type passwordResetFormTypes = {
   email: string;
 };
+
+export type passwordUpdateFormTypes = {
+  password: string;
+  confirm_password: string;
+};

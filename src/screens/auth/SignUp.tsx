@@ -2,7 +2,7 @@ import { authScreenNames } from "@src/navigation";
 import { AuthScreenProps } from "@src/router/types";
 import React from "react";
 import { Screen } from "../Screen";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
 import { Controller, useForm } from "react-hook-form";
@@ -10,8 +10,9 @@ import { signUpFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpValidationSchema } from "@src/form/validation/rules";
 import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
-import { AntDesign } from "@expo/vector-icons";
 import { ScrollContainer } from "../ScrollContainer";
+import { Image } from "expo-image";
+import { BackArrowBtn } from "@src/common/BackArrowBtn";
 
 export const SignUp = ({
   navigation,
@@ -33,22 +34,20 @@ export const SignUp = ({
 
   return (
     <Screen style={styles.screenContainer} safeArea>
+      <View style={styles.iconContainer}>
+        <Image
+          source={require("@src/assets/png/round-logo.png")}
+          contentFit='cover'
+          style={styles.icon}
+        />
+      </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
         <ScrollContainer style={styles.formContainer}>
-          <View style={styles.backBtnContainer}>
-            <TouchableOpacity
-              style={styles.backBtn}
-              onPress={() => navigation.goBack()}>
-              <AntDesign
-                name='arrowleft'
-                size={moderateScale(20)}
-                color={colors.black}
-              />
-            </TouchableOpacity>
-            <CustomText type='regular' size={14} red>
-              Back to login
-            </CustomText>
-          </View>
+          <BackArrowBtn
+            title='Back to Login'
+            onPressBackArrow={() => navigation.goBack()}
+            color={colors.black}
+          />
           <CustomText type='semi-bold' size={18} red>
             Sign Up
           </CustomText>
@@ -134,9 +133,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     paddingHorizontal: moderateScale(0),
   },
+  iconContainer: {
+    width: DVW(23),
+    height: DVH(11.5),
+    overflow: "hidden",
+    alignSelf: "center",
+  },
+  icon: {
+    width: "100%",
+    height: "100%",
+  },
   screen: {
     paddingHorizontal: moderateScale(15),
-    height: "85%",
+    height: "90%",
     position: "absolute",
     bottom: 0,
     width: "100%",

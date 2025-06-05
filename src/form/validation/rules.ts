@@ -26,3 +26,11 @@ export const passwordResetValidationSchema = yup.object().shape({
     .email("invalid email address")
     .required("email is required"),
 });
+
+export const passwordUpdateValidationSchema = yup.object().shape({
+  password: yup.string().required("password is required"),
+  confirm_password: yup
+    .string()
+    .oneOf([yup.ref("password"), undefined], "Passwords must match")
+    .required("Please confirm your password"),
+});

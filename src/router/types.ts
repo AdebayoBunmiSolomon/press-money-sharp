@@ -8,6 +8,10 @@ export interface AuthStackParamList extends ParamListBase {
   Login: undefined;
   SignUp: undefined;
   PasswordReset: undefined;
+  VerifyEmail: {
+    email: string;
+  };
+  PasswordUpdate: undefined;
 }
 
 export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> =

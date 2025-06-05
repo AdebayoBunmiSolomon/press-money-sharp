@@ -3,6 +3,8 @@ export enum authScreenNames {
   LOGIN = "Login",
   SIGN_UP = "SignUp",
   PASSWORD_RESET = "PasswordReset",
+  VERIFY_EMAIL = "VerifyEmail",
+  PASSWORD_UPDATE = "PasswordUpdate",
 }
 
 export enum bottomTabScreenNames {
