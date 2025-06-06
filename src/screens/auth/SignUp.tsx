@@ -28,7 +28,9 @@ export const SignUp = ({
 
   const onSubmit = (data: signUpFormTypes) => {
     if (data) {
-      console.log(data);
+      navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP, {
+        email: data?.email,
+      });
     }
   };
 
@@ -95,7 +97,7 @@ export const SignUp = ({
                 title='Confirm password'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                error={errors?.password?.message}
+                error={errors?.confirm_password?.message}
                 type='password'
                 placeholder='Enter your confirm password'
                 placeHolderTextColor={"#BDBDBD"}
@@ -103,7 +105,7 @@ export const SignUp = ({
                 style={styles.input}
               />
             )}
-            name='password'
+            name='confirm_password'
             defaultValue=''
           />
           <CustomButton

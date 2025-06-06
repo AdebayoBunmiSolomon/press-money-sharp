@@ -27,7 +27,7 @@ export const PasswordReset = ({
 
   const onSubmit = (data: passwordResetFormTypes) => {
     if (data) {
-      navigation.navigate(authScreenNames.VERIFY_EMAIL, {
+      navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE, {
         email: data?.email,
       });
     }

@@ -20,11 +20,15 @@ export const authScreen: authScreenTypes[] = [
     component: Screen.PasswordReset,
   },
   {
-    screenName: authScreenNames.VERIFY_EMAIL,
-    component: Screen.VerifyEmail,
+    screenName: authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE,
+    component: Screen.VerifyEmailForPasswordUpdate,
   },
   {
     screenName: authScreenNames.PASSWORD_UPDATE,
     component: Screen.PasswordUpdate,
+  },
+  {
+    screenName: authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP,
+    component: Screen.VerifyEmailForSignUp,
   },
 ];
