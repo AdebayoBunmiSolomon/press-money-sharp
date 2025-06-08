@@ -13,6 +13,7 @@ import { loginValidationSchema } from "@src/form/validation/rules";
 import { loginOptions } from "@src/constants/login";
 import { Image } from "expo-image";
 import { ScrollContainer } from "../ScrollContainer";
+import { useLogin } from "@src/api/hooks/mutation/auth";
 
 export const Login = ({
   navigation,
@@ -25,10 +26,14 @@ export const Login = ({
     mode: "onChange",
     resolver: yupResolver(loginValidationSchema),
   });
+  const { isPending, mutate } = useLogin();
 
   const onSubmit = (data: loginFormTypes) => {
     if (data) {
-      console.log(data);
+      mutate({
+        email: data?.email,
+        password: data?.password,
+      });
     }
   };
 
@@ -101,6 +106,8 @@ export const Login = ({
             textType='medium'
             onPress={handleSubmit(onSubmit)}
             btnStyle={styles.loginBtn}
+            isLoading={isPending}
+            loaderColor={colors.white}
           />
           <View style={styles.lineContainer}>
             <View style={styles.line} />
