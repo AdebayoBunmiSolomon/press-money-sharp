@@ -18,6 +18,7 @@ export const SignUp = ({
   navigation,
 }: AuthScreenProps<authScreenNames.SIGN_UP>) => {
   const {
+    clearErrors,
     control,
     handleSubmit,
     formState: { errors },
@@ -53,6 +54,69 @@ export const SignUp = ({
           <CustomText type='semi-bold' size={18} red>
             Sign Up
           </CustomText>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='First name'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.first_name?.message}
+                type='custom'
+                placeholder='Your first name'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='first_name'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Last name'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.last_name?.message}
+                type='custom'
+                placeholder='Your last name'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='last_name'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Last name'
+                value={field.value}
+                dropDownItems={["male", "female"]}
+                onSelectDropDownItem={(selectedValue) => {
+                  field.onChange(selectedValue);
+                  clearErrors("gender");
+                }}
+                error={errors?.gender?.message}
+                type='dropdown'
+                placeholder='select your gender'
+                placeHolderTextColor={"#BDBDBD"}
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='gender'
+            defaultValue=''
+          />
+
           <Controller
             control={control}
             render={({ field }) => (
@@ -108,23 +172,25 @@ export const SignUp = ({
             name='confirm_password'
             defaultValue=''
           />
-          <CustomButton
-            title='Sign Up'
-            red
-            textWhite
-            buttonType='Solid'
-            textSize={16}
-            textType='medium'
-            onPress={handleSubmit(onSubmit)}
-            btnStyle={styles.signUpBtn}
-          />
           <View
             style={{
-              paddingVertical: DVH(10),
+              paddingVertical: DVH(17),
             }}
           />
         </ScrollContainer>
       </Screen>
+      <View style={styles.actionBtnContainer}>
+        <CustomButton
+          title='Sign Up'
+          red
+          textWhite
+          buttonType='Solid'
+          textSize={16}
+          textType='medium'
+          onPress={handleSubmit(onSubmit)}
+          btnStyle={styles.signUpBtn}
+        />
+      </View>
     </Screen>
   );
 };
@@ -174,5 +240,14 @@ const styles = StyleSheet.create({
   signUpBtn: {
     paddingVertical: moderateScale(17),
     marginVertical: moderateScale(15),
+  },
+  actionBtnContainer: {
+    position: "absolute",
+    bottom: moderateScale(0),
+    paddingBottom: moderateScale(35),
+    width: "100%",
+    paddingHorizontal: moderateScale(10),
+    alignSelf: "center",
+    backgroundColor: "#F4F4F4",
   },
 });

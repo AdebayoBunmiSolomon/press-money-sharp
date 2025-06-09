@@ -1,8 +1,8 @@
 export const endpoint = {
   AUTH: {
-    signUp: "",
+    signUp: "/users", //create new user
     verifyEmail: "",
-    login: "/login",
+    login: "/login", //login
   },
   APP: {},
 };
