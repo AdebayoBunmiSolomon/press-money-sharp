@@ -1,42 +1,42 @@
-import { showFlashMsg } from "@src/helper/ui-utils";
+import { ModalMessageProvider, showFlashMsg } from "@src/helper/ui-utils";
+import { APILogger } from "@src/helper/utils";
 
 export interface IResponseHandler {
+  type?: "flash" | "modal";
   status: 200 | 401 | 500 | 422;
   success: boolean;
   code: string;
   message: string;
 }
 
+const statusToMsgType: Record<number, "SUCCESS" | "ERROR" | "FAILED"> = {
+  200: "SUCCESS",
+  401: "ERROR",
+  422: "ERROR",
+  500: "FAILED",
+};
+
 export const RESPONSE_HANDLER = ({
+  type,
   status,
   success,
   code,
   message,
 }: IResponseHandler) => {
-  let msgType: "SUCCESS" | "ERROR" | "FAILED" = "SUCCESS";
+  const msgType = statusToMsgType[status] || "ERROR";
 
-  switch (status) {
-    case 200:
-      msgType = "SUCCESS";
-      break;
-    case 401:
-      msgType = "ERROR";
-      break;
-    case 422:
-      msgType = "ERROR";
-      break;
-    case 500:
-      msgType = "FAILED";
-      break;
-    default:
-      msgType = "ERROR";
+  if (type === "flash") {
+    showFlashMsg({
+      msgType,
+      title: code,
+      description: message,
+    });
+  } else if (type === "modal") {
+    ModalMessageProvider.showModalMsg({
+      msgType,
+      title: code,
+      description: message,
+    });
   }
-
-  showFlashMsg({
-    msgType,
-    title: code,
-    description: message,
-  });
-
-  console.log("Message", `${status}\n${success}\n${code}\n${message}`);
+  APILogger(status, success, code, message);
 };

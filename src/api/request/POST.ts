@@ -14,7 +14,7 @@ export const POST = async (
     );
     return { status, data };
   } catch (error: any) {
-    console.error("Post request error:", error);
+    // console.error("Post request error:", error);
 
     if (error.response) {
       //API responded with an error status (e.g., 400, 500)

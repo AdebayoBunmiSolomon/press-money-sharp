@@ -1,7 +1,7 @@
 import { useFontLoading } from "@src/hooks/services";
 import { Router } from "@src/router/router";
 import { AppLoader } from "@src/screens/App-Loader";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   configureReanimatedLogger,
@@ -16,6 +16,8 @@ import { queryClient } from "@src/helper/utils";
 import { Platform, StyleSheet, View } from "react-native";
 import { verticalScale } from "@src/resources/responsiveness";
 import FlashMessage from "react-native-flash-message";
+import { IGlobalModalMessageRef, ModalMessage } from "@src/common";
+import { ModalMessageProvider } from "@src/helper/ui-utils";
 
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
@@ -31,6 +33,11 @@ configureReanimatedLogger({
 export default function App() {
   const { isAuthenticated } = useAuthStore();
   const { isFontLoadingComplete, loadResourcesAndDataAsync } = useFontLoading();
+  const modalRef = useRef<IGlobalModalMessageRef | null>(null);
+
+  // Expose modalRef globally
+  ModalMessageProvider.setRef(modalRef);
+
   //load font family resources
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,6 +60,7 @@ export default function App() {
         }
         client={queryClient}>
         <SafeAreaProvider>
+          <ModalMessage ref={modalRef} />
           <View style={styles.flashMsgContainer}>
             <FlashMessage
               position='top'

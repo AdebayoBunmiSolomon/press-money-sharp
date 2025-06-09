@@ -10,6 +10,7 @@ export const useLogin = () => {
     mutationFn: (payload: loginFormTypes) => login(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
+        type: "modal",
         status: response?.data?.status, //200 | 401 | 500
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",

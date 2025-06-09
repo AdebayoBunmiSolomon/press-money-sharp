@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { colors } from "@src/resources/color/color";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
-interface IShowFlashMsgOptionsProps {
+interface IShowMsgOptionsProps {
   msgType: "SUCCESS" | "FAILED" | "ERROR";
   title?: string;
   description?: string;
@@ -15,7 +15,7 @@ export const showFlashMsg = ({
   msgType,
   title,
   description,
-}: IShowFlashMsgOptionsProps) => {
+}: IShowMsgOptionsProps) => {
   if (msgType === "SUCCESS") {
     showMessage({
       message: title || "Success",
@@ -92,4 +92,18 @@ export const showFlashMsg = ({
       backgroundColor: "#CDDC27",
     });
   }
+};
+
+import { RefObject } from "react";
+import { IGlobalModalMessageRef } from "@src/common";
+
+let modalRef: RefObject<IGlobalModalMessageRef | null> | null = null;
+
+export const ModalMessageProvider = {
+  setRef: (ref: RefObject<IGlobalModalMessageRef | null>) => {
+    modalRef = ref;
+  },
+  showModalMsg: (msg: Parameters<IGlobalModalMessageRef["show"]>[0]) => {
+    modalRef?.current?.show(msg);
+  },
 };
