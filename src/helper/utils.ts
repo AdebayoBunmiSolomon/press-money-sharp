@@ -60,3 +60,44 @@ export const getFirstCapitalSegment = (word: string): string => {
   if (!match) return word; // fallback if no capital letters found
   return match[0]; // return the first word
 };
+
+export const formatApiErrorMessage = (error: any): string => {
+  const generalMessage = error?.message ?? "An error occurred.";
+  const fieldErrors = error?.fields;
+
+  const formattedFieldMessages = fieldErrors
+    ? Object.values(fieldErrors).flat().join(" ")
+    : "";
+
+  return [generalMessage, formattedFieldMessages].filter(Boolean).join(" ");
+};
+
+/**
+ * Removes all "+" signs from the given string.
+ *
+ * @param input - The string to clean.
+ * @returns A new string with all "+" signs removed.
+ *
+ * @example
+ * removePlusSign("+2348012345678") // "2348012345678"
+ * removePlusSign("Hello+World") // "HelloWorld"
+ */
+export const removePlusSign = (input: string): string => {
+  return input.replace(/\+/g, "");
+};
+
+/**
+ * Combines country dial code with user input (phone number)
+ * Removes +, trims leading 0 from phone, and returns a full international format
+ * @param dialCode e.g. "+234"
+ * @param number e.g. "08012345678"
+ * @returns e.g. "+2348012345678"
+ */
+export const formatPhoneWithCountryCode = (
+  dialCode: string,
+  number: string
+): string => {
+  const cleanedDialCode = dialCode.replace(/\+/g, "");
+  const cleanedNumber = number.replace(/^0+/, ""); // remove leading zero(s)
+  return `+${cleanedDialCode}${cleanedNumber}`;
+};

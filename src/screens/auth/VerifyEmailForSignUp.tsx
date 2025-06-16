@@ -7,12 +7,14 @@ import { Image } from "expo-image";
 import { AuthScreenProps } from "@src/router/types";
 import { authScreenNames } from "@src/navigation";
 import { OTPForm } from "@src/components/auth";
+import { useVerifyEmail } from "@src/api/hooks/mutation/auth";
 
 export const VerifyEmailForSignUp = ({
   route,
   navigation,
 }: AuthScreenProps<authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP>) => {
   const { email } = route?.params;
+  const { mutate, isPending } = useVerifyEmail();
   const [otp, setOtp] = useState<string>("");
   return (
     <Screen style={styles.screenContainer} safeArea>
@@ -25,10 +27,14 @@ export const VerifyEmailForSignUp = ({
       </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
         <OTPForm
+          isLoading={isPending}
           setOtp={(value) => setOtp(value)}
           onPressActionBtn={() => {
             if (otp.length >= 6) {
-              navigation.navigate(authScreenNames.LOGIN);
+              mutate({
+                email: email,
+                otp: otp,
+              });
             }
           }}
         />

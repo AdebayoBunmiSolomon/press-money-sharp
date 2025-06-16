@@ -6,21 +6,25 @@ import { RootStackScreenProps } from "@src/router/types";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Screen } from "../Screen";
+import { StatusBar } from "expo-status-bar";
 
 export const Profile = ({}: RootStackScreenProps<appScreenNames.PROFILE>) => {
   return (
-    <Screen style={styles.screenContainer} safeArea>
-      <CustomText type='regular' size={15} black>
-        Profile Screen
-      </CustomText>
-    </Screen>
+    <>
+      <StatusBar style='dark' />
+      <Screen style={styles.screenContainer} safeArea>
+        <CustomText type='regular' size={15} black>
+          Profile Screen
+        </CustomText>
+      </Screen>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    backgroundColor: colors.red,
+    backgroundColor: colors.white,
     paddingHorizontal: moderateScale(15),
   },
 });

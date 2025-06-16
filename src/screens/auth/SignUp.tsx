@@ -9,14 +9,22 @@ import { Controller, useForm } from "react-hook-form";
 import { signUpFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signUpValidationSchema } from "@src/form/validation/rules";
-import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
+import {
+  CustomButton,
+  CustomInput,
+  CustomPhoneInput,
+  CustomText,
+} from "@src/components/shared";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
 import { BackArrowBtn } from "@src/common/BackArrowBtn";
+import { useSignUp } from "@src/api/hooks/mutation/auth";
+import { removePlusSign } from "@src/helper/utils";
 
 export const SignUp = ({
   navigation,
 }: AuthScreenProps<authScreenNames.SIGN_UP>) => {
+  const { mutate, isPending } = useSignUp();
   const {
     clearErrors,
     control,
@@ -29,8 +37,14 @@ export const SignUp = ({
 
   const onSubmit = (data: signUpFormTypes) => {
     if (data) {
-      navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP, {
+      mutate({
+        first_name: data?.first_name,
+        last_name: data?.gender,
         email: data?.email,
+        password: data?.password,
+        referral_code: "",
+        gender: data?.gender,
+        phone: removePlusSign(data?.phone),
       });
     }
   };
@@ -98,7 +112,27 @@ export const SignUp = ({
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Last name'
+                title='Email'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.email?.message}
+                type='custom'
+                placeholder='Your email'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='email-address'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='email'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Gender'
                 value={field.value}
                 dropDownItems={["male", "female"]}
                 onSelectDropDownItem={(selectedValue) => {
@@ -120,22 +154,20 @@ export const SignUp = ({
           <Controller
             control={control}
             render={({ field }) => (
-              <CustomInput
-                title='Email'
+              <CustomPhoneInput
+                title='Phone Number'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                error={errors?.email?.message}
-                type='custom'
-                placeholder='Your email'
-                placeHolderTextColor={"#BDBDBD"}
-                keyboardType='email-address'
+                error={errors?.phone?.message}
+                placeholder='0800 000 0000'
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='email'
+            name='phone'
             defaultValue=''
           />
+
           <Controller
             control={control}
             render={({ field }) => (
@@ -189,6 +221,8 @@ export const SignUp = ({
           textType='medium'
           onPress={handleSubmit(onSubmit)}
           btnStyle={styles.signUpBtn}
+          isLoading={isPending}
+          loaderColor={colors.white}
         />
       </View>
     </Screen>

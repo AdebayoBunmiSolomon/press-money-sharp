@@ -128,7 +128,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
     <View style={styles.container}>
       <CustomText
         size={14}
-        type={titleType}
+        type={titleType ? titleType : "medium"}
         style={[styles.title, { color: titleColor }, titleStyle]}>
         {title}
       </CustomText>
@@ -151,7 +151,17 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={(text) => {
+            // Remove any existing country code from the input to avoid duplication
+            let cleanNumber = text;
+            if (text.startsWith(selectedCountry.dialCode)) {
+              cleanNumber = text.slice(selectedCountry.dialCode.length);
+            }
+            // Pass the full number (with country code) to the parent
+            onChangeText(`${selectedCountry.dialCode}${cleanNumber}`);
+            // Update the input value to show only the phone number
+            return cleanNumber;
+          }}
           style={[
             styles.input,
             {

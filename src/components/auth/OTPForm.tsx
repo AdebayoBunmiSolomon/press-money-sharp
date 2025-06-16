@@ -3,15 +3,18 @@ import { CustomButton, CustomOTPInput, CustomText } from "../shared";
 import { StyleSheet } from "react-native";
 import { fontFamily } from "@src/resources/fonts/font-family";
 import { moderateScale } from "@src/resources/responsiveness";
+import { colors } from "@src/resources/color/color";
 
 interface IOTPFormProps {
   setOtp: (value: string) => void;
   onPressActionBtn: () => void;
+  isLoading: boolean;
 }
 
 export const OTPForm: React.FC<IOTPFormProps> = ({
   setOtp,
   onPressActionBtn,
+  isLoading,
 }) => {
   return (
     <>
@@ -38,6 +41,8 @@ export const OTPForm: React.FC<IOTPFormProps> = ({
         buttonType='Solid'
         textSize={16}
         textType='medium'
+        loaderColor={colors.white}
+        isLoading={isLoading}
         onPress={() => {
           onPressActionBtn();
         }}

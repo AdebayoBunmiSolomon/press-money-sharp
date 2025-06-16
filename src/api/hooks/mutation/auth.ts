@@ -1,25 +1,54 @@
 import { APIRequest } from "@src/api/request";
-import { login, signUp } from "@src/api/services/auth";
+import { login, signUp, verifyEmail } from "@src/api/services/auth";
 import { useAuthStore } from "@src/api/store/auth";
-import { loginFormTypes, signUpFormTypes } from "@src/form/schema/types";
+import {
+  apiLoginFormTypes,
+  apiSignUpFormTypes,
+  apiVerifyEmailFormTypes,
+} from "@src/api/types/auth";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
+import { AuthStackParamList } from "@src/router/types";
+import { authScreenNames } from "@src/navigation";
+import { formatApiErrorMessage } from "@src/helper/utils";
 
 export const useLogin = () => {
-  const { setIsAuthenticated } = useAuthStore();
+  const { setIsAuthenticated, setUserData } = useAuthStore();
   const { data, isError, isPending, mutate } = useMutation({
-    mutationFn: (payload: loginFormTypes) => login(payload),
+    mutationFn: (payload: apiLoginFormTypes) => login(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
         status: response?.data?.status, //200 | 401 | 500
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
-        message: response?.data?.error?.fields?.email[0]
-          ? response?.data?.error?.fields?.email[0]
-          : response?.data?.error?.message || "Operation Successful",
+        message: response?.data?.success
+          ? "Login successful"
+          : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
         setIsAuthenticated(true);
+        setUserData({
+          uuid: response?.data?.data?.uuid,
+          first_name: response?.data?.data?.first_name,
+          last_name: response?.data?.data?.last_name,
+          referred_by: response?.data?.data?.referred_by,
+          referral_code: response?.data?.data?.referral_code,
+          gender: response?.data?.data?.gender,
+          profile_img: response?.data?.data?.profile_img,
+          email: response?.data?.data?.email,
+          phone: response?.data?.data?.phone,
+          address: response?.data?.data?.address,
+          dob: response?.data?.data?.dob,
+          email_verified_at: response?.data?.data?.email_verified_at,
+          login_at: response?.data?.data?.login_at,
+          is_admin: response?.data?.data?.is_admin,
+          status: response?.data?.data?.status,
+          created_at: response?.data?.data?.created_at,
+          updated_at: response?.data?.data?.updated_at,
+          deleted_at: response?.data?.data?.deleted_at,
+          token: response?.data?.token,
+        });
       }
     },
     onError: (error) => {
@@ -43,18 +72,60 @@ export const useLogin = () => {
 
 //work here when you open your laptop...
 export const useSignUp = () => {
+  const navigation: NavigationProp<AuthStackParamList> = useNavigation();
   const { data, isError, isPending, mutate } = useMutation({
-    mutationFn: (payload: signUpFormTypes) => signUp(payload),
+    mutationFn: (payload: apiSignUpFormTypes) => signUp(payload),
+    onSuccess: (response, variables) => {
+      const email = variables?.email;
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "User created successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
+        navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP, {
+          email,
+        });
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    mutate,
+  };
+};
+
+export const useVerifyEmail = () => {
+  const navigation: NavigationProp<AuthStackParamList> = useNavigation();
+  const { data, isError, isPending, mutate } = useMutation({
+    mutationFn: (payload: apiVerifyEmailFormTypes) => verifyEmail(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
-        status: response?.data?.status, //200 | 401 | 500
-        success: response?.data?.success, //true | false
+        status: response?.data?.data?.validity ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.data?.validity, //true | false
         code: response?.data?.error?.code || "Success",
-        message: response?.data?.error?.fields?.email[0]
-          ? response?.data?.error?.fields?.email[0]
-          : response?.data?.error?.message || "Operation Successful",
+        message: response?.data?.data?.message,
       });
+      if (response?.data?.data?.validity) {
+        navigation.navigate(authScreenNames.LOGIN);
+      }
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({

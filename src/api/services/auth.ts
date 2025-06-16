@@ -1,9 +1,13 @@
 import { getNetworkStatus } from "@src/helper/utils";
 import { APIRequest } from "../request";
 import { endpoint } from "../endpoint/endpoint";
-import { loginFormTypes, signUpFormTypes } from "@src/form/schema/types";
+import {
+  apiLoginFormTypes,
+  apiSignUpFormTypes,
+  apiVerifyEmailFormTypes,
+} from "../types/auth";
 
-export const login = async (payload: loginFormTypes) => {
+export const login = async (payload: apiLoginFormTypes) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
@@ -21,7 +25,7 @@ export const login = async (payload: loginFormTypes) => {
   }
 };
 
-export const signUp = async (payload: signUpFormTypes) => {
+export const signUp = async (payload: apiSignUpFormTypes) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
@@ -29,6 +33,24 @@ export const signUp = async (payload: signUpFormTypes) => {
   try {
     const { data, status } = await APIRequest.POST(
       endpoint.AUTH.signUp,
+      payload,
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("Sign-up service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const verifyEmail = async (payload: apiVerifyEmailFormTypes) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.POST(
+      endpoint.AUTH.verifyEmail,
       payload,
       {}
     );
