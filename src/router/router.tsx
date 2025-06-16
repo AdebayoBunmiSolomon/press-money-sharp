@@ -9,6 +9,7 @@ import {
   View,
   Text,
 } from "react-native";
+import { AppStack } from "./app-stack";
 
 interface IRouterProps {
   isAuthenticated: boolean;
@@ -21,13 +22,7 @@ export const Router = ({ isAuthenticated }: IRouterProps) => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={styles.container}>
-          {isAuthenticated ? (
-            <View>
-              <Text>App Stack</Text>
-            </View>
-          ) : (
-            <AuthStack />
-          )}
+          {isAuthenticated ? <AppStack /> : <AuthStack />}
         </KeyboardAvoidingView>
       </NavigationContainer>
     </>

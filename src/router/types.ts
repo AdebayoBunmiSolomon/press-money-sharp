@@ -22,11 +22,11 @@ export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> =
 
 //bottom tab-bar screen navigation
 export interface BottomTabBarStackParamList extends ParamListBase {
-  Home: undefined;
-  Categories: undefined;
-  Wishlist: undefined;
-  Messages: undefined;
-  Profile: undefined;
+  HomeStack: undefined;
+  CategoriesStack: undefined;
+  WishlistStack: undefined;
+  MessagesStack: undefined;
+  ProfileStack: undefined;
 }
 
 export type BottomTabBarScreenProps<
@@ -34,7 +34,13 @@ export type BottomTabBarScreenProps<
 > = BottomTabScreenProps<BottomTabBarStackParamList, ScreenName>;
 
 //native and app screen navigation
-export interface RootStackParamList extends ParamListBase {}
+export interface RootStackParamList extends ParamListBase {
+  Home: undefined;
+  Categories: undefined;
+  Wishlist: undefined;
+  Profile: undefined;
+  Messages: undefined;
+}
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, ScreenName>;

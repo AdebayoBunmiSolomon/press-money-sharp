@@ -40,3 +40,23 @@ export const APILogger = (
     console.log("Message:", message);
   }
 };
+
+/**
+ * Extracts the first capitalized word segment from a PascalCase or CamelCase string.
+ *
+ * This function detects the second capital letter and returns the part of the string
+ * before it. Useful for splitting strings like "WordClass" → "Word".
+ *
+ * @param word - The input PascalCase or CamelCase string.
+ * @returns The first word segment (up to the second capital letter).
+ *
+ * @example
+ * getFirstCapitalSegment("UserModel"); // "User"
+ * getFirstCapitalSegment("GetUserData"); // "Get"
+ * getFirstCapitalSegment("Service"); // "Service" (only one capital word)
+ */
+export const getFirstCapitalSegment = (word: string): string => {
+  const match = word.match(/[A-Z][a-z]*/g);
+  if (!match) return word; // fallback if no capital letters found
+  return match[0]; // return the first word
+};

@@ -9,11 +9,18 @@ export enum authScreenNames {
 }
 
 export enum bottomTabScreenNames {
+  HOME_STACK = "HomeStack",
+  CATEGORIES_STACK = "CategoriesStack",
+  WISH_LIST_STACK = "WishlistStack",
+  MESSAGES_STACK = "MessagesStack",
+  PROFILE_STACK = "ProfileStack",
+}
+
+export enum appScreenNames {
+  BOTTOM_TAB_STACK = "BottomTabStack",
   HOME = "Home",
   CATEGORIES = "Categories",
   WISH_LIST = "Wishlist",
   MESSAGES = "Messages",
   PROFILE = "Profile",
 }
-
-export enum appScreenNames {}

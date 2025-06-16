@@ -1,0 +1,26 @@
+import { CustomText } from "@src/components/shared";
+import { appScreenNames } from "@src/navigation";
+import { colors } from "@src/resources/color/color";
+import { moderateScale } from "@src/resources/responsiveness";
+import { RootStackScreenProps } from "@src/router/types";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { Screen } from "../Screen";
+
+export const Messages = ({}: RootStackScreenProps<appScreenNames.MESSAGES>) => {
+  return (
+    <Screen style={styles.screenContainer} safeArea>
+      <CustomText type='regular' size={15} black>
+        Messages Screen
+      </CustomText>
+    </Screen>
+  );
+};
+
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    backgroundColor: colors.red,
+    paddingHorizontal: moderateScale(15),
+  },
+});
