@@ -1,7 +1,7 @@
 import { APIRequest } from "@src/api/request";
 import { login, signUp } from "@src/api/services/auth";
+import { useAuthStore } from "@src/api/store/auth";
 import { loginFormTypes, signUpFormTypes } from "@src/form/schema/types";
-import { useAuthStore } from "@src/hooks/zustand";
 import { useMutation } from "@tanstack/react-query";
 
 export const useLogin = () => {

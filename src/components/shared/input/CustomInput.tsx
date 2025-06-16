@@ -207,6 +207,7 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
             {
               fontFamily: valueFont,
               flex: 1,
+              color: colors.black,
             },
             inputStyle,
           ]}

@@ -9,7 +9,6 @@ import {
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuthStore } from "@src/hooks/zustand";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryClient } from "@src/helper/utils";
@@ -18,6 +17,7 @@ import { verticalScale } from "@src/resources/responsiveness";
 import FlashMessage from "react-native-flash-message";
 import { IGlobalModalMessageRef, ModalMessage } from "@src/common";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
+import { useAuthStore } from "@src/api/store/auth";
 
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
