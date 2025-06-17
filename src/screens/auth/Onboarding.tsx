@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: screenWidth,
     position: "absolute",
-    backgroundColor: "rgba(0, 0, 0, 0.705)",
+    backgroundColor: "rgba(0, 0, 0, 0.463)",
     paddingHorizontal: moderateScale(15),
   },
   bottomAction: {

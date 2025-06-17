@@ -17,3 +17,19 @@ export type apiVerifyEmailFormTypes = {
   email: string;
   otp: string;
 };
+
+export type apiForgotPassAndContinueTypes = {
+  email: string;
+};
+
+export type apiVerifyOtpToChangePassTypes = {
+  email: string;
+  hash: string;
+};
+
+export type apiUpdatePasswordTypes = {
+  email: string;
+  hash: string;
+  password: string;
+  password_confirmation: string;
+};

@@ -11,7 +11,10 @@ export interface AuthStackParamList extends ParamListBase {
   VerifyEmailForPasswordUpdate: {
     email: string;
   };
-  PasswordUpdate: undefined;
+  PasswordUpdate: {
+    email: string;
+    hash: string;
+  };
   VerifyEmailForSignUp: {
     email: string;
   };

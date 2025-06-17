@@ -12,10 +12,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { passwordUpdateValidationSchema } from "@src/form/validation/rules";
 import { ScrollContainer } from "../ScrollContainer";
 import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
+import { useUpdatePassword } from "@src/api/hooks/mutation/auth";
 
 export const PasswordUpdate = ({
-  navigation,
+  route,
 }: AuthScreenProps<authScreenNames.PASSWORD_UPDATE>) => {
+  const { email, hash } = route?.params;
+  const { mutate, isPending } = useUpdatePassword();
   const {
     control,
     handleSubmit,
@@ -27,7 +30,12 @@ export const PasswordUpdate = ({
 
   const onSubmit = (data: passwordUpdateFormTypes) => {
     if (data) {
-      console.log(data);
+      mutate({
+        email: email,
+        hash: hash,
+        password: data?.password,
+        password_confirmation: data?.confirm_password,
+      });
     }
   };
 
@@ -49,12 +57,12 @@ export const PasswordUpdate = ({
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Password'
+                title='New Password'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.password?.message}
                 type='password'
-                placeholder='Your password'
+                placeholder='Your new password'
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
@@ -90,6 +98,8 @@ export const PasswordUpdate = ({
             textType='medium'
             onPress={handleSubmit(onSubmit)}
             btnStyle={styles.signUpBtn}
+            isLoading={isPending}
+            loaderColor={colors.white}
           />
           <View
             style={{

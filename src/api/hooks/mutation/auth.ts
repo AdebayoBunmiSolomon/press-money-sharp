@@ -1,10 +1,20 @@
 import { APIRequest } from "@src/api/request";
-import { login, signUp, verifyEmail } from "@src/api/services/auth";
+import {
+  forgotPasswordAndContinue,
+  login,
+  signUp,
+  updatePassword,
+  verifyEmail,
+  verifyOtpToChangePassword,
+} from "@src/api/services/auth";
 import { useAuthStore } from "@src/api/store/auth";
 import {
+  apiForgotPassAndContinueTypes,
   apiLoginFormTypes,
   apiSignUpFormTypes,
+  apiUpdatePasswordTypes,
   apiVerifyEmailFormTypes,
+  apiVerifyOtpToChangePassTypes,
 } from "@src/api/types/auth";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
@@ -124,6 +134,126 @@ export const useVerifyEmail = () => {
         message: response?.data?.data?.message,
       });
       if (response?.data?.data?.validity) {
+        navigation.navigate(authScreenNames.LOGIN);
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    mutate,
+  };
+};
+
+export const useForgotPassAndContinue = () => {
+  const navigation: NavigationProp<AuthStackParamList> = useNavigation();
+  const { data, isError, isPending, mutate } = useMutation({
+    mutationFn: (payload: apiForgotPassAndContinueTypes) =>
+      forgotPasswordAndContinue(payload),
+    onSuccess: (response, variables) => {
+      const { email } = variables;
+      APIRequest.RESPONSE_HANDLER({
+        type: "flash",
+        status: response?.data?.status, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? `OTP has been sent to ${email}`
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
+        navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE, {
+          email: email,
+        });
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    mutate,
+  };
+};
+
+export const useVerifyOtpToChangePass = () => {
+  const navigation: NavigationProp<AuthStackParamList> = useNavigation();
+  const { data, isError, isPending, mutate } = useMutation({
+    mutationFn: (payload: apiVerifyOtpToChangePassTypes) =>
+      verifyOtpToChangePassword(payload),
+    onSuccess: (response, variables) => {
+      const { email, hash } = variables;
+      APIRequest.RESPONSE_HANDLER({
+        type: "flash",
+        status: response?.data?.status, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "OTP verified successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
+        navigation.navigate(authScreenNames.PASSWORD_UPDATE, {
+          email: email,
+          hash: hash,
+        });
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    mutate,
+  };
+};
+
+export const useUpdatePassword = () => {
+  const navigation: NavigationProp<AuthStackParamList> = useNavigation();
+  const { data, isError, isPending, mutate } = useMutation({
+    mutationFn: (payload: apiUpdatePasswordTypes) => updatePassword(payload),
+    onSuccess: (response) => {
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: response?.data?.status, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "Password changed successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
         navigation.navigate(authScreenNames.LOGIN);
       }
     },

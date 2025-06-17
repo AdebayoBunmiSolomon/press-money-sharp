@@ -7,11 +7,12 @@ import { Image } from "expo-image";
 import { AuthScreenProps } from "@src/router/types";
 import { authScreenNames } from "@src/navigation";
 import { OTPForm } from "@src/components/auth";
+import { useVerifyOtpToChangePass } from "@src/api/hooks/mutation/auth";
 
 export const VerifyEmailForPasswordUpdate = ({
-  navigation,
   route,
 }: AuthScreenProps<authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE>) => {
+  const { mutate, isPending } = useVerifyOtpToChangePass();
   const { email } = route?.params;
   const [otp, setOtp] = useState<string>("");
   return (
@@ -28,9 +29,13 @@ export const VerifyEmailForPasswordUpdate = ({
           setOtp={(value) => setOtp(value)}
           onPressActionBtn={() => {
             if (otp.length >= 6) {
-              navigation.navigate(authScreenNames.PASSWORD_UPDATE);
+              mutate({
+                email: email,
+                hash: otp,
+              });
             }
           }}
+          isLoading={isPending}
         />
       </Screen>
     </Screen>

@@ -12,10 +12,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { passwordResetValidationSchema } from "@src/form/validation/rules";
 import { Image } from "expo-image";
 import { BackArrowBtn } from "@src/common/BackArrowBtn";
+import { useForgotPassAndContinue } from "@src/api/hooks/mutation/auth";
 
 export const PasswordReset = ({
   navigation,
 }: AuthScreenProps<authScreenNames.PASSWORD_RESET>) => {
+  const { mutate, isPending } = useForgotPassAndContinue();
   const {
     control,
     handleSubmit,
@@ -27,7 +29,7 @@ export const PasswordReset = ({
 
   const onSubmit = (data: passwordResetFormTypes) => {
     if (data) {
-      navigation.navigate(authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE, {
+      mutate({
         email: data?.email,
       });
     }
@@ -75,6 +77,8 @@ export const PasswordReset = ({
             textType='medium'
             onPress={handleSubmit(onSubmit)}
             btnStyle={styles.submitBtn}
+            isLoading={isPending}
+            loaderColor={colors.white}
           />
 
           <BackArrowBtn

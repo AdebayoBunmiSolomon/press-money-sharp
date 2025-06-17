@@ -32,10 +32,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingBottom: moderateScale(10),
   },
   imgContainer: {
     width: DVW(20),
-    height: DVH(10),
+    height: DVH(6),
   },
   img: {
     width: "100%",
