@@ -4,5 +4,7 @@ export const endpoint = {
     verifyEmail: "/verify-email", //verify user email
     login: "/auth/login", //login
   },
-  APP: {},
+  APP: {
+    getCategories: "/category", //get category
+  },
 };

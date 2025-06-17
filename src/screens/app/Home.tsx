@@ -10,11 +10,14 @@ import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
+import { useGetCategory } from "@src/api/hooks/queries/app";
+import { Loader } from "@src/common";
 
 export const Home = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.HOME>) => {
   const [searchString, setSearchString] = useState<string>("");
+  const { isFetching, categoryData } = useGetCategory();
   return (
     <>
       <StatusBar style='dark' />
@@ -57,6 +60,18 @@ export const Home = ({
                 />
               </View>
             </View>
+          </View>
+          <View>
+            {!isFetching ? (
+              categoryData &&
+              categoryData?.map((category: any, index: number) => (
+                <CustomText type='regular' size={15} black key={index}>
+                  {category}
+                </CustomText>
+              ))
+            ) : (
+              <Loader size='small' color={colors.black} />
+            )}
           </View>
           <View
             style={{
