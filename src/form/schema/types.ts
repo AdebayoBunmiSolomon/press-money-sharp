@@ -21,3 +21,9 @@ export type passwordUpdateFormTypes = {
   password: string;
   confirm_password: string;
 };
+
+export type messageActionFormTypes = {
+  name: string;
+  email: string;
+  phone: string;
+};

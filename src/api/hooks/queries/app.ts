@@ -1,8 +1,10 @@
 import { APIRequest } from "@src/api/request";
 import { getCategory } from "@src/api/services/app";
+import { useCategoriesStore } from "@src/api/store/app";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetCategory = () => {
+  const { categories, setCategories } = useCategoriesStore();
   const {
     data: categoryData,
     isFetching,
@@ -21,6 +23,7 @@ export const useGetCategory = () => {
             ? "Category fetched successfully"
             : "Category not fetched successfully",
         });
+        setCategories(categoryData);
         return response.data.data;
       }
       APIRequest.RESPONSE_HANDLER({
@@ -38,7 +41,7 @@ export const useGetCategory = () => {
   });
 
   return {
-    categoryData,
+    categories,
     isFetching,
     isError,
   };

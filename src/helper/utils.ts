@@ -101,3 +101,13 @@ export const formatPhoneWithCountryCode = (
   const cleanedNumber = number.replace(/^0+/, ""); // remove leading zero(s)
   return `+${cleanedDialCode}${cleanedNumber}`;
 };
+/**
+ *
+ * @param amount e.g. 1000
+ * @returns 1,000
+ */
+export const formatAmountWithCommas = (amount: number) => {
+  let amtStr = amount.toString();
+  let formattedAmt = amtStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return formattedAmt;
+};

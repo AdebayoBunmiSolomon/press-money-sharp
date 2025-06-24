@@ -4,8 +4,8 @@ import {
 } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@src/router/types";
 import React from "react";
-import { Categories } from "../Categories";
 import { appScreenNames } from "@src/navigation";
+import * as CategoriesScreen from "../../app";
 
 const ScreenStack = createNativeStackNavigator<RootStackParamList>();
 const headerOptions: NativeStackNavigationOptions = { headerShown: false };
@@ -15,7 +15,7 @@ export const CategoriesStack = () => {
     <ScreenStack.Navigator screenOptions={headerOptions}>
       <ScreenStack.Screen
         name={appScreenNames.CATEGORIES}
-        component={Categories}
+        component={CategoriesScreen.Categories}
       />
     </ScreenStack.Navigator>
   );

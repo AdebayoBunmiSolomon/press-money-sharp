@@ -74,7 +74,7 @@ export default function App() {
           {!isFontLoadingComplete ? (
             <AppLoader />
           ) : (
-            <Router isAuthenticated={isAuthenticated} />
+            <Router isAuthenticated={true} />
           )}
         </SafeAreaProvider>
       </PersistQueryClientProvider>

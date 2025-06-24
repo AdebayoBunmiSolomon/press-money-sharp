@@ -38,3 +38,12 @@ export const passwordUpdateValidationSchema = yup.object().shape({
     .oneOf([yup.ref("password"), undefined], "Passwords must match")
     .required("Please confirm your password"),
 });
+
+export const messageActionFormValidationSchema = yup.object().shape({
+  name: yup.string().required("name is required"),
+  phone: yup.string().required("phone number is required"),
+  email: yup
+    .string()
+    .email("invalid email address")
+    .required("email is required"),
+});

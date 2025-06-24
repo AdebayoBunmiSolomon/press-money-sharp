@@ -4,23 +4,23 @@ import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { CategoryList, Header } from "@src/components/app/home";
 import { ScrollContainer } from "../ScrollContainer";
-import { Image, ImageBackground } from "expo-image";
+import { Image } from "expo-image";
 import { useGetCategory } from "@src/api/hooks/queries/app";
-import { EvilIcons, FontAwesome } from "@expo/vector-icons";
+import { ProductCard } from "@src/common/cards";
 
 export const Home = ({}: RootStackScreenProps<appScreenNames.HOME>) => {
   const [searchString, setSearchString] = useState<string>("");
-  const { isFetching, categoryData } = useGetCategory();
+  const { isFetching, categories } = useGetCategory();
   return (
     <>
       <StatusBar style='dark' />
       <Screen style={styles.screenContainer} safeArea>
-        <Header />
+        <Header showAppIcon />
         <CustomInput
           value={searchString}
           onChangeText={(enteredValue) => setSearchString(enteredValue)}
@@ -59,43 +59,16 @@ export const Home = ({}: RootStackScreenProps<appScreenNames.HOME>) => {
               </View>
             </View>
           </View>
-          <CategoryList data={categoryData} isLoading={isFetching} />
+          <CategoryList data={categories} isLoading={isFetching} />
           <View>
             <CustomText type='medium' size={16} red>
               Featured
             </CustomText>
-            <View style={styles.featuredCard}>
-              <ImageBackground
-                source={require("@src/assets/png/category/car-sales.png")}
-                contentFit='fill'
-                style={styles.img}>
-                <TouchableOpacity style={styles.heartBtn}>
-                  <FontAwesome
-                    name='heart-o'
-                    size={moderateScale(15)}
-                    color={colors.red}
-                  />
-                </TouchableOpacity>
-              </ImageBackground>
-              <View style={styles.infoContainer}>
-                <CustomText type='medium' size={13} black>
-                  2021 Lexus Rx350 FSPORT
-                </CustomText>
-                <CustomText type='semi-bold' size={20} red>
-                  #30,000,000
-                </CustomText>
-                <View style={styles.locationContainer}>
-                  <EvilIcons
-                    name='location'
-                    size={moderateScale(16)}
-                    color={colors.black}
-                  />
-                  <CustomText type='regular' size={13} black>
-                    Challenge, Ibadan
-                  </CustomText>
-                </View>
-              </View>
-            </View>
+            <ProductCard
+              title='2021 Lexus Rx350 FSPORT'
+              price='300000000'
+              location='Challenge, Ibadan'
+            />
           </View>
           <View
             style={{
@@ -153,37 +126,5 @@ const styles = StyleSheet.create({
   scrollContainer: {
     gap: moderateScale(10),
     paddingTop: moderateScale(10),
-  },
-  featuredCard: {
-    width: "100%",
-    backgroundColor: "#FAEEEE",
-    borderRadius: moderateScale(10),
-    gap: moderateScale(20),
-    paddingBottom: moderateScale(10),
-    overflow: "hidden",
-    marginTop: moderateScale(15),
-  },
-  img: {
-    width: "100%",
-    height: DVH(25),
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    paddingHorizontal: moderateScale(10),
-    paddingVertical: moderateScale(10),
-  },
-  heartBtn: {
-    padding: moderateScale(10),
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(100),
-  },
-  infoContainer: {
-    paddingHorizontal: moderateScale(10),
-    gap: moderateScale(10),
-    paddingBottom: moderateScale(10),
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: moderateScale(5),
   },
 });

@@ -43,6 +43,7 @@ export interface RootStackParamList extends ParamListBase {
   Wishlist: undefined;
   Profile: undefined;
   Messages: undefined;
+  CarDetails: undefined;
 }
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =

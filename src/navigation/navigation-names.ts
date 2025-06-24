@@ -23,4 +23,5 @@ export enum appScreenNames {
   WISH_LIST = "Wishlist",
   MESSAGES = "Messages",
   PROFILE = "Profile",
+  CAR_DETAILS = "CarDetails",
 }

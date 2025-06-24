@@ -1,26 +1,78 @@
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { Image } from "expo-image";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Feather, Fontisto } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
+import { CustomText } from "@src/components/shared";
 
-export const Header: React.FC<{}> = () => {
+interface IHeaderProps {
+  showAppIcon?: boolean;
+  leftIcon?: React.ReactNode;
+  title?: string;
+  color?: string;
+  onPressBellIcon?: () => void;
+  onPressNotificationIcon?: () => void;
+  headerStyle?: StyleProp<ViewStyle>;
+}
+
+export const Header: React.FC<IHeaderProps> = ({
+  showAppIcon = false,
+  leftIcon,
+  title,
+  color,
+  onPressBellIcon,
+  onPressNotificationIcon,
+  headerStyle,
+}) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.imgContainer}>
-        <Image
-          source={require("@src/assets/png/app-icon.png")}
-          contentFit='contain'
-          style={styles.img}
-        />
-      </View>
+    <View style={[styles.container, headerStyle]}>
+      {showAppIcon ? (
+        <View style={styles.imgContainer}>
+          <Image
+            source={require("@src/assets/png/app-icon.png")}
+            contentFit='contain'
+            style={styles.img}
+          />
+        </View>
+      ) : !showAppIcon && leftIcon ? (
+        <>{leftIcon}</>
+      ) : (
+        <View />
+      )}
+      {title ? (
+        <CustomText
+          type='medium'
+          size={16}
+          style={{
+            color: color || colors.black,
+          }}>
+          {title}
+        </CustomText>
+      ) : (
+        <View />
+      )}
       <View style={styles.actionBtnContainer}>
-        <TouchableOpacity>
-          <Fontisto name='bell' size={moderateScale(20)} color={colors.black} />
+        <TouchableOpacity onPress={onPressBellIcon}>
+          <Fontisto
+            name='bell'
+            size={moderateScale(20)}
+            color={color || colors.black}
+          />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name='menu' size={moderateScale(20)} color={colors.black} />
+        <TouchableOpacity onPress={onPressNotificationIcon}>
+          <Feather
+            name='menu'
+            size={moderateScale(20)}
+            color={color || colors.black}
+          />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,7 +1,7 @@
 import { Loader } from "@src/common";
 import { CustomText } from "@src/components/shared";
 import { colors } from "@src/resources/color/color";
-import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
+import { moderateScale } from "@src/resources/responsiveness";
 import React, { useRef, useState } from "react";
 import {
   FlatList,
@@ -10,8 +10,8 @@ import {
   View,
   ViewToken,
 } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
+import { MaterialIcons } from "@expo/vector-icons";
+import { CategoryCard } from "@src/common/cards";
 
 interface ICategoryListProps {
   isLoading: boolean;
@@ -97,25 +97,7 @@ export const CategoryList: React.FC<ICategoryListProps> = ({
           }}
           keyExtractor={(__, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <View key={index} style={styles.itemContainer}>
-              <Image
-                source={require("@src/assets/png/category/car-sales.png")}
-                contentFit='fill'
-                style={styles.img}
-              />
-              <View style={styles.cardTitleContainer}>
-                <CustomText type='medium' size={12} black>
-                  {`Car ${item}`}
-                </CustomText>
-                <TouchableOpacity style={styles.actionBtn}>
-                  <Feather
-                    name='arrow-up-right'
-                    size={moderateScale(15)}
-                    color={colors.red}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
+            <CategoryCard item={item} key={index} />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -151,28 +133,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: moderateScale(10),
-  },
-  img: {
-    width: "100%",
-    height: DVH(10),
-  },
-  cardTitleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: moderateScale(7),
-  },
-  itemContainer: {
-    width: DVW(35),
-    backgroundColor: "#FAEEEE",
-    borderRadius: moderateScale(10),
-    gap: moderateScale(20),
-    paddingBottom: moderateScale(10),
-    overflow: "hidden",
-  },
-  actionBtn: {
-    padding: moderateScale(4),
-    borderRadius: moderateScale(100),
-    backgroundColor: colors.white,
   },
 });
