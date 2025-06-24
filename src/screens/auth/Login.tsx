@@ -26,11 +26,11 @@ export const Login = ({
     mode: "onChange",
     resolver: yupResolver(loginValidationSchema),
   });
-  const { isPending, mutate } = useLogin();
+  const { isPending, login } = useLogin();
 
   const onSubmit = (data: loginFormTypes) => {
     if (data) {
-      mutate({
+      login({
         email: data?.email,
         password: data?.password,
       });

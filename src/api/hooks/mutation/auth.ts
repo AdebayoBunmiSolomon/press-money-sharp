@@ -24,7 +24,12 @@ import { formatApiErrorMessage } from "@src/helper/utils";
 
 export const useLogin = () => {
   const { setIsAuthenticated, setUserData } = useAuthStore();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: Login,
+  } = useMutation({
     mutationFn: (payload: apiLoginFormTypes) => login(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
@@ -76,14 +81,19 @@ export const useLogin = () => {
     data,
     isError,
     isPending,
-    mutate,
+    login,
   };
 };
 
 //work here when you open your laptop...
 export const useSignUp = () => {
   const navigation: NavigationProp<AuthStackParamList> = useNavigation();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: SignUp,
+  } = useMutation({
     mutationFn: (payload: apiSignUpFormTypes) => signUp(payload),
     onSuccess: (response, variables) => {
       const email = variables?.email;
@@ -117,13 +127,18 @@ export const useSignUp = () => {
     data,
     isError,
     isPending,
-    mutate,
+    SignUp,
   };
 };
 
 export const useVerifyEmail = () => {
   const navigation: NavigationProp<AuthStackParamList> = useNavigation();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: VerifyEmail,
+  } = useMutation({
     mutationFn: (payload: apiVerifyEmailFormTypes) => verifyEmail(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
@@ -152,7 +167,7 @@ export const useVerifyEmail = () => {
     data,
     isError,
     isPending,
-    mutate,
+    VerifyEmail,
   };
 };
 
@@ -199,7 +214,12 @@ export const useForgotPassAndContinue = () => {
 
 export const useVerifyOtpToChangePass = () => {
   const navigation: NavigationProp<AuthStackParamList> = useNavigation();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: VerifyOtpToChangePass,
+  } = useMutation({
     mutationFn: (payload: apiVerifyOtpToChangePassTypes) =>
       verifyOtpToChangePassword(payload),
     onSuccess: (response, variables) => {
@@ -235,7 +255,7 @@ export const useVerifyOtpToChangePass = () => {
     data,
     isError,
     isPending,
-    mutate,
+    VerifyOtpToChangePass,
   };
 };
 

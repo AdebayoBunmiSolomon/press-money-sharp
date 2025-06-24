@@ -14,7 +14,7 @@ export const VerifyEmailForSignUp = ({
   navigation,
 }: AuthScreenProps<authScreenNames.VERIFY_EMAIL_FOR_SIGN_UP>) => {
   const { email } = route?.params;
-  const { mutate, isPending } = useVerifyEmail();
+  const { VerifyEmail, isPending } = useVerifyEmail();
   const [otp, setOtp] = useState<string>("");
   return (
     <Screen style={styles.screenContainer} safeArea>
@@ -31,7 +31,7 @@ export const VerifyEmailForSignUp = ({
           setOtp={(value) => setOtp(value)}
           onPressActionBtn={() => {
             if (otp.length >= 6) {
-              mutate({
+              VerifyEmail({
                 email: email,
                 otp: otp,
               });

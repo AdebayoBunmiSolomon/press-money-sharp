@@ -24,7 +24,7 @@ import { removePlusSign } from "@src/helper/utils";
 export const SignUp = ({
   navigation,
 }: AuthScreenProps<authScreenNames.SIGN_UP>) => {
-  const { mutate, isPending } = useSignUp();
+  const { SignUp, isPending } = useSignUp();
   const {
     clearErrors,
     control,
@@ -37,7 +37,7 @@ export const SignUp = ({
 
   const onSubmit = (data: signUpFormTypes) => {
     if (data) {
-      mutate({
+      SignUp({
         first_name: data?.first_name,
         last_name: data?.gender,
         email: data?.email,

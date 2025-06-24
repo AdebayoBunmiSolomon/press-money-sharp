@@ -12,7 +12,7 @@ import { useVerifyOtpToChangePass } from "@src/api/hooks/mutation/auth";
 export const VerifyEmailForPasswordUpdate = ({
   route,
 }: AuthScreenProps<authScreenNames.VERIFY_EMAIL_FOR_PASSWORD_UPDATE>) => {
-  const { mutate, isPending } = useVerifyOtpToChangePass();
+  const { VerifyOtpToChangePass, isPending } = useVerifyOtpToChangePass();
   const { email } = route?.params;
   const [otp, setOtp] = useState<string>("");
   return (
@@ -29,7 +29,7 @@ export const VerifyEmailForPasswordUpdate = ({
           setOtp={(value) => setOtp(value)}
           onPressActionBtn={() => {
             if (otp.length >= 6) {
-              mutate({
+              VerifyOtpToChangePass({
                 email: email,
                 hash: otp,
               });
