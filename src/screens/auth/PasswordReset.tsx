@@ -17,7 +17,7 @@ import { useForgotPassAndContinue } from "@src/api/hooks/mutation/auth";
 export const PasswordReset = ({
   navigation,
 }: AuthScreenProps<authScreenNames.PASSWORD_RESET>) => {
-  const { mutate, isPending } = useForgotPassAndContinue();
+  const { ForgotPassAndContinue, isPending } = useForgotPassAndContinue();
   const {
     control,
     handleSubmit,
@@ -29,7 +29,7 @@ export const PasswordReset = ({
 
   const onSubmit = (data: passwordResetFormTypes) => {
     if (data) {
-      mutate({
+      ForgotPassAndContinue({
         email: data?.email,
       });
     }

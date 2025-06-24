@@ -81,7 +81,7 @@ export const useLogin = () => {
     data,
     isError,
     isPending,
-    login,
+    Login,
   };
 };
 
@@ -173,7 +173,12 @@ export const useVerifyEmail = () => {
 
 export const useForgotPassAndContinue = () => {
   const navigation: NavigationProp<AuthStackParamList> = useNavigation();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: ForgotPassAndContinue,
+  } = useMutation({
     mutationFn: (payload: apiForgotPassAndContinueTypes) =>
       forgotPasswordAndContinue(payload),
     onSuccess: (response, variables) => {
@@ -208,7 +213,7 @@ export const useForgotPassAndContinue = () => {
     data,
     isError,
     isPending,
-    mutate,
+    ForgotPassAndContinue,
   };
 };
 
@@ -261,7 +266,12 @@ export const useVerifyOtpToChangePass = () => {
 
 export const useUpdatePassword = () => {
   const navigation: NavigationProp<AuthStackParamList> = useNavigation();
-  const { data, isError, isPending, mutate } = useMutation({
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: UpdatePass,
+  } = useMutation({
     mutationFn: (payload: apiUpdatePasswordTypes) => updatePassword(payload),
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
@@ -292,6 +302,6 @@ export const useUpdatePassword = () => {
     data,
     isError,
     isPending,
-    mutate,
+    UpdatePass,
   };
 };

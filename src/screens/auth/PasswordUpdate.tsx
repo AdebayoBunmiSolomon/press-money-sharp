@@ -18,7 +18,7 @@ export const PasswordUpdate = ({
   route,
 }: AuthScreenProps<authScreenNames.PASSWORD_UPDATE>) => {
   const { email, hash } = route?.params;
-  const { mutate, isPending } = useUpdatePassword();
+  const { UpdatePass, isPending } = useUpdatePassword();
   const {
     control,
     handleSubmit,
@@ -30,7 +30,7 @@ export const PasswordUpdate = ({
 
   const onSubmit = (data: passwordUpdateFormTypes) => {
     if (data) {
-      mutate({
+      UpdatePass({
         email: email,
         hash: hash,
         password: data?.password,
