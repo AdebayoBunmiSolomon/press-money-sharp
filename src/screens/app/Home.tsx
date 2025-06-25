@@ -1,5 +1,5 @@
 import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
-import { appScreenNames } from "@src/navigation";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
@@ -13,14 +13,23 @@ import { Image } from "expo-image";
 import { useGetCategory } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 
-export const Home = ({}: RootStackScreenProps<appScreenNames.HOME>) => {
+export const Home = ({
+  navigation,
+}: RootStackScreenProps<appScreenNames.HOME>) => {
   const [searchString, setSearchString] = useState<string>("");
   const { isFetching, categories } = useGetCategory();
   return (
     <>
       <StatusBar style='dark' />
       <Screen style={styles.screenContainer} safeArea>
-        <Header showAppIcon />
+        <Header
+          showAppIcon
+          onPressMenuIcon={() =>
+            navigation.navigate(bottomTabScreenNames.HOME_STACK, {
+              screen: appScreenNames.SIDE_NAV,
+            })
+          }
+        />
         <CustomInput
           value={searchString}
           onChangeText={(enteredValue) => setSearchString(enteredValue)}
@@ -45,7 +54,11 @@ export const Home = ({}: RootStackScreenProps<appScreenNames.HOME>) => {
                 buttonType='Solid'
                 textSize={16}
                 textType='medium'
-                onPress={() => {}}
+                onPress={() =>
+                  navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
+                    screen: appScreenNames.CATEGORIES,
+                  })
+                }
                 btnStyle={styles.xPloreBtn}
                 isLoading={false}
                 loaderColor={colors.white}

@@ -4,7 +4,6 @@ import React from "react";
 import {
   StyleProp,
   StyleSheet,
-  TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -19,7 +18,7 @@ interface IHeaderProps {
   title?: string;
   color?: string;
   onPressBellIcon?: () => void;
-  onPressNotificationIcon?: () => void;
+  onPressMenuIcon?: () => void;
   headerStyle?: StyleProp<ViewStyle>;
 }
 
@@ -29,7 +28,7 @@ export const Header: React.FC<IHeaderProps> = ({
   title,
   color,
   onPressBellIcon,
-  onPressNotificationIcon,
+  onPressMenuIcon,
   headerStyle,
 }) => {
   return (
@@ -67,7 +66,7 @@ export const Header: React.FC<IHeaderProps> = ({
             color={color || colors.black}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onPressNotificationIcon}>
+        <TouchableOpacity onPress={onPressMenuIcon}>
           <Feather
             name='menu'
             size={moderateScale(20)}

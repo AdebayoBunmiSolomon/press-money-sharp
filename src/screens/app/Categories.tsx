@@ -3,27 +3,32 @@ import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   Platform,
   View,
   ScrollView,
+  FlatList,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation, Ionicons } from "@expo/vector-icons";
 import { useCategoriesStore } from "@src/api/store/app";
-import { ScrollContainer } from "../ScrollContainer";
 import { ProductCard } from "@src/common/cards";
+import { products } from "@src/constants/products";
+import { FloatActionButton } from "@src/common";
 
 export const Categories = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
+  const flatListRef = useRef<FlatList>(null);
   const { categories } = useCategoriesStore();
-  const [pressedCategory, setPressedCategory] = useState<string>("");
+  const [pressedCategory, setPressedCategory] = useState<string | undefined>(
+    categories && categories[0]
+  );
   return (
     <>
       <StatusBar style='dark' />
@@ -40,14 +45,18 @@ export const Categories = ({
           }
           title={
             pressedCategory
-              ? pressedCategory
+              ? `Car ${pressedCategory}`
               : String(categories && `Car ${categories[0]}`)
           }
           headerStyle={styles.header}
           color={colors.white}
         />
         <View style={styles.contentContainer}>
-          <ScrollContainer>
+          {/* filter categories */}
+          <View
+            style={{
+              paddingBottom: moderateScale(10),
+            }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <TouchableOpacity style={styles.filterBtn}>
                 <Foundation
@@ -66,59 +75,55 @@ export const Categories = ({
                       styles.filterBtn,
                       {
                         backgroundColor:
-                          pressedCategory === `Car ${item}`
-                            ? "#b0b0b02f"
-                            : undefined,
+                          pressedCategory === item ? "#b0b0b02f" : undefined,
                       },
                     ]}
                     key={index}
-                    onPress={() => setPressedCategory(`Car ${item}`)}>
+                    onPress={() => setPressedCategory(item)}>
                     <CustomText size={12} type='medium' lightBlack>
                       {`Car ` + item}
                     </CustomText>
                   </TouchableOpacity>
                 ))}
             </ScrollView>
-            {Array.from({ length: 5 }, (_, index) => (
+          </View>
+          <FlatList
+            ref={flatListRef}
+            data={products}
+            contentContainerStyle={{
+              gap: moderateScale(15),
+              paddingBottom: DVH(25),
+            }}
+            keyExtractor={(__, index) => index.toString()}
+            renderItem={({ item, index }) => (
               <ProductCard
                 key={index}
-                title='2022 Lexus Rx350 FSPORT'
-                price='30000000'
-                location='Challenge, Ibadan'
+                title={item?.title}
+                price={item?.price}
+                location={item?.location}
                 onClickCard={() =>
                   navigation.navigate(appScreenNames.CAR_DETAILS)
                 }
               />
-            ))}
-            <View
-              style={{
-                paddingVertical: DVH(10),
-              }}
-            />
-          </ScrollContainer>
+            )}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            maxToRenderPerBatch={2}
+            initialNumToRender={2}
+            windowSize={2}
+          />
+          <View
+            style={{
+              paddingVertical: DVH(10),
+            }}
+          />
         </View>
-        <View style={styles.floatBtnContainer}>
-          <TouchableOpacity
-            style={[
-              styles.floatBtn,
-              {
-                borderColor: colors.lightGray,
-              },
-            ]}>
-            <AntDesign
-              name='arrowup'
-              size={moderateScale(25)}
-              color={colors.black}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.floatBtn}>
-            <Ionicons
-              name='logo-whatsapp'
-              size={moderateScale(25)}
-              color={"#25D366"}
-            />
-          </TouchableOpacity>
-        </View>
+        <FloatActionButton
+          onPressArrowUp={() =>
+            flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
+          }
+          onPressWhatsApp={() => {}}
+        />
       </Screen>
     </>
   );
@@ -154,31 +159,5 @@ const styles = StyleSheet.create({
     borderWidth: DVW(0.3),
     borderColor: colors.lightGray,
     marginRight: moderateScale(10),
-  },
-  floatBtnContainer: {
-    position: "absolute",
-    bottom: Platform.OS === "ios" ? moderateScale(15) : moderateScale(10),
-    alignSelf: "flex-end",
-    marginRight: moderateScale(10),
-    gap: moderateScale(10),
-  },
-  floatBtn: {
-    padding: moderateScale(10),
-    borderRadius: moderateScale(100),
-    borderWidth: DVW(0.4),
-    borderColor: "#25D366",
-    backgroundColor: colors.white,
-
-    // 💡 iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    // 💡 Android shadow (elevation)
-    elevation: 5,
   },
 });

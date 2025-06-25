@@ -23,3 +23,14 @@ export type bottomTabScreenTypes = {
 export type loginOptionsTypes = {
   icon: ImageSourcePropType;
 }[];
+
+export type productTypes = {
+  title: string;
+  price: string;
+  location: string;
+}[];
+
+export type sideNavTypes = {
+  title: string;
+  subMenu: string[];
+}[];

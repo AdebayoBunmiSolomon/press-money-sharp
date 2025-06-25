@@ -12,6 +12,7 @@ interface IProductCardProps {
   price: string;
   location: string;
   onClickCard?: () => void;
+  onLikeProd?: () => void;
 }
 
 export const ProductCard: React.FC<IProductCardProps> = ({
@@ -19,6 +20,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
   price,
   location,
   onClickCard,
+  onLikeProd,
 }) => {
   return (
     <View>
@@ -28,7 +30,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
             source={require("@src/assets/png/car.png")}
             contentFit='cover'
             style={styles.img}>
-            <TouchableOpacity style={styles.heartBtn}>
+            <TouchableOpacity style={styles.heartBtn} onPress={onLikeProd}>
               <FontAwesome
                 name='heart-o'
                 size={moderateScale(15)}

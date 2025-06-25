@@ -24,4 +24,5 @@ export enum appScreenNames {
   MESSAGES = "Messages",
   PROFILE = "Profile",
   CAR_DETAILS = "CarDetails",
+  SIDE_NAV = "SideNav",
 }

@@ -5,7 +5,7 @@ import {
 import { appScreenNames } from "@src/navigation";
 import { RootStackParamList } from "@src/router/types";
 import React from "react";
-import { Wishlist } from "../Wishlist";
+import * as WishListScreen from "../../app";
 
 const ScreenStack = createNativeStackNavigator<RootStackParamList>();
 const headerOptions: NativeStackNavigationOptions = { headerShown: false };
@@ -15,7 +15,7 @@ export const WishlistStack = () => {
     <ScreenStack.Navigator screenOptions={headerOptions}>
       <ScreenStack.Screen
         name={appScreenNames.WISH_LIST}
-        component={Wishlist}
+        component={WishListScreen.Wishlist}
       />
     </ScreenStack.Navigator>
   );

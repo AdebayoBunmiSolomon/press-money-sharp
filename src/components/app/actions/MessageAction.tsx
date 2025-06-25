@@ -3,6 +3,7 @@ import {
   CustomButton,
   CustomInput,
   CustomPhoneInput,
+  CustomText,
 } from "@src/components/shared";
 import { messageActionFormTypes } from "@src/form/schema/types";
 import { messageActionFormValidationSchema } from "@src/form/validation/rules";
@@ -42,6 +43,16 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
       <Modal visible={visible} transparent animationType='slide'>
         <View style={styles.container}>
           <View style={styles.content}>
+            <View
+              style={{
+                paddingVertical: moderateScale(5),
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <CustomText type='medium' size={16} lightBlack>
+                Send Us a Message
+              </CustomText>
+            </View>
             <Controller
               control={control}
               render={({ field }) => (
@@ -143,6 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(10),
     paddingVertical: moderateScale(10),
     paddingHorizontal: moderateScale(10),
+    gap: moderateScale(10),
   },
   actionBtnContainer: {
     flexDirection: "column",

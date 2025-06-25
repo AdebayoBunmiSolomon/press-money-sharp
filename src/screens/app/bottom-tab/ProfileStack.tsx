@@ -5,7 +5,7 @@ import {
 import { appScreenNames } from "@src/navigation";
 import { RootStackParamList } from "@src/router/types";
 import React from "react";
-import { Profile } from "../Profile";
+import * as ProfileScreen from "../../app";
 
 const ScreenStack = createNativeStackNavigator<RootStackParamList>();
 const headerOptions: NativeStackNavigationOptions = { headerShown: false };
@@ -13,7 +13,10 @@ const headerOptions: NativeStackNavigationOptions = { headerShown: false };
 export const ProfileStack = () => {
   return (
     <ScreenStack.Navigator screenOptions={headerOptions}>
-      <ScreenStack.Screen name={appScreenNames.PROFILE} component={Profile} />
+      <ScreenStack.Screen
+        name={appScreenNames.PROFILE}
+        component={ProfileScreen.Profile}
+      />
     </ScreenStack.Navigator>
   );
 };
