@@ -43,6 +43,7 @@ interface CustomPhoneInputProps {
   titleStyle?: StyleProp<TextStyle>;
   inputStyle?: StyleProp<TextStyle>;
   onSubmitEditing?: () => void;
+  placeHolderTextColor?: ColorValue;
 }
 
 export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
@@ -64,6 +65,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
   titleStyle,
   inputStyle,
   onSubmitEditing,
+  placeHolderTextColor,
 }) => {
   const { getValueFontType } = useCustomInput();
   const [modalVisible, setModalVisible] = useState(false);
@@ -171,7 +173,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
             inputStyle,
           ]}
           keyboardType='phone-pad'
-          placeholderTextColor={colors.black}
+          placeholderTextColor={placeHolderTextColor || colors.black}
           maxLength={maxLength}
           editable={!disabled}
           multiline={multiLine}

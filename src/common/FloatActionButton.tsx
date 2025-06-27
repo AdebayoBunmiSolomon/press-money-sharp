@@ -1,20 +1,29 @@
 import { colors } from "@src/resources/color/color";
 import React from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
 
 interface IFloatActionBtnProps {
   onPressArrowUp: () => void;
   onPressWhatsApp: () => void;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const FloatActionButton: React.FC<IFloatActionBtnProps> = ({
   onPressArrowUp,
   onPressWhatsApp,
+  containerStyle,
 }) => {
   return (
-    <View style={styles.floatBtnContainer}>
+    <View style={[styles.floatBtnContainer, containerStyle]}>
       <TouchableOpacity
         style={[
           styles.floatBtn,

@@ -12,6 +12,7 @@ import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
 import { useGetCategory } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
+import { products } from "@src/constants/products";
 
 export const Home = ({
   navigation,
@@ -81,6 +82,7 @@ export const Home = ({
               title='2021 Lexus Rx350 FSPORT'
               price='300000000'
               location='Challenge, Ibadan'
+              image={products[0]?.image}
             />
           </View>
           <View

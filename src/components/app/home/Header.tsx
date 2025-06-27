@@ -20,6 +20,8 @@ interface IHeaderProps {
   onPressBellIcon?: () => void;
   onPressMenuIcon?: () => void;
   headerStyle?: StyleProp<ViewStyle>;
+  showSearchIcon?: boolean;
+  onPressSearchIcon?: () => void;
 }
 
 export const Header: React.FC<IHeaderProps> = ({
@@ -30,6 +32,8 @@ export const Header: React.FC<IHeaderProps> = ({
   onPressBellIcon,
   onPressMenuIcon,
   headerStyle,
+  showSearchIcon = false,
+  onPressSearchIcon,
 }) => {
   return (
     <View style={[styles.container, headerStyle]}>
@@ -59,6 +63,17 @@ export const Header: React.FC<IHeaderProps> = ({
         <View />
       )}
       <View style={styles.actionBtnContainer}>
+        {showSearchIcon ? (
+          <TouchableOpacity onPress={onPressSearchIcon}>
+            <Feather
+              name='search'
+              size={moderateScale(20)}
+              color={color || colors.black}
+            />
+          </TouchableOpacity>
+        ) : (
+          <View />
+        )}
         <TouchableOpacity onPress={onPressBellIcon}>
           <Fontisto
             name='bell'

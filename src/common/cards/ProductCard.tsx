@@ -1,9 +1,14 @@
 import { CustomText } from "@src/components/shared";
 import { colors } from "@src/resources/color/color";
-import { DVH, moderateScale } from "@src/resources/responsiveness";
+import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { ImageBackground } from "expo-image";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ImageSourcePropType,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FontAwesome, EvilIcons } from "@expo/vector-icons";
 import { formatAmountWithCommas } from "@src/helper/utils";
 
@@ -11,6 +16,7 @@ interface IProductCardProps {
   title: string;
   price: string;
   location: string;
+  image?: ImageSourcePropType;
   onClickCard?: () => void;
   onLikeProd?: () => void;
 }
@@ -19,6 +25,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
   title,
   price,
   location,
+  image,
   onClickCard,
   onLikeProd,
 }) => {
@@ -26,10 +33,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
     <View>
       <TouchableOpacity style={styles.featuredCard} onPress={onClickCard}>
         <View style={styles.imgContainer}>
-          <ImageBackground
-            source={require("@src/assets/png/car.png")}
-            contentFit='cover'
-            style={styles.img}>
+          <ImageBackground source={image} contentFit='cover' style={styles.img}>
             <TouchableOpacity style={styles.heartBtn} onPress={onLikeProd}>
               <FontAwesome
                 name='heart-o'
@@ -44,7 +48,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
             {title}
           </CustomText>
           <CustomText type='semi-bold' size={20} red>
-            {formatAmountWithCommas(Number(price))}
+            #{formatAmountWithCommas(Number(price))}
           </CustomText>
           <View style={styles.locationContainer}>
             <EvilIcons
@@ -84,6 +88,8 @@ const styles = StyleSheet.create({
     paddingBottom: moderateScale(10),
     overflow: "hidden",
     marginTop: moderateScale(15),
+    borderWidth: DVW(0.2),
+    borderColor: colors.lightGray,
   },
   heartBtn: {
     padding: moderateScale(10),

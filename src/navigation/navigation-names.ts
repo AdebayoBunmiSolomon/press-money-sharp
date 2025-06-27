@@ -24,5 +24,11 @@ export enum appScreenNames {
   MESSAGES = "Messages",
   PROFILE = "Profile",
   CAR_DETAILS = "CarDetails",
+  CAR_SALES = "CarSales",
+  CAR_HIRE = "CarHire",
+  DEALERS_DEAL = "DealersDeal",
+  SPARE_PARTS = "SpareParts",
   SIDE_NAV = "SideNav",
+  CONSULTATION_SERVICES = "ConsultationServices",
+  RECENTLY_VIEWED = "RecentlyViewed",
 }

@@ -15,15 +15,15 @@ import {
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
-import { AntDesign, Foundation, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Foundation } from "@expo/vector-icons";
 import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { products } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
 
-export const Categories = ({
+export const CarSales = ({
   navigation,
-}: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
+}: RootStackScreenProps<appScreenNames.CAR_SALES>) => {
   const flatListRef = useRef<FlatList>(null);
   const { categories } = useCategoriesStore();
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
@@ -43,13 +43,10 @@ export const Categories = ({
               />
             </TouchableOpacity>
           }
-          title={
-            pressedCategory
-              ? `Car ${pressedCategory}`
-              : String(categories && `Car ${categories[0]}`)
-          }
+          title={"Cars for Sales"}
           headerStyle={styles.header}
           color={colors.white}
+          showSearchIcon
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}

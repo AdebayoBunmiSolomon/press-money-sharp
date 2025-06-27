@@ -27,3 +27,10 @@ export type messageActionFormTypes = {
   email: string;
   phone: string;
 };
+
+export type consultationFormTypes = {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+};

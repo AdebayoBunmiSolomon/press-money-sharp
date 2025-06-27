@@ -47,3 +47,13 @@ export const messageActionFormValidationSchema = yup.object().shape({
     .email("invalid email address")
     .required("email is required"),
 });
+
+export const consultationFormValidationSchema = yup.object().shape({
+  name: yup.string().required("name is required"),
+  phone: yup.string().required("phone number is required"),
+  email: yup
+    .string()
+    .email("invalid email address")
+    .required("email is required"),
+  message: yup.string().required("message is required"),
+});

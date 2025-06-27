@@ -1,26 +1,26 @@
 import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
-import { DVH, moderateScale } from "@src/resources/responsiveness";
+import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
 import React, { useRef } from "react";
 import {
-  FlatList,
-  Platform,
   StyleSheet,
   TouchableOpacity,
+  Platform,
   View,
+  FlatList,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign } from "@expo/vector-icons";
-import { wishList } from "@src/constants/products";
 import { ProductCard } from "@src/common/cards";
+import { spareParts } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
 
-export const Wishlist = ({
+export const SpareParts = ({
   navigation,
-}: RootStackScreenProps<appScreenNames.WISH_LIST>) => {
+}: RootStackScreenProps<appScreenNames.SPARE_PARTS>) => {
   const flatListRef = useRef<FlatList>(null);
   return (
     <>
@@ -36,17 +36,53 @@ export const Wishlist = ({
               />
             </TouchableOpacity>
           }
-          title='Wish List'
+          title={"Spare Parts"}
           headerStyle={styles.header}
           color={colors.white}
+          showSearchIcon
         />
         <View style={styles.contentContainer}>
+          {/* filter categories */}
+          {/* <View
+            style={{
+              paddingBottom: moderateScale(10),
+            }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <TouchableOpacity style={styles.filterBtn}>
+                <Foundation
+                  name='filter'
+                  size={moderateScale(17)}
+                  color={colors.red}
+                />
+                <CustomText size={12} type='medium' lightBlack>
+                  Filters
+                </CustomText>
+              </TouchableOpacity>
+              {categories &&
+                categories.map((item, index) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.filterBtn,
+                      {
+                        backgroundColor:
+                          pressedCategory === item ? "#b0b0b02f" : undefined,
+                      },
+                    ]}
+                    key={index}
+                    onPress={() => setPressedCategory(item)}>
+                    <CustomText size={12} type='medium' lightBlack>
+                      {`Car ` + item}
+                    </CustomText>
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
+          </View> */}
           <FlatList
             ref={flatListRef}
-            data={wishList}
+            data={spareParts}
             contentContainerStyle={{
               gap: moderateScale(15),
-              paddingBottom: DVH(20),
+              paddingBottom: DVH(25),
             }}
             keyExtractor={(__, index) => index.toString()}
             renderItem={({ item, index }) => (
@@ -67,10 +103,15 @@ export const Wishlist = ({
             initialNumToRender={2}
             windowSize={2}
           />
+          <View
+            style={{
+              paddingVertical: DVH(5),
+            }}
+          />
         </View>
         <FloatActionButton
           onPressArrowUp={() =>
-            flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
+            flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
           onPressWhatsApp={() => {}}
         />
@@ -83,9 +124,8 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: colors.white,
-    paddingVertical: moderateScale(0),
     paddingHorizontal: moderateScale(0),
-    // paddingHorizontal: moderateScale(15),
+    paddingVertical: moderateScale(0),
   },
   header: {
     backgroundColor: colors.red,
@@ -99,5 +139,16 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: moderateScale(15),
     paddingTop: moderateScale(10),
+  },
+  filterBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: moderateScale(5),
+    borderRadius: moderateScale(50),
+    paddingVertical: moderateScale(5),
+    paddingHorizontal: moderateScale(10),
+    borderWidth: DVW(0.3),
+    borderColor: colors.lightGray,
+    marginRight: moderateScale(10),
   },
 });

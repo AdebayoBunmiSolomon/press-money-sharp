@@ -17,6 +17,26 @@ export const CategoriesStack = () => {
         name={appScreenNames.CATEGORIES}
         component={CategoriesScreen.Categories}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.CAR_SALES}
+        component={CategoriesScreen.CarSales}
+      />
+      <ScreenStack.Screen
+        name={appScreenNames.CAR_HIRE}
+        component={CategoriesScreen.CarHire}
+      />
+      <ScreenStack.Screen
+        name={appScreenNames.DEALERS_DEAL}
+        component={CategoriesScreen.DealersDeal}
+      />
+      <ScreenStack.Screen
+        name={appScreenNames.SPARE_PARTS}
+        component={CategoriesScreen.SpareParts}
+      />
+      <ScreenStack.Screen
+        name={appScreenNames.CONSULTATION_SERVICES}
+        component={CategoriesScreen.ConsultationServices}
+      />
     </ScreenStack.Navigator>
   );
 };

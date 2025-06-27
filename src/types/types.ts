@@ -28,6 +28,7 @@ export type productTypes = {
   title: string;
   price: string;
   location: string;
+  image: ImageSourcePropType;
 }[];
 
 export type sideNavTypes = {
