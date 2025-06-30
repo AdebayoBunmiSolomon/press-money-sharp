@@ -6,7 +6,7 @@ import { Screen } from "../Screen";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
 import { CustomText } from "@src/components/shared";
 import { Header } from "@src/components/app/home";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { sideNav } from "@src/constants/sidenav";
 import { ScrollContainer } from "../ScrollContainer";
@@ -99,6 +99,11 @@ export const SideNav = ({
                   <CustomText type='regular' size={14} lightBlack>
                     {subItem}
                   </CustomText>
+                  <MaterialIcons
+                    name='arrow-forward-ios'
+                    size={moderateScale(16)}
+                    color={colors.lightBlack}
+                  />
                 </TouchableOpacity>
               ))}
             </View>
@@ -123,5 +128,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: DVW(0.3),
     borderBottomColor: "#e0e0e0",
     paddingHorizontal: moderateScale(15),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });

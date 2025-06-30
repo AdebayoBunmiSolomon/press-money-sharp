@@ -1,9 +1,10 @@
-import { sideNavTypes } from "@src/types/types";
+import { lisTypes } from "@src/types/types";
 
-export const sideNav: sideNavTypes = [
+export const sideNav: lisTypes = [
   {
     title: "Home",
     subMenu: ["Category Listing"],
+    notification: false,
   },
   {
     title: "Services",
@@ -14,9 +15,11 @@ export const sideNav: sideNavTypes = [
       "Consultation Services",
       "Dealers Deal",
     ],
+    notification: false,
   },
   {
     title: "Profile",
     subMenu: ["Wishlist", "Recently Viewed"],
+    notification: false,
   },
 ];

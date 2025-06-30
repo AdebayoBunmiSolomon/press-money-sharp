@@ -31,7 +31,8 @@ export type productTypes = {
   image: ImageSourcePropType;
 }[];
 
-export type sideNavTypes = {
+export type lisTypes = {
   title: string;
   subMenu: string[];
+  notification?: boolean;
 }[];
