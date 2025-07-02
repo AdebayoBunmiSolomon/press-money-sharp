@@ -20,10 +20,12 @@ import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { products } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
+import { FilterModal } from "@src/components/app/categories";
 
 export const Categories = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
+  const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
   const { categories } = useCategoriesStore();
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
@@ -50,6 +52,8 @@ export const Categories = ({
           }
           headerStyle={styles.header}
           color={colors.white}
+          showSearchIcon
+          onPressSearchIcon={() => setShowFilter(!showFilter)}
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}
@@ -126,6 +130,10 @@ export const Categories = ({
           onPressWhatsApp={() => {}}
         />
       </Screen>
+      <FilterModal
+        visible={showFilter}
+        onClose={() => setShowFilter(!showFilter)}
+      />
     </>
   );
 };
