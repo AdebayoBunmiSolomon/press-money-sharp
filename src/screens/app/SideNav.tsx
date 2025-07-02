@@ -16,42 +16,42 @@ export const SideNav = ({
 }: RootStackScreenProps<appScreenNames.SIDE_NAV>) => {
   const screenNavigation = (action: string) => {
     switch (action) {
-      case sideNav[0].subMenu[0]:
+      case sideNav[0].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.CATEGORIES,
         });
         break;
-      case sideNav[1].subMenu[0]:
+      case sideNav[1].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.CAR_SALES,
         });
         break;
-      case sideNav[1].subMenu[1]:
+      case sideNav[1].subMenu[1]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.CAR_HIRE,
         });
         break;
-      case sideNav[1].subMenu[2]:
+      case sideNav[1].subMenu[2]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.SPARE_PARTS,
         });
         break;
-      case sideNav[1].subMenu[3]:
+      case sideNav[1].subMenu[3]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.CONSULTATION_SERVICES,
         });
         break;
-      case sideNav[1].subMenu[4]:
+      case sideNav[1].subMenu[4]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.DEALERS_DEAL,
         });
         break;
-      case sideNav[2].subMenu[0]:
+      case sideNav[2].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.WISH_LIST_STACK, {
           screen: appScreenNames.WISH_LIST,
         });
         break;
-      case sideNav[2].subMenu[1]:
+      case sideNav[2].subMenu[1]?.list:
         navigation.navigate(appScreenNames.RECENTLY_VIEWED);
         break;
       default:
@@ -95,9 +95,9 @@ export const SideNav = ({
                 <TouchableOpacity
                   key={subIndex}
                   style={styles.actionListBtn}
-                  onPress={() => screenNavigation(subItem)}>
+                  onPress={() => screenNavigation(subItem?.list)}>
                   <CustomText type='regular' size={14} lightBlack>
-                    {subItem}
+                    {subItem?.list}
                   </CustomText>
                   <MaterialIcons
                     name='arrow-forward-ios'

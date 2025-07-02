@@ -3,23 +3,49 @@ import { lisTypes } from "@src/types/types";
 export const sideNav: lisTypes = [
   {
     title: "Home",
-    subMenu: ["Category Listing"],
-    notification: false,
+    subMenu: [
+      {
+        list: "Category Listing",
+        toggle: false,
+      },
+    ],
   },
   {
     title: "Services",
     subMenu: [
-      "Car Sales (Tokunbo and Naija Used)",
-      "Car Hire (Personal, Commercial and Logistics)",
-      "Spare Parts",
-      "Consultation Services",
-      "Dealers Deal",
+      {
+        list: "Car Sales (Tokunbo and Naija Used)",
+        toggle: false,
+      },
+      {
+        list: "Car Hire (Personal, Commercial and Logistics)",
+        toggle: false,
+      },
+      {
+        list: "Spare Parts",
+        toggle: false,
+      },
+      {
+        list: "Consultation Services",
+        toggle: false,
+      },
+      {
+        list: "Dealers Deal",
+        toggle: false,
+      },
     ],
-    notification: false,
   },
   {
     title: "Profile",
-    subMenu: ["Wishlist", "Recently Viewed"],
-    notification: false,
+    subMenu: [
+      {
+        list: "Wishlist",
+        toggle: false,
+      },
+      {
+        list: "Recently Viewed",
+        toggle: false,
+      },
+    ],
   },
 ];

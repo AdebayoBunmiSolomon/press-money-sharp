@@ -33,6 +33,8 @@ export type productTypes = {
 
 export type lisTypes = {
   title: string;
-  subMenu: string[];
-  notification?: boolean;
+  subMenu: {
+    list: string;
+    toggle: boolean;
+  }[];
 }[];

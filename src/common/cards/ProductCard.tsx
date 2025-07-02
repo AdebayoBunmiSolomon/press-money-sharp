@@ -31,7 +31,10 @@ export const ProductCard: React.FC<IProductCardProps> = ({
 }) => {
   return (
     <View>
-      <TouchableOpacity style={styles.featuredCard} onPress={onClickCard}>
+      <TouchableOpacity
+        style={styles.featuredCard}
+        onPress={onClickCard}
+        activeOpacity={0.6}>
         <View style={styles.imgContainer}>
           <ImageBackground source={image} contentFit='cover' style={styles.img}>
             <TouchableOpacity style={styles.heartBtn} onPress={onLikeProd}>
