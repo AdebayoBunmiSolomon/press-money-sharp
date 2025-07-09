@@ -38,9 +38,9 @@ export const Profile = ({
           screen: appScreenNames.DEALERS_DEAL,
         });
         break;
-      case profileList[2].subMenu[1]?.list:
-        navigation.navigate(bottomTabScreenNames.WISH_LIST_STACK, {
-          screen: appScreenNames.WISH_LIST,
+      case profileList[2].subMenu[4]?.list:
+        navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
+          screen: appScreenNames.CONTACT_US,
         });
         break;
       default:

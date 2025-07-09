@@ -17,6 +17,10 @@ export const ProfileStack = () => {
         name={appScreenNames.PROFILE}
         component={ProfileScreen.Profile}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.CONTACT_US}
+        component={ProfileScreen.ContactUs}
+      />
     </ScreenStack.Navigator>
   );
 };

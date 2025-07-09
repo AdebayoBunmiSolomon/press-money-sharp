@@ -11,3 +11,4 @@ export * from "./DealersDeal";
 export * from "./SpareParts";
 export * from "./ConsultationServices";
 export * from "./RecentlyViewed";
+export * from "./ContactUs";

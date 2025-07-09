@@ -15,7 +15,7 @@ import {
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
-import { AntDesign, Foundation, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Foundation } from "@expo/vector-icons";
 import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { products } from "@src/constants/products";
@@ -92,7 +92,7 @@ export const Categories = ({
             </ScrollView>
           </View>
           <FlatList
-            ref={flatListRef}
+            // ref={flatListRef}
             data={products}
             contentContainerStyle={{
               gap: moderateScale(15),

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CategoryCard } from "@src/common/cards";
+import Animated from "react-native-reanimated";
 
 interface ICategoryListProps {
   isLoading: boolean;
@@ -89,7 +90,7 @@ export const CategoryList: React.FC<ICategoryListProps> = ({
           <Loader size='small' color={colors.lightGray} />
         </View>
       ) : (
-        <FlatList
+        <Animated.FlatList
           ref={listRef}
           data={data}
           contentContainerStyle={{

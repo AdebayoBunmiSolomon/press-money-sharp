@@ -50,6 +50,7 @@ export interface RootStackParamList extends ParamListBase {
   SpareParts: undefined;
   ConsultationServices: undefined;
   RecentlyViewed: undefined;
+  ContactUs: undefined;
 }
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =

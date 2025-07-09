@@ -49,6 +49,18 @@ export const profileList: lisTypes = [
         }`,
         toggle: true,
       },
+      {
+        list: "Referrals",
+        toggle: false,
+      },
+      {
+        list: "Contact Us",
+        toggle: false,
+      },
+      {
+        list: "Coupon",
+        toggle: false,
+      },
     ],
   },
 ];

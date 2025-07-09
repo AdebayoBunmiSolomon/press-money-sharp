@@ -4,17 +4,19 @@ import { useCategoriesStore } from "@src/api/store/app";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetCategory = () => {
-  const { categories, setCategories } = useCategoriesStore();
+  const { setCategories } = useCategoriesStore();
 
   const { data, isFetching, isError } = useQuery<string[]>({
     queryKey: ["get-category"],
     queryFn: async () => {
       const response = await getCategory();
+
       if (response?.data?.success) {
-        const data = response?.data?.data;
-        setCategories(data);
-        return data;
+        const categories = response?.data?.data || [];
+        setCategories(categories); // ✅ Now setting correctly
+        return categories; // ✅ Return the real data
       }
+
       APIRequest.RESPONSE_HANDLER({
         status: 500,
         success: false,
@@ -23,15 +25,16 @@ export const useGetCategory = () => {
           response?.error?.message ||
           "Network error. Please check your connection.",
       });
-      return [];
+
+      return []; // fallback
     },
     retry: 1,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     refetchOnReconnect: true,
   });
 
   return {
-    categories,
+    categories: data,
     isFetching,
     isError,
   };

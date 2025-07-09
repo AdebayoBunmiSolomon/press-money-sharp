@@ -31,4 +31,5 @@ export enum appScreenNames {
   SIDE_NAV = "SideNav",
   CONSULTATION_SERVICES = "ConsultationServices",
   RECENTLY_VIEWED = "RecentlyViewed",
+  CONTACT_US = "ContactUs",
 }
