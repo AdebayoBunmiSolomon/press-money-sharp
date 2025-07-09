@@ -43,6 +43,11 @@ export const Profile = ({
           screen: appScreenNames.CONTACT_US,
         });
         break;
+      case profileList[2].subMenu[3]?.list:
+        navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
+          screen: appScreenNames.REFERRALS,
+        });
+        break;
       default:
         // Optionally handle unknown action
         break;

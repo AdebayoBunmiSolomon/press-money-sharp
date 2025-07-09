@@ -21,6 +21,10 @@ export const ProfileStack = () => {
         name={appScreenNames.CONTACT_US}
         component={ProfileScreen.ContactUs}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.REFERRALS}
+        component={ProfileScreen.Referrals}
+      />
     </ScreenStack.Navigator>
   );
 };

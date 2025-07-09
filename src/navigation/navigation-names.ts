@@ -32,4 +32,5 @@ export enum appScreenNames {
   CONSULTATION_SERVICES = "ConsultationServices",
   RECENTLY_VIEWED = "RecentlyViewed",
   CONTACT_US = "ContactUs",
+  REFERRALS = "Referrals",
 }
