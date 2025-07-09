@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Screen } from "../Screen";
 import {
   ImageSourcePropType,
@@ -21,6 +21,7 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { CustomButton, CustomText } from "@src/components/shared";
 import { Image } from "expo-image";
 import { formatAmountWithCommas } from "@src/helper/utils";
+import { ReferralModal } from "@src/components/app/referrals";
 
 type earningSystemType = {
   image: ImageSourcePropType;
@@ -45,9 +46,11 @@ const earningSystem: earningSystemType[] = [
 export const Referrals = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.REFERRALS>) => {
+  const [showReferralHistory, setShowReferralHistory] =
+    useState<boolean>(false);
   return (
-    <Screen safeArea style={styles.screen}>
-      <ScrollContainer>
+    <>
+      <Screen safeArea style={styles.screen}>
         <Header
           leftIcon={
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -67,146 +70,152 @@ export const Referrals = ({
             paddingHorizontal: moderateScale(10),
           }}
         />
-        <View style={styles.cta}>
-          <CustomText
-            type='medium'
-            size={20}
-            white
-            style={{
-              verticalAlign: "middle",
-              paddingLeft: moderateScale(15),
-            }}>
-            {`Invite friends to\nPressMoneySharp and\nearn rewards`}
-          </CustomText>
-          <View style={styles.ctaImgContainer}>
-            <Image
-              style={styles.ctaImg}
-              source={require("@src/assets/png/referral-cta.png")}
-              contentFit='fill'
-            />
-          </View>
-        </View>
-        <View style={styles.contentContainer}>
-          <CustomText type='regular' size={14} lightBlack>
-            Invite Friends and earn rewards!!!
-          </CustomText>
-          <View style={styles.earnContainer}>
-            <View style={styles.earningSystemContainer}>
-              {earningSystem &&
-                earningSystem.map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.earningSystemBtn}
-                    activeOpacity={0.6}>
-                    <View style={styles.earningSystemImgContainer}>
-                      <Image
-                        source={item?.image}
-                        contentFit='cover'
-                        style={styles.earningSystemImg}
-                      />
-                    </View>
-                    <CustomText
-                      type='regular'
-                      size={10}
-                      lightBlack
-                      style={{
-                        textAlign: "left",
-                      }}>
-                      {item?.title}
-                    </CustomText>
-                  </TouchableOpacity>
-                ))}
-            </View>
-            <CustomButton
-              title={`Earn #${formatAmountWithCommas(5000)}`}
-              red
-              textWhite
-              buttonType='Solid'
-              onPress={() => {}}
-              textType='medium'
-              textSize={13}
-              btnStyle={styles.earnBtn}
-            />
-          </View>
-          <View
-            style={[
-              styles.earnContainer,
-              {
-                alignItems: "center",
-              },
-            ]}>
-            <CustomText type='regular' size={14} lightBlack>
-              Referral Code
-            </CustomText>
-            <View
+        <ScrollContainer>
+          <View style={styles.cta}>
+            <CustomText
+              type='medium'
+              size={20}
+              white
               style={{
-                paddingVertical: moderateScale(25),
-                gap: moderateScale(10),
-                alignItems: "center",
+                verticalAlign: "middle",
+                paddingLeft: moderateScale(15),
               }}>
-              <View style={styles.iconTextContainer}>
-                <CustomText type='medium' size={14} lightBlack>
-                  Earlybird-990
-                </CustomText>
-                <TouchableOpacity>
-                  <Ionicons
-                    name='copy-outline'
-                    size={moderateScale(15)}
-                    color={colors.red}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View
-                style={[
-                  styles.iconTextContainer,
-                  {
-                    backgroundColor: colors.red,
-                    paddingVertical: moderateScale(3),
-                    paddingHorizontal: moderateScale(10),
-                    borderRadius: moderateScale(50),
-                  },
-                ]}>
-                <CustomText type='regular' size={11} white>
-                  Share invitation code
-                </CustomText>
-                <TouchableOpacity style={{}}>
-                  <EvilIcons
-                    name='share-google'
-                    size={moderateScale(15)}
-                    color={colors.white}
-                  />
-                </TouchableOpacity>
-              </View>
+              {`Invite friends to\nPressMoneySharp and\nearn rewards`}
+            </CustomText>
+            <View style={styles.ctaImgContainer}>
+              <Image
+                style={styles.ctaImg}
+                source={require("@src/assets/png/referral-cta.png")}
+                contentFit='fill'
+              />
             </View>
           </View>
-          <View style={styles.earnContainer}>
-            <CustomButton
-              title='View referral history'
-              lightGray
-              textLightBlack
-              buttonType='Solid'
-              onPress={() => {}}
-              textType='medium'
-              textSize={13}
-              btnStyle={[
-                styles.earnBtn,
+          <View style={styles.contentContainer}>
+            <CustomText type='regular' size={14} lightBlack>
+              Invite Friends and earn rewards!!!
+            </CustomText>
+            <View style={styles.earnContainer}>
+              <View style={styles.earningSystemContainer}>
+                {earningSystem &&
+                  earningSystem.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.earningSystemBtn}
+                      activeOpacity={0.6}>
+                      <View style={styles.earningSystemImgContainer}>
+                        <Image
+                          source={item?.image}
+                          contentFit='cover'
+                          style={styles.earningSystemImg}
+                        />
+                      </View>
+                      <CustomText
+                        type='regular'
+                        size={10}
+                        lightBlack
+                        style={{
+                          textAlign: "left",
+                        }}>
+                        {item?.title}
+                      </CustomText>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+              <CustomButton
+                title={`Earn #${formatAmountWithCommas(5000)}`}
+                red
+                textWhite
+                buttonType='Solid'
+                onPress={() => {}}
+                textType='medium'
+                textSize={13}
+                btnStyle={styles.earnBtn}
+              />
+            </View>
+            <View
+              style={[
+                styles.earnContainer,
                 {
-                  justifyContent: "space-between",
-                  paddingHorizontal: moderateScale(10),
+                  alignItems: "center",
                 },
-              ]}
-              rightIcon={
-                <MaterialIcons
-                  name='keyboard-arrow-right'
-                  color={colors.lightBlack}
-                  size={moderateScale(25)}
-                />
-              }
-            />
+              ]}>
+              <CustomText type='regular' size={14} lightBlack>
+                Referral Code
+              </CustomText>
+              <View
+                style={{
+                  paddingVertical: moderateScale(25),
+                  gap: moderateScale(10),
+                  alignItems: "center",
+                }}>
+                <View style={styles.iconTextContainer}>
+                  <CustomText type='medium' size={14} lightBlack>
+                    Earlybird-990
+                  </CustomText>
+                  <TouchableOpacity>
+                    <Ionicons
+                      name='copy-outline'
+                      size={moderateScale(15)}
+                      color={colors.red}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.iconTextContainer,
+                    {
+                      backgroundColor: colors.red,
+                      paddingVertical: moderateScale(3),
+                      paddingHorizontal: moderateScale(10),
+                      borderRadius: moderateScale(50),
+                    },
+                  ]}>
+                  <CustomText type='regular' size={11} white>
+                    Share invitation code
+                  </CustomText>
+                  <TouchableOpacity style={{}}>
+                    <EvilIcons
+                      name='share-google'
+                      size={moderateScale(15)}
+                      color={colors.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            <View style={styles.earnContainer}>
+              <CustomButton
+                title='View referral history'
+                lightGray
+                textLightBlack
+                buttonType='Solid'
+                onPress={() => setShowReferralHistory(!showReferralHistory)}
+                textType='medium'
+                textSize={13}
+                btnStyle={[
+                  styles.earnBtn,
+                  {
+                    justifyContent: "space-between",
+                    paddingHorizontal: moderateScale(10),
+                  },
+                ]}
+                rightIcon={
+                  <MaterialIcons
+                    name='keyboard-arrow-right'
+                    color={colors.lightBlack}
+                    size={moderateScale(25)}
+                  />
+                }
+              />
+            </View>
           </View>
-        </View>
-      </ScrollContainer>
-    </Screen>
+        </ScrollContainer>
+      </Screen>
+      <ReferralModal
+        visible={showReferralHistory}
+        onClose={() => setShowReferralHistory(!showReferralHistory)}
+      />
+    </>
   );
 };
 
