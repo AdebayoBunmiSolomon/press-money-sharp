@@ -12,6 +12,9 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
+      },
+      "cache": {
+        "key": "v1-hermes-fix-20250711"
       }
     },
     "preview": {
@@ -23,6 +26,9 @@
       },
       "ios": {
         "simulator": true
+      },
+      "cache": {
+        "key": "v1-hermes-fix-20250711"
       }
     },
     "production": {
@@ -33,6 +39,9 @@
       },
       "ios": {
         "simulator": false
+      },
+      "cache": {
+        "key": "v1-hermes-fix-20250711"
       }
     }
   },

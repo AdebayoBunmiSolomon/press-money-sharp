@@ -1,0 +1,29 @@
+To make app content secure in a react-native expo application.
+#For Android...
+
+1. run "npx expo prebuild --platform android"
+2. locate the MainActivity.kt file in android/src/main/java/MainActivity.kt
+3. check the MainActivity file and copy and paste the codebase but mind this top layer "package com.adebunmy.press_money_sharp"
+4. rebuild with eas in either development or preview mode to test. But best test in preview mode
+
+#For iOS 
+1. run "npx expo prebuild --platform ios"
+2. locate the AppDelegate.swift file in ios/projectname/AppDelegate.swift
+3. check the AppDelegate file and copy and paste the codebase
+2. cd into the ios folder by pressing "cd ios"
+3. run "pod install"
+4. rebuild with eas in either development or preview mode to test. But best test in preview mode
+5. if eas fails, cd back into ios folder by using step 2 command
+6. run "pod update hermes-engine --no-repo-update" while still in the ios folder
+7. go to the eas.json and paste this property in every of the development profile 
+"
+      "cache": {
+        "key": "v1-hermes-fix-20250711"
+      }
+"
+8. Then go to the app.json and paste this property inside the ios key 
+" 
+      "jsEngine": "hermes" 
+"
+9. run step 2 command and after-which, "run pod install" while still in the ios folder
+10. now, run step 4.

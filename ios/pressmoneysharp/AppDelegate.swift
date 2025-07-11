@@ -5,9 +5,9 @@ import ReactAppDependencyProvider
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
   var window: UIWindow?
-
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
+  private var privacyView: UIView?
 
   public override func application(
     _ application: UIApplication,
@@ -30,6 +30,19 @@ public class AppDelegate: ExpoAppDelegate {
 #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  public override func applicationWillResignActive(_ application: UIApplication) {
+    privacyView = UIView(frame: window?.bounds ?? .zero)
+    privacyView?.backgroundColor = .black
+    window?.addSubview(privacyView!)
+    print("AppDelegate: Black privacy view added in applicationWillResignActive")
+  }
+
+  public override func applicationDidBecomeActive(_ application: UIApplication) {
+    privacyView?.removeFromSuperview()
+    privacyView = nil
+    print("AppDelegate: Black privacy view removed in applicationDidBecomeActive")
   }
 
   // Linking API

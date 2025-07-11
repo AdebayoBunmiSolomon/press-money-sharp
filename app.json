@@ -15,7 +15,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.adebunmy.press-money-sharp"
+      "bundleIdentifier": "com.adebunmy.press-money-sharp",
+      "jsEngine": "hermes"
     },
     "android": {
       "adaptiveIcon": {
