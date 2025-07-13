@@ -54,6 +54,8 @@ export const Categories = ({
           color={colors.white}
           showSearchIcon
           onPressSearchIcon={() => setShowFilter(!showFilter)}
+          showMenuIcon
+          showBellIcon
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}
@@ -92,7 +94,7 @@ export const Categories = ({
             </ScrollView>
           </View>
           <FlatList
-            // ref={flatListRef}
+            ref={flatListRef}
             data={products}
             contentContainerStyle={{
               gap: moderateScale(15),

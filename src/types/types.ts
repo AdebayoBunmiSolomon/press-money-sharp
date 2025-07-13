@@ -29,7 +29,7 @@ export type productTypes = {
   price: string;
   location: string;
   image: ImageSourcePropType;
-}[];
+};
 
 export type lisTypes = {
   title: string;

@@ -17,6 +17,10 @@ export const MessagesStack = () => {
         name={appScreenNames.MESSAGES}
         component={MessagesScreen.Messages}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.NOTIFICATION}
+        component={MessagesScreen.Notification}
+      />
     </ScreenStack.Navigator>
   );
 };

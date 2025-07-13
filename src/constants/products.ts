@@ -1,6 +1,6 @@
 import { productTypes } from "@src/types/types";
 
-export const products: productTypes = [
+export const products: productTypes[] = [
   {
     title: "2022 Lexus Rx350 FSPORT",
     price: "30000000",
@@ -27,7 +27,7 @@ export const products: productTypes = [
   },
 ];
 
-export const spareParts: productTypes = [
+export const spareParts: productTypes[] = [
   {
     title: "Performance Break Pads",
     price: "20000",
@@ -54,7 +54,7 @@ export const spareParts: productTypes = [
   },
 ];
 
-export const wishList: productTypes = [
+export const wishList: productTypes[] = [
   {
     title: "Performance Break Pads",
     price: "20000",

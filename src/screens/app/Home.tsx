@@ -13,7 +13,6 @@ import { Image } from "expo-image";
 import { useGetCategory } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 import { products } from "@src/constants/products";
-import Animated, { FadeInUp, ZoomIn } from "react-native-reanimated";
 
 export const Home = ({
   navigation,
@@ -31,6 +30,7 @@ export const Home = ({
               screen: appScreenNames.SIDE_NAV,
             })
           }
+          showMenuIcon
         />
         <CustomInput
           value={searchString}
