@@ -33,3 +33,12 @@ export type apiUpdatePasswordTypes = {
   password: string;
   password_confirmation: string;
 };
+
+export type apiScheduleConsultation = {
+  name: string;
+  phone: string;
+  email: string;
+  description: string;
+  priority: string;
+  type: string;
+};

@@ -56,4 +56,6 @@ export const consultationFormValidationSchema = yup.object().shape({
     .email("invalid email address")
     .required("email is required"),
   message: yup.string().required("message is required"),
+  priority: yup.string().required("priority is required"),
+  type: yup.string().required("consultation type is required"),
 });

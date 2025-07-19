@@ -43,7 +43,9 @@ export interface RootStackParamList extends ParamListBase {
   Wishlist: undefined;
   Profile: undefined;
   Messages: undefined;
-  CarDetails: undefined;
+  CarDetails: {
+    service_uuid: string;
+  };
   CarSales: undefined;
   CarHire: undefined;
   DealersDeal: undefined;

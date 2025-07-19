@@ -33,4 +33,6 @@ export type consultationFormTypes = {
   email: string;
   phone: string;
   message: string;
+  priority: string;
+  type: string;
 };

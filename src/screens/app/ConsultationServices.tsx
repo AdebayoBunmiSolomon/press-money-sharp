@@ -18,21 +18,36 @@ import { Controller, useForm } from "react-hook-form";
 import { consultationFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { consultationFormValidationSchema } from "@src/form/validation/rules";
+import { useScheduleConsultation } from "@src/api/hooks/mutation/app";
+import { APILogger } from "@src/helper/utils";
 
 export const ConsultationServices = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONSULTATION_SERVICES>) => {
+  const { ScheduleConsultation, isPending } = useScheduleConsultation();
   const {
     handleSubmit,
+    reset,
     control,
     formState: { errors },
+    clearErrors,
   } = useForm<consultationFormTypes>({
     mode: "onChange",
     resolver: yupResolver(consultationFormValidationSchema),
   });
 
-  const onSubmit = (data: consultationFormTypes) => {
-    console.log("Form Data: ", data);
+  const onSubmit = async (data: consultationFormTypes) => {
+    ScheduleConsultation({
+      name: data?.name,
+      email: data?.email,
+      phone: data?.phone,
+      description: data?.message,
+      priority: data?.priority,
+      type: data?.type,
+    });
+    if (!isPending) {
+      reset(); //clear form fields
+    }
   };
 
   return (
@@ -115,6 +130,53 @@ export const ConsultationServices = ({
             name='phone'
             defaultValue=''
           />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Type'
+                value={field.value}
+                dropDownItems={["general", "technical", "sales", "other"]}
+                onSelectDropDownItem={(selectedValue) => {
+                  field.onChange(selectedValue);
+                  clearErrors("type");
+                }}
+                error={errors?.type?.message}
+                type='dropdown'
+                placeholder='select the consultation type'
+                placeHolderTextColor={"#BDBDBD"}
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='type'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Priority'
+                value={field.value}
+                dropDownItems={["high", "Medium", "low"]}
+                onSelectDropDownItem={(selectedValue) => {
+                  field.onChange(selectedValue);
+                  clearErrors("priority");
+                }}
+                error={errors?.priority?.message}
+                type='dropdown'
+                placeholder='select the priority'
+                placeHolderTextColor={"#BDBDBD"}
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='priority'
+            defaultValue=''
+          />
+
           <Controller
             control={control}
             render={({ field }) => (
@@ -135,6 +197,7 @@ export const ConsultationServices = ({
             name='message'
             defaultValue=''
           />
+
           <CustomButton
             title='Schedule a Call'
             red
@@ -145,6 +208,7 @@ export const ConsultationServices = ({
             onPress={handleSubmit(onSubmit)}
             btnStyle={styles.loginBtn}
             loaderColor={colors.white}
+            isLoading={isPending}
           />
         </View>
         <View

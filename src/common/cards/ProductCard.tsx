@@ -16,7 +16,7 @@ interface IProductCardProps {
   title: string;
   price: string;
   location: string;
-  image?: ImageSourcePropType;
+  image?: ImageSourcePropType | string;
   onClickCard?: () => void;
   onLikeProd?: () => void;
 }

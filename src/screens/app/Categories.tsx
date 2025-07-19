@@ -18,15 +18,17 @@ import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
 import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
-import { products } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
 import { FilterModal } from "@src/components/app/categories";
+import { useGetAllServices } from "@src/api/hooks/queries/app";
+import { apiGetAllServicesResponse } from "@src/api/types/app";
 
 export const Categories = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
+  const { allServices } = useGetAllServices();
   const { categories } = useCategoriesStore();
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[0]
@@ -95,22 +97,23 @@ export const Categories = ({
           </View>
           <FlatList
             ref={flatListRef}
-            data={products}
+            data={allServices}
             contentContainerStyle={{
               gap: moderateScale(15),
               paddingBottom: DVH(25),
             }}
             keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
               <ProductCard
-                key={index}
-                title={item?.title}
-                price={item?.price}
+                title={`${item?.brand} ${item?.model}`}
+                price={String(item?.fee)}
                 location={item?.location}
                 onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS)
+                  navigation.navigate(appScreenNames.CAR_DETAILS, {
+                    service_uuid: item?.uuid,
+                  })
                 }
-                image={item?.image}
+                image={item?.imageUrls[0]}
               />
             )}
             horizontal={false}

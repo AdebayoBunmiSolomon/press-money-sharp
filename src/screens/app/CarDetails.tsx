@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Screen } from "../Screen";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RootStackScreenProps } from "@src/router/types";
@@ -16,11 +16,26 @@ import {
   MessageAction,
   WhatsAppAction,
 } from "@src/components/app/actions";
+import { useViewService } from "@src/api/hooks/queries/app";
+import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const CarDetails = ({
   navigation,
+  route,
 }: RootStackScreenProps<appScreenNames.CAR_DETAILS>) => {
+  const { service_uuid } = route?.params;
+  const { serviceInfo } = useViewService(service_uuid);
   const { actionModal, setActionModal } = useActionModal();
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({
+        queryKey: ["view-service", service_uuid],
+      });
+    }, [])
+  );
+
   return (
     <>
       <Screen style={styles.screen}>
@@ -38,7 +53,7 @@ export const CarDetails = ({
         />
         <View style={styles.contentContainer}>
           <CustomText type='regular' size={20} lightBlack>
-            2015 Mercedes-Benz C300 4matic
+            {`${serviceInfo?.brand} ${serviceInfo?.model}`}
           </CustomText>
           <ScrollContainer
             style={{
@@ -47,7 +62,7 @@ export const CarDetails = ({
             }}>
             <View style={styles.imgContainer}>
               <ImageBackground
-                source={require("@src/assets/png/car.png")}
+                source={{ uri: serviceInfo?.imageUrls[0] }}
                 contentFit='cover'
                 style={styles.img}>
                 <TouchableOpacity style={styles.heartBtn}>
@@ -63,7 +78,7 @@ export const CarDetails = ({
             <View style={styles.pricePercentLocationContainer}>
               <View style={styles.percentPriceContainer}>
                 <CustomText size={17} type='medium' lightBlack>
-                  #30,000,000.00
+                  {formatAmountWithCommas(Number(serviceInfo?.fee))}
                 </CustomText>
                 <CustomText
                   size={7}
@@ -80,7 +95,7 @@ export const CarDetails = ({
                   color={colors.black}
                 />
                 <CustomText type='regular' size={13} black>
-                  Challenge, Ibadan
+                  {serviceInfo?.location}
                 </CustomText>
               </View>
             </View>
