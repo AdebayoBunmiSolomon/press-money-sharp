@@ -95,6 +95,11 @@ export const Home = ({
                     : "Anywhere"
                 )}
                 image={String(allServices && allServices[0]?.image_urls[0])}
+                onClickCard={() =>
+                  navigation.navigate(appScreenNames.CAR_DETAILS, {
+                    service_uuid: String(allServices && allServices[0]?.uuid),
+                  })
+                }
               />
             )}
           </View>

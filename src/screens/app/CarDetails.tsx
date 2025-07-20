@@ -241,7 +241,11 @@ export const CarDetails = ({
                             lightBlack
                             type='medium'
                             key={index}>
-                            {i}
+                            {`${i} ${
+                              index !== returnedData?.gear?.length - 1
+                                ? ","
+                                : ""
+                            }`}
                           </CustomText>
                         ))}
                     </View>

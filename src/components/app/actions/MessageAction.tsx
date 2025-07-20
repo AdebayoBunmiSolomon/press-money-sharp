@@ -3,7 +3,7 @@ import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
 import { messageActionFormTypes } from "@src/form/schema/types";
 import { messageActionFormValidationSchema } from "@src/form/validation/rules";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Modal, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
@@ -24,12 +24,20 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   const { SendMessage, isPending } = useSendMessage();
   const {
     control,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<messageActionFormTypes>({
     mode: "onChange",
     resolver: yupResolver(messageActionFormValidationSchema),
   });
+
+  useEffect(() => {
+    if (!isPending) {
+      onClose();
+      reset();
+    }
+  }, [isPending]);
 
   const onSubmit = (data: messageActionFormTypes) => {
     SendMessage({
