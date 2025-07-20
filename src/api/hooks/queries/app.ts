@@ -87,7 +87,7 @@ export const useGetAllServices = () => {
 
 export const useViewService = (service_uuid: string) => {
   const { data, isFetching, isError } = useQuery<apiViewServicesResponse>({
-    queryKey: ["view-service"],
+    queryKey: ["view-service", service_uuid],
     queryFn: async () => {
       const response = await viewService(service_uuid);
 
@@ -108,8 +108,10 @@ export const useViewService = (service_uuid: string) => {
 
       return []; // fallback
     },
+    enabled: !!service_uuid,
     retry: true,
     refetchOnReconnect: true,
+    refetchOnMount: true,
   });
 
   return {

@@ -1,10 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  CustomButton,
-  CustomInput,
-  CustomPhoneInput,
-  CustomText,
-} from "@src/components/shared";
+import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
 import { messageActionFormTypes } from "@src/form/schema/types";
 import { messageActionFormValidationSchema } from "@src/form/validation/rules";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
@@ -13,16 +8,20 @@ import { Controller, useForm } from "react-hook-form";
 import { Modal, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
+import { useSendMessage } from "@src/api/hooks/mutation/app";
 
 interface IMessageActionProps {
   visible: boolean;
   onClose: () => void;
+  service_uuid: string;
 }
 
 export const MessageAction: React.FC<IMessageActionProps> = ({
   visible,
   onClose,
+  service_uuid,
 }) => {
+  const { SendMessage, isPending } = useSendMessage();
   const {
     control,
     handleSubmit,
@@ -33,10 +32,10 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   });
 
   const onSubmit = (data: messageActionFormTypes) => {
-    if (data) {
-      console.log(data);
-      onClose();
-    }
+    SendMessage({
+      message: data?.message,
+      service: service_uuid,
+    });
   };
   return (
     <View>
@@ -57,54 +56,20 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
               control={control}
               render={({ field }) => (
                 <CustomInput
-                  title='Name'
+                  title='Message'
                   value={field.value}
                   onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                  error={errors?.name?.message}
+                  error={errors?.message?.message}
                   type='custom'
-                  placeholder='Your name'
-                  placeHolderTextColor={"#BDBDBD"}
-                  keyboardType='default'
-                  showErrorText
-                  style={styles.input}
-                />
-              )}
-              name='name'
-              defaultValue=''
-            />
-            <Controller
-              control={control}
-              render={({ field }) => (
-                <CustomInput
-                  title='Email'
-                  value={field.value}
-                  onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                  error={errors?.email?.message}
-                  type='custom'
-                  placeholder='Your email'
+                  placeholder='Your message'
                   placeHolderTextColor={"#BDBDBD"}
                   keyboardType='email-address'
                   showErrorText
+                  multiLine
                   style={styles.input}
                 />
               )}
-              name='email'
-              defaultValue=''
-            />
-            <Controller
-              control={control}
-              render={({ field }) => (
-                <CustomPhoneInput
-                  title='Phone'
-                  value={field.value}
-                  onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                  error={errors?.phone?.message}
-                  placeholder='0800 000 0000'
-                  showErrorText
-                  style={styles.input}
-                />
-              )}
-              name='phone'
+              name='message'
               defaultValue=''
             />
             <View style={styles.actionBtnContainer}>
@@ -123,6 +88,7 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
                     name='message'
                   />
                 }
+                isLoading={isPending}
               />
               <CustomButton
                 title='Cancel'

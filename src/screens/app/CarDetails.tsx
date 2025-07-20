@@ -1,10 +1,15 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Screen } from "../Screen";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RootStackScreenProps } from "@src/router/types";
 import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
-import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
+import {
+  DVH,
+  DVW,
+  moderateScale,
+  screenWidth,
+} from "@src/resources/responsiveness";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Entypo, EvilIcons, FontAwesome } from "@expo/vector-icons";
 import { CustomButton, CustomText } from "@src/components/shared";
@@ -19,22 +24,39 @@ import {
 import { useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { useFocusEffect } from "@react-navigation/native";
+import { Loader } from "@src/common";
+import ReanimatedCarousel from "react-native-reanimated-carousel";
 
 export const CarDetails = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CAR_DETAILS>) => {
   const { service_uuid } = route?.params;
-  const { serviceInfo } = useViewService(service_uuid);
+  const { serviceInfo, isFetching } = useViewService(service_uuid);
   const { actionModal, setActionModal } = useActionModal();
+  const [returnedData, setReturnedData] = useState<any>(null);
+  const [currIndex, setCurrIndex] = useState<number>(0);
 
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({
-        queryKey: ["view-service", service_uuid],
+        queryKey: ["view-service", service_uuid], // ✅ Matches the queryKey now
       });
-    }, [])
+    }, [queryClient, service_uuid])
   );
+
+  const extractKeyValuePairs = (data: string) => {
+    try {
+      const parsed = JSON.parse(data!); // parsed is an object like { body: "long", ... }
+      setReturnedData(parsed); // ✅ not Object.entries — just store the object directly
+    } catch (e) {
+      setReturnedData({}); // fallback
+    }
+  };
+
+  useEffect(() => {
+    extractKeyValuePairs(serviceInfo?.description!);
+  }, [isFetching]);
 
   return (
     <>
@@ -51,126 +73,194 @@ export const CarDetails = ({
           }
           headerStyle={styles.header}
         />
-        <View style={styles.contentContainer}>
-          <CustomText type='regular' size={20} lightBlack>
-            {`${serviceInfo?.brand} ${serviceInfo?.model}`}
-          </CustomText>
-          <ScrollContainer
+        {isFetching ? (
+          <View
             style={{
-              gap: moderateScale(20),
-              paddingTop: moderateScale(10),
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
             }}>
-            <View style={styles.imgContainer}>
-              <ImageBackground
-                source={{ uri: serviceInfo?.imageUrls[0] }}
-                contentFit='cover'
-                style={styles.img}>
-                <TouchableOpacity style={styles.heartBtn}>
-                  <FontAwesome
-                    name='heart-o'
-                    size={moderateScale(15)}
-                    color={colors.red}
-                  />
-                </TouchableOpacity>
-              </ImageBackground>
-            </View>
-            {/* price, percentage off, location */}
-            <View style={styles.pricePercentLocationContainer}>
-              <View style={styles.percentPriceContainer}>
-                <CustomText size={17} type='medium' lightBlack>
-                  {formatAmountWithCommas(Number(serviceInfo?.fee))}
-                </CustomText>
-                <CustomText
-                  size={7}
-                  type='regular'
-                  red
-                  style={styles.percentText}>
-                  20% off
-                </CustomText>
-              </View>
-              <View style={styles.locationContainer}>
-                <EvilIcons
-                  name='location'
-                  size={moderateScale(16)}
-                  color={colors.black}
-                />
-                <CustomText type='regular' size={13} black>
-                  {serviceInfo?.location}
-                </CustomText>
-              </View>
-            </View>
-            {/* product info card container */}
-            <View style={styles.productInfoCardContainer}>
-              <CustomText type='medium' size={20} red>
-                Specification Summary
-              </CustomText>
-              <View style={styles.headerRule} />
-              {/* 1 */}
-              <View style={styles.subInfoContainer}>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    Mercedes Benz
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Make
-                  </CustomText>
-                </View>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    C300 4Matic
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Model
-                  </CustomText>
-                </View>
-              </View>
-              {/* 2 */}
-              <View style={styles.subInfoContainer}>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    16490 Miles
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Millage
-                  </CustomText>
-                </View>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    2008
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Year of Manufacture
-                  </CustomText>
-                </View>
-              </View>
-              {/* 3 */}
-              <View style={styles.subInfoContainer}>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    SE 4dr Sedan
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Type
-                  </CustomText>
-                </View>
-                <View style={styles.subInfoItemContainer}>
-                  <CustomText size={16} lightBlack type='medium'>
-                    Excellent Condition
-                  </CustomText>
-                  <CustomText size={13} lightGray type='medium'>
-                    Condition
-                  </CustomText>
-                </View>
-              </View>
-            </View>
-
-            <View
+            <Loader size='large' color={colors.danger} />
+          </View>
+        ) : (
+          <View style={styles.contentContainer}>
+            <CustomText type='regular' size={20} lightBlack>
+              {`${serviceInfo?.brand} ${serviceInfo?.model}`}
+            </CustomText>
+            <ScrollContainer
               style={{
-                paddingVertical: DVH(20),
-              }}
-            />
-          </ScrollContainer>
-        </View>
+                gap: moderateScale(20),
+                paddingTop: moderateScale(10),
+              }}>
+              <View style={styles.imgContainer}>
+                <ReanimatedCarousel
+                  data={serviceInfo?.image_urls}
+                  renderItem={({ item, index }) => (
+                    <ImageBackground
+                      key={index}
+                      source={{ uri: item }}
+                      contentFit='cover'
+                      style={styles.img}>
+                      <TouchableOpacity style={styles.heartBtn}>
+                        <FontAwesome
+                          name='heart-o'
+                          size={moderateScale(15)}
+                          color={colors.red}
+                        />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  )}
+                  onSnapToItem={(index) => setCurrIndex(index)}
+                  pagingEnabled={true}
+                  width={screenWidth - 30}
+                  loop={false}
+                  scrollAnimationDuration={500}
+                  autoPlay={false}
+                  autoPlayInterval={3000}
+                />
+              </View>
+              <View style={styles.carouselContainer}>
+                {serviceInfo &&
+                  serviceInfo?.image_urls &&
+                  serviceInfo?.image_urls.map((__, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        borderRadius: moderateScale(100),
+                        backgroundColor:
+                          currIndex === index ? colors.red : colors.lightGray,
+                        marginHorizontal: moderateScale(5),
+                        padding:
+                          currIndex === index
+                            ? moderateScale(7)
+                            : moderateScale(4),
+                      }}
+                    />
+                  ))}
+              </View>
+              {/* price, percentage off, location */}
+              <View style={styles.pricePercentLocationContainer}>
+                <View style={styles.percentPriceContainer}>
+                  <CustomText size={17} type='medium' lightBlack>
+                    {formatAmountWithCommas(Number(serviceInfo?.fee))}
+                  </CustomText>
+                  <CustomText
+                    size={7}
+                    type='regular'
+                    red
+                    style={styles.percentText}>
+                    20% off
+                  </CustomText>
+                </View>
+                <View style={styles.locationContainer}>
+                  <EvilIcons
+                    name='location'
+                    size={moderateScale(16)}
+                    color={colors.black}
+                  />
+                  <CustomText type='regular' size={13} black>
+                    {serviceInfo?.location ? serviceInfo?.location : "Anywhere"}
+                  </CustomText>
+                </View>
+              </View>
+              {/* product info card container */}
+              <View style={styles.productInfoCardContainer}>
+                <CustomText type='medium' size={20} red>
+                  Specification Summary
+                </CustomText>
+                <View style={styles.headerRule} />
+                {/* 1 */}
+                <View style={styles.subInfoContainer}>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      {serviceInfo?.brand}
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Make
+                    </CustomText>
+                  </View>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      {serviceInfo?.model}
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Model
+                    </CustomText>
+                  </View>
+                </View>
+                {/* 2 */}
+                <View style={styles.subInfoContainer}>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      {returnedData?.body}
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Body
+                    </CustomText>
+                  </View>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      2008
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Year of Manufacture
+                    </CustomText>
+                  </View>
+                </View>
+                {/* 3 */}
+                <View style={styles.subInfoContainer}>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      {serviceInfo?.type}
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Type
+                    </CustomText>
+                  </View>
+                  <View style={styles.subInfoItemContainer}>
+                    <CustomText size={16} lightBlack type='medium'>
+                      {returnedData?.condition}
+                    </CustomText>
+                    <CustomText size={13} lightGray type='medium'>
+                      Condition
+                    </CustomText>
+                  </View>
+                </View>
+                <View style={styles.subInfoContainer}>
+                  <View style={styles.subInfoItemContainer}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: moderateScale(5),
+                      }}>
+                      {returnedData?.gear &&
+                        returnedData?.gear?.map((i: string, index: number) => (
+                          <CustomText
+                            size={16}
+                            lightBlack
+                            type='medium'
+                            key={index}>
+                            {i}
+                          </CustomText>
+                        ))}
+                    </View>
+                    <CustomText size={13} lightGray type='medium'>
+                      Gear
+                    </CustomText>
+                  </View>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  paddingVertical: DVH(20),
+                }}
+              />
+            </ScrollContainer>
+          </View>
+        )}
+
         <View style={styles.bottomActionContainer}>
           <CustomButton
             title='Call'
@@ -251,6 +341,7 @@ export const CarDetails = ({
             messageVisible: !actionModal.messageVisible,
           })
         }
+        service_uuid={String(serviceInfo?.uuid)}
       />
       <WhatsAppAction
         visible={actionModal.whatsAppVisible}
@@ -355,5 +446,10 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     width: "30%",
+  },
+  carouselContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

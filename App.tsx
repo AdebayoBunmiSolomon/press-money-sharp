@@ -67,7 +67,7 @@ export default function App() {
               style={{
                 paddingTop:
                   Platform.OS === "ios" ? verticalScale(10) : verticalScale(40),
-                zIndex: 300,
+                zIndex: 500,
               }}
             />
           </View>
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 200,
+    zIndex: 500,
     width: "100%",
   },
 });

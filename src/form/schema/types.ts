@@ -23,9 +23,10 @@ export type passwordUpdateFormTypes = {
 };
 
 export type messageActionFormTypes = {
-  name: string;
-  email: string;
-  phone: string;
+  // name: string;
+  // email: string;
+  // phone: string;
+  message: string;
 };
 
 export type consultationFormTypes = {

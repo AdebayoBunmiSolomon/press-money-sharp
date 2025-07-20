@@ -72,7 +72,11 @@ export const Notification = ({
                   alignItems: "center",
                   paddingVertical: moderateScale(2),
                 }}
-                onPress={() => navigation.navigate(appScreenNames.CAR_DETAILS)}>
+                onPress={() =>
+                  navigation.navigate(appScreenNames.CAR_DETAILS, {
+                    service_uuid: "test",
+                  })
+                }>
                 <CustomText type='regular' size={10} red>
                   View
                 </CustomText>

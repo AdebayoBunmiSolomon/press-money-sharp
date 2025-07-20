@@ -10,15 +10,16 @@ import { StatusBar } from "expo-status-bar";
 import { CategoryList, Header } from "@src/components/app/home";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
-import { useGetCategory } from "@src/api/hooks/queries/app";
+import { useGetAllServices, useGetCategory } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
-import { products } from "@src/constants/products";
+import { Loader } from "@src/common";
 
 export const Home = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.HOME>) => {
   const [searchString, setSearchString] = useState<string>("");
   const { isFetching, categories } = useGetCategory();
+  const { allServices, isFetching: isFetchingAllService } = useGetAllServices();
   return (
     <>
       <StatusBar style='dark' />
@@ -79,12 +80,23 @@ export const Home = ({
             <CustomText type='medium' size={16} red>
               Featured
             </CustomText>
-            <ProductCard
-              title='2021 Lexus Rx350 FSPORT'
-              price='300000000'
-              location='Challenge, Ibadan'
-              image={products[0]?.image}
-            />
+            {isFetchingAllService ? (
+              <Loader size='large' color={colors.danger} />
+            ) : (
+              <ProductCard
+                title={String(
+                  allServices &&
+                    `${allServices[0]?.brand} ${allServices[0]?.model}`
+                )}
+                price={String(allServices && allServices[0]?.fee)}
+                location={String(
+                  allServices && allServices[0]?.location
+                    ? allServices[0]?.location
+                    : "Anywhere"
+                )}
+                image={String(allServices && allServices[0]?.image_urls[0])}
+              />
+            )}
           </View>
           <View
             style={{

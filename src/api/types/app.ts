@@ -7,7 +7,7 @@ export type apiGetAllServicesResponse = {
   model: string;
   fee: number;
   description: string;
-  imageUrls: string[];
+  image_urls: string[];
   status: string;
   created_at: string;
   updated_at: string;
@@ -24,10 +24,15 @@ export type apiViewServicesResponse = {
   model: string;
   fee: number;
   description: string;
-  imageUrls: string[];
+  image_urls: string[];
   status: string;
   created_at: string;
   updated_at: string;
   deleted_at: null | any;
   location: string;
+};
+
+export type apiSendMessage = {
+  message: string;
+  service: string; //service_uuid
 };

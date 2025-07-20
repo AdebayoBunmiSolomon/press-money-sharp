@@ -60,7 +60,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
               color={colors.black}
             />
             <CustomText type='regular' size={13} black>
-              {location}
+              {location ? location : "Anywhere"}
             </CustomText>
           </View>
         </View>

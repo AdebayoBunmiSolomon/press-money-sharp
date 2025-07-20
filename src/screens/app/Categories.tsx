@@ -3,7 +3,7 @@ import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -16,23 +16,47 @@ import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
-import { useCategoriesStore } from "@src/api/store/app";
+import { useAllServicesStore, useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
 import { FilterModal } from "@src/components/app/categories";
-import { useGetAllServices } from "@src/api/hooks/queries/app";
-import { apiGetAllServicesResponse } from "@src/api/types/app";
+import {
+  apiGetAllServicesResponse,
+  apiViewServicesResponse,
+} from "@src/api/types/app";
 
 export const Categories = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
-  const { allServices } = useGetAllServices();
+  const { allServices } = useAllServicesStore();
   const { categories } = useCategoriesStore();
+  const [filteredServicesData, setFilteredServicesData] = useState<
+    apiViewServicesResponse[]
+  >([]);
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[0]
   );
+
+  const getFilteredServices = () => {
+    const filteredData =
+      allServices &&
+      allServices.filter(
+        (item) =>
+          item?.category.toLowerCase() === pressedCategory?.toLowerCase()
+      );
+    if (filteredData) {
+      setFilteredServicesData(filteredData);
+    } else {
+      setFilteredServicesData([]);
+    }
+  };
+
+  useEffect(() => {
+    getFilteredServices();
+  }, [pressedCategory]);
+
   return (
     <>
       <StatusBar style='dark' />
@@ -95,33 +119,47 @@ export const Categories = ({
                 ))}
             </ScrollView>
           </View>
-          <FlatList
-            ref={flatListRef}
-            data={allServices}
-            contentContainerStyle={{
-              gap: moderateScale(15),
-              paddingBottom: DVH(25),
-            }}
-            keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
-              <ProductCard
-                title={`${item?.brand} ${item?.model}`}
-                price={String(item?.fee)}
-                location={item?.location}
-                onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS, {
-                    service_uuid: item?.uuid,
-                  })
-                }
-                image={item?.imageUrls[0]}
-              />
-            )}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            windowSize={2}
-          />
+          {filteredServicesData && filteredServicesData.length > 0 ? (
+            <FlatList
+              ref={flatListRef}
+              data={filteredServicesData}
+              contentContainerStyle={{
+                gap: moderateScale(15),
+                paddingBottom: DVH(25),
+              }}
+              keyExtractor={(__, index) => index.toString()}
+              renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
+                <ProductCard
+                  title={`${item?.brand} ${item?.model}`}
+                  price={String(item?.fee)}
+                  location={item?.location}
+                  onClickCard={() =>
+                    navigation.navigate(appScreenNames.CAR_DETAILS, {
+                      service_uuid: item?.uuid,
+                    })
+                  }
+                  image={item?.image_urls[0]}
+                />
+              )}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              maxToRenderPerBatch={2}
+              initialNumToRender={2}
+              windowSize={2}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "red",
+              }}>
+              <CustomText type='regular' size={16} lightGray>
+                No record found for {`Car ${pressedCategory}`}
+              </CustomText>
+            </View>
+          )}
           <View
             style={{
               paddingVertical: DVH(10),
