@@ -38,3 +38,5 @@ export type lisTypes = {
     toggle: boolean;
   }[];
 }[];
+
+export type settingsType = "whatsapp" | "phone" | "instagram" | "payment";

@@ -21,11 +21,13 @@ import {
   MessageAction,
   WhatsAppAction,
 } from "@src/components/app/actions";
-import { useViewService } from "@src/api/hooks/queries/app";
+import { useGetSettings, useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { useFocusEffect } from "@react-navigation/native";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
+import { settingsType } from "@src/types/types";
+import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 
 export const CarDetails = ({
   navigation,
@@ -36,14 +38,44 @@ export const CarDetails = ({
   const { actionModal, setActionModal } = useActionModal();
   const [returnedData, setReturnedData] = useState<any>(null);
   const [currIndex, setCurrIndex] = useState<number>(0);
+  const [pressedSettings, setPressedSettings] = useState<settingsType | string>(
+    ""
+  );
+  const { isFetching: isFetchingSettings, settingsData } =
+    useGetSettings(pressedSettings);
 
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({
-        queryKey: ["view-service", service_uuid], // ✅ Matches the queryKey now
+        queryKey: [appQueryKeys.VIEW_SERVICE, service_uuid], // ✅ Matches the queryKey now
       });
     }, [queryClient, service_uuid])
   );
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [appQueryKeys.GET_SETTINGS, pressedSettings], // ✅ Matches the queryKey now
+    });
+  }, [queryClient, pressedSettings]);
+
+  useEffect(() => {
+    if (pressedSettings === "whatsapp") {
+      setActionModal({
+        ...actionModal,
+        whatsAppVisible: !actionModal?.whatsAppVisible,
+      });
+    } else if (pressedSettings === "phone") {
+      setActionModal({
+        ...actionModal,
+        callVisible: !actionModal?.callVisible,
+      });
+    } else if (pressedSettings === "instagram") {
+      setActionModal({
+        ...actionModal,
+        messageVisible: !actionModal?.messageVisible,
+      });
+    }
+  }, [pressedSettings]);
 
   const extractKeyValuePairs = (data: string) => {
     try {
@@ -311,12 +343,9 @@ export const CarDetails = ({
             textSize={13}
             textType='medium'
             buttonType='Outline'
-            onPress={() =>
-              setActionModal({
-                ...actionModal,
-                whatsAppVisible: !actionModal.whatsAppVisible,
-              })
-            }
+            onPress={() => {
+              setPressedSettings("whatsapp");
+            }}
             btnStyle={styles.actionBtn}
             leftIcon={
               <FontAwesome
@@ -325,6 +354,7 @@ export const CarDetails = ({
                 color={"#25D366"}
               />
             }
+            isLoading={isFetchingSettings}
           />
         </View>
       </Screen>
@@ -349,12 +379,13 @@ export const CarDetails = ({
       />
       <WhatsAppAction
         visible={actionModal.whatsAppVisible}
-        onClose={() =>
+        onClose={() => {
           setActionModal({
             ...actionModal,
             whatsAppVisible: !actionModal.whatsAppVisible,
-          })
-        }
+          });
+          console.log(actionModal?.whatsAppVisible);
+        }}
       />
     </>
   );

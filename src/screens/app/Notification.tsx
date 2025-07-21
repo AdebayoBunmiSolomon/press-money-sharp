@@ -10,10 +10,18 @@ import { CustomText } from "@src/components/shared";
 import { Image } from "expo-image";
 import { products } from "@src/constants/products";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAuthStore } from "@src/api/store/auth";
+import { useGetUserNotifications } from "@src/api/hooks/queries/app";
 
 export const Notification = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.NOTIFICATION>) => {
+  const { userData } = useAuthStore();
+  const { isFetching, userNotifications } = useGetUserNotifications(
+    userData?.uuid,
+    userData?.token
+  );
+
   return (
     <Screen style={styles.screenContainer}>
       <Header

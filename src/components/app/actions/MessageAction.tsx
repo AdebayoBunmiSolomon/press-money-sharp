@@ -33,7 +33,7 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   });
 
   useEffect(() => {
-    if (!isPending) {
+    if (!!isPending) {
       onClose();
       reset();
     }
