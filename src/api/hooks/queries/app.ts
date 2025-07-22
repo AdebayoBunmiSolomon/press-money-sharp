@@ -4,17 +4,20 @@ import {
   getCategory,
   getSettings,
   getUserNotifications,
+  getUserWishList,
   viewService,
 } from "@src/api/services/app";
 import {
   useAllServicesStore,
   useCategoriesStore,
   useUserNotificationsStore,
+  useUserWishListStore,
 } from "@src/api/store/app";
 import {
   apiGetAllServicesResponse,
   apiGetSettingsResponse,
   apiGetUserNotificationsResponse,
+  apiGetUserWishListResponse,
   apiViewServicesResponse,
 } from "@src/api/types/app";
 import { formatApiErrorMessage } from "@src/helper/utils";
@@ -68,7 +71,8 @@ export const useGetAllServices = () => {
       const response = await getAllServices();
 
       if (response?.data?.success) {
-        const allServices = response?.data?.data || [];
+        const allServices: apiGetAllServicesResponse[] =
+          response?.data?.data || [];
         setAllServices(allServices); // ✅ Now setting correctly
         return allServices; // ✅ Return the real data
       }
@@ -113,6 +117,7 @@ export const useViewService = (service_uuid: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
+          formatApiErrorMessage(response?.data?.error) ||
           response?.error?.message ||
           "Network error. Please check your connection.",
       });
@@ -214,6 +219,55 @@ export const useGetUserNotifications = (user_uuid: string, token: string) => {
 
   return {
     userNotifications: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetUserWishList = (token: string) => {
+  const { setUserWishList } = useUserWishListStore();
+  const { data, isFetching, isError } = useQuery<apiGetUserWishListResponse[]>({
+    queryKey: [appQueryKeys.GET_USER_WISHLIST, token],
+    queryFn: async () => {
+      const response = await getUserWishList(token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const userWishListResp: apiGetUserWishListResponse[] =
+          response?.data?.data || [];
+        APIRequest.RESPONSE_HANDLER({
+          type: "flash",
+          status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+          success: response?.data?.success, //true | false
+          code: response?.data?.error?.code || "Success",
+          message: response?.data?.success
+            ? "User Wishlist fetched successfully"
+            : formatApiErrorMessage(response?.data?.error),
+        });
+        setUserWishList(userWishListResp);
+        return userWishListResp; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+
+  return {
+    userWishList: data,
     isFetching,
     isError,
   };

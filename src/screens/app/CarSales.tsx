@@ -3,7 +3,7 @@ import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -16,10 +16,11 @@ import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
-import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
-import { products } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
+import { useFilterServices } from "@src/api/hooks";
+import { apiGetAllServicesResponse } from "@src/api/types/app";
+import { useCategoriesStore } from "@src/api/store/app";
 
 export const CarSales = ({
   navigation,
@@ -27,8 +28,15 @@ export const CarSales = ({
   const flatListRef = useRef<FlatList>(null);
   const { categories } = useCategoriesStore();
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
-    categories && categories[0]
+    categories && categories[1]
   );
+  const { filteredServicesData, getFilteredServices } = useFilterServices();
+
+  useEffect(() => {
+    if (pressedCategory) {
+      getFilteredServices(pressedCategory);
+    }
+  }, [pressedCategory]);
   return (
     <>
       <StatusBar style='dark' />
@@ -43,7 +51,7 @@ export const CarSales = ({
               />
             </TouchableOpacity>
           }
-          title={"Cars for Sales"}
+          title={`Cars for ${pressedCategory}`}
           headerStyle={styles.header}
           color={colors.white}
           showSearchIcon
@@ -86,22 +94,23 @@ export const CarSales = ({
           </View>
           <FlatList
             ref={flatListRef}
-            data={products}
+            data={filteredServicesData}
             contentContainerStyle={{
               gap: moderateScale(15),
               paddingBottom: DVH(25),
             }}
             keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
               <ProductCard
-                key={index}
-                title={item?.title}
-                price={item?.price}
+                title={`${item?.brand} ${item?.model}`}
+                price={String(item?.fee)}
                 location={item?.location}
                 onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS)
+                  navigation.navigate(appScreenNames.CAR_DETAILS, {
+                    service_uuid: item?.uuid,
+                  })
                 }
-                image={item?.image}
+                image={item?.image_urls[0]}
               />
             )}
             horizontal={false}

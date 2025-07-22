@@ -2,7 +2,7 @@ import { getNetworkStatus } from "@src/helper/utils";
 import { APIRequest } from "../request";
 import { endpoint } from "../endpoint/endpoint";
 import { apiScheduleConsultation } from "../types/auth";
-import { apiSendMessage } from "../types/app";
+import { apiAddProductToWishList, apiSendMessage } from "../types/app";
 import { settingsType } from "@src/types/types";
 
 export const getCategory = async () => {
@@ -140,6 +140,53 @@ export const getUserNotifications = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     console.log("GetNotifications-Service service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const addProductToWishList = async (
+  payload: apiAddProductToWishList,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.POST(
+      endpoint.APP.addProductToWishList,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("AddProduct-ToWishList service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const getUserWishList = async (token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      `${endpoint.APP.getUserWishList}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("GetUserWishList-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };

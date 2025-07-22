@@ -5,4 +5,5 @@ export enum appQueryKeys {
   VIEW_SERVICE = "view-service",
   GET_SETTINGS = "get-settings",
   GET_USER_NOTIFICATIONS = "get-user-notifications",
+  GET_USER_WISHLIST = "get-user-wishlist",
 }

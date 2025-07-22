@@ -14,14 +14,26 @@ import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign } from "@expo/vector-icons";
-import { wishList } from "@src/constants/products";
 import { ProductCard } from "@src/common/cards";
-import { FloatActionButton } from "@src/common";
+import { FloatActionButton, Loader } from "@src/common";
+import { useAuthStore } from "@src/api/store/auth";
+import { useGetUserWishList } from "@src/api/hooks/queries/app";
+import { apiGetUserWishListResponse } from "@src/api/types/app";
+import { CustomText } from "@src/components/shared";
+import { useAllServicesStore } from "@src/api/store/app";
+import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
+import { queryClient } from "@src/helper/utils";
+import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 
 export const Wishlist = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.WISH_LIST>) => {
   const flatListRef = useRef<FlatList>(null);
+  const { userData } = useAuthStore();
+  const { userWishList, isFetching } = useGetUserWishList(userData?.token);
+  const { getServiceInfoFromAllServiceStore } =
+    useGetServiceInfoFromAllServiceStore();
+
   return (
     <>
       <StatusBar style='dark' />
@@ -41,32 +53,75 @@ export const Wishlist = ({
           color={colors.white}
         />
         <View style={styles.contentContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={wishList}
-            contentContainerStyle={{
-              gap: moderateScale(15),
-              paddingBottom: DVH(20),
-            }}
-            keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <ProductCard
-                key={index}
-                title={item?.title}
-                price={item?.price}
-                location={item?.location}
-                onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS)
-                }
-                image={item?.image}
-              />
-            )}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            windowSize={2}
-          />
+          {isFetching ? (
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Loader size='large' color={colors.red} />
+            </View>
+          ) : userWishList && userWishList.length > 0 ? (
+            <FlatList
+              refreshing={isFetching}
+              onRefresh={() => {
+                queryClient.invalidateQueries({
+                  queryKey: [appQueryKeys.GET_USER_WISHLIST, userData?.token],
+                });
+              }}
+              ref={flatListRef}
+              data={userWishList}
+              contentContainerStyle={{
+                gap: moderateScale(15),
+                paddingBottom: DVH(20),
+              }}
+              keyExtractor={(__, index) => index.toString()}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: apiGetUserWishListResponse;
+                index: number;
+              }) => {
+                const data = getServiceInfoFromAllServiceStore(
+                  item?.our_service_id
+                );
+                return (
+                  <ProductCard
+                    key={index}
+                    title={String(data?.title)}
+                    price={String(data?.price)}
+                    location={String(data?.location)}
+                    onClickCard={() =>
+                      navigation.navigate(appScreenNames.CAR_DETAILS, {
+                        service_uuid: String(data?.uuid),
+                      })
+                    }
+                    image={data?.image_url}
+                  />
+                );
+              }}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              maxToRenderPerBatch={2}
+              initialNumToRender={2}
+              windowSize={2}
+            />
+          ) : (
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <CustomText type='medium' size={14} lightGray>
+                No wishlist exists for you
+              </CustomText>
+            </View>
+          )}
         </View>
         <FloatActionButton
           onPressArrowUp={() =>

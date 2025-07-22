@@ -16,45 +16,30 @@ import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
-import { useAllServicesStore, useCategoriesStore } from "@src/api/store/app";
+import { useCategoriesStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
 import { FilterModal } from "@src/components/app/categories";
-import {
-  apiGetAllServicesResponse,
-  apiViewServicesResponse,
-} from "@src/api/types/app";
+import { apiGetAllServicesResponse } from "@src/api/types/app";
+import { useFilterServices } from "@src/api/hooks";
+import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 
 export const Categories = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
-  const { allServices } = useAllServicesStore();
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { categories } = useCategoriesStore();
-  const [filteredServicesData, setFilteredServicesData] = useState<
-    apiViewServicesResponse[]
-  >([]);
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[0]
   );
-
-  const getFilteredServices = () => {
-    const filteredData =
-      allServices &&
-      allServices.filter(
-        (item) =>
-          item?.category.toLowerCase() === pressedCategory?.toLowerCase()
-      );
-    if (filteredData) {
-      setFilteredServicesData(filteredData);
-    } else {
-      setFilteredServicesData([]);
-    }
-  };
+  const { filteredServicesData, getFilteredServices } = useFilterServices();
 
   useEffect(() => {
-    getFilteredServices();
+    if (pressedCategory) {
+      getFilteredServices(pressedCategory);
+    }
   }, [pressedCategory]);
 
   return (
@@ -139,6 +124,12 @@ export const Categories = ({
                     })
                   }
                   image={item?.image_urls[0]}
+                  onLikeProd={() =>
+                    AddProductToWishList({
+                      service_id: item?.id,
+                    })
+                  }
+                  loading={isPending}
                 />
               )}
               horizontal={false}

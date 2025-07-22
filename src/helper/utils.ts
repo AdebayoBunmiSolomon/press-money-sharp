@@ -111,3 +111,35 @@ export const formatAmountWithCommas = (amount: number) => {
   let formattedAmt = amtStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedAmt;
 };
+
+export const extractTextFromHtml = (htmlText: string): string => {
+  // Remove all HTML tags
+  const withoutTags = htmlText.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Decode basic HTML entities (optional step)
+  const text = withoutTags
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+
+  // Trim and normalize spaces
+  return text.replace(/\s+/g, " ").trim();
+};
+
+/**
+ * truncates text by default to length of 10 characters or by length of choice.
+ * @param text
+ * @param length
+ * @returns
+ */
+
+export const truncateText = (text: string, length?: number) => {
+  if (text.length > Number(length)) {
+    return text.substring(0, length).trim() + "...";
+  } else {
+    return text.substring(0, 10).trim() + "...";
+  }
+};

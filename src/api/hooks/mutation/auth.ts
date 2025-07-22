@@ -38,7 +38,7 @@ export const useLogin = () => {
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
         message: response?.data?.success
-          ? "Login successful"
+          ? "Login successful. Welcome to PressMoneySharp"
           : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {

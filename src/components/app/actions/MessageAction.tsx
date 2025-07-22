@@ -34,7 +34,7 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
 
   useEffect(() => {
     if (!!isPending) {
-      onClose();
+      // onClose();
       reset();
     }
   }, [isPending]);
@@ -97,6 +97,7 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
                   />
                 }
                 isLoading={isPending}
+                loaderColor={colors.white}
               />
               <CustomButton
                 title='Cancel'

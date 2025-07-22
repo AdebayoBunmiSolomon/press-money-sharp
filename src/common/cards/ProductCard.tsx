@@ -5,12 +5,14 @@ import { ImageBackground } from "expo-image";
 import React from "react";
 import {
   ImageSourcePropType,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import { FontAwesome, EvilIcons } from "@expo/vector-icons";
 import { formatAmountWithCommas } from "@src/helper/utils";
+import { Loader } from "../Loader";
 
 interface IProductCardProps {
   title: string;
@@ -19,6 +21,8 @@ interface IProductCardProps {
   image?: ImageSourcePropType | string;
   onClickCard?: () => void;
   onLikeProd?: () => void;
+  loading?: boolean;
+  loaderColor?: string;
 }
 
 export const ProductCard: React.FC<IProductCardProps> = ({
@@ -28,6 +32,8 @@ export const ProductCard: React.FC<IProductCardProps> = ({
   image,
   onClickCard,
   onLikeProd,
+  loaderColor,
+  loading,
 }) => {
   return (
     <View>
@@ -38,11 +44,17 @@ export const ProductCard: React.FC<IProductCardProps> = ({
         <View style={styles.imgContainer}>
           <ImageBackground source={image} contentFit='cover' style={styles.img}>
             <TouchableOpacity style={styles.heartBtn} onPress={onLikeProd}>
-              <FontAwesome
-                name='heart-o'
-                size={moderateScale(15)}
-                color={colors.red}
-              />
+              {loading ? (
+                <View style={{ flex: 1 }}>
+                  <Loader size='small' color={loaderColor || colors.red} />
+                </View>
+              ) : (
+                <FontAwesome
+                  name='heart-o'
+                  size={moderateScale(15)}
+                  color={colors.red}
+                />
+              )}
             </TouchableOpacity>
           </ImageBackground>
         </View>
@@ -95,8 +107,12 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGray,
   },
   heartBtn: {
-    padding: moderateScale(10),
     backgroundColor: colors.white,
+    width: Platform.OS === "ios" ? DVW(11) : DVW(10),
+    height: DVH(5),
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
     borderRadius: moderateScale(100),
   },
   infoContainer: {

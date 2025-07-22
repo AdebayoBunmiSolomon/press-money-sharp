@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     paddingTop:
       Platform?.OS === "android" ? moderateScale(50) : moderateScale(50),
     paddingHorizontal: moderateScale(12),
-    paddingBottom: moderateScale(30),
+    paddingBottom: moderateScale(10),
   },
   contentContainer: {
     paddingHorizontal: moderateScale(15),

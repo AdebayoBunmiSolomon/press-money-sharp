@@ -15,5 +15,7 @@ export const endpoint = {
     sendMessage: "/admin/chats",
     getSettings: "/settings",
     getUserNotifications: "/notifications/user", //pass the user uuid
+    addProductToWishList: "/wishlists",
+    getUserWishList: "/wishlists/mywish",
   },
 };
