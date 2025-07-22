@@ -21,6 +21,8 @@ import { FloatActionButton } from "@src/common";
 import { useFilterServices } from "@src/api/hooks";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
 import { useCategoriesStore } from "@src/api/store/app";
+import { useLikedServicesIdCache } from "@src/cache";
+import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 
 export const CarSales = ({
   navigation,
@@ -31,6 +33,8 @@ export const CarSales = ({
     categories && categories[1]
   );
   const { filteredServicesData, getFilteredServices } = useFilterServices();
+  const { likedServiceId } = useLikedServicesIdCache();
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
 
   useEffect(() => {
     if (pressedCategory) {
@@ -100,19 +104,34 @@ export const CarSales = ({
               paddingBottom: DVH(25),
             }}
             keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
-              <ProductCard
-                title={`${item?.brand} ${item?.model}`}
-                price={String(item?.fee)}
-                location={item?.location}
-                onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS, {
-                    service_uuid: item?.uuid,
-                  })
-                }
-                image={item?.image_urls[0]}
-              />
-            )}
+            renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
+              const isLiked =
+                likedServiceId && likedServiceId.some((id) => id === item?.id);
+              return (
+                <ProductCard
+                  title={`${item?.brand} ${item?.model}`}
+                  price={String(item?.fee)}
+                  location={item?.location}
+                  onClickCard={() =>
+                    navigation.navigate(appScreenNames.CAR_DETAILS, {
+                      service_uuid: item?.uuid,
+                    })
+                  }
+                  image={item?.image_urls[0]}
+                  onLikeProd={() => {
+                    if (!isLiked) {
+                      AddProductToWishList({
+                        service_id: item?.id,
+                      });
+                    } else {
+                      //write the delete from wishlist functionality
+                    }
+                  }}
+                  liked={isLiked}
+                  loading={isPending}
+                />
+              );
+            }}
             horizontal={false}
             showsVerticalScrollIndicator={false}
             maxToRenderPerBatch={2}

@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import { useGetAllServices, useGetCategory } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 import { Loader } from "@src/common";
+import { useLikedServicesIdCache } from "@src/cache";
 
 export const Home = ({
   navigation,
@@ -20,6 +21,7 @@ export const Home = ({
   const [searchString, setSearchString] = useState<string>("");
   const { isFetching, categories } = useGetCategory();
   const { allServices, isFetching: isFetchingAllService } = useGetAllServices();
+  const { likedServiceId } = useLikedServicesIdCache();
   return (
     <>
       <StatusBar style='dark' />

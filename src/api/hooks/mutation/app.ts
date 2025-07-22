@@ -13,6 +13,8 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { RootStackParamList } from "@src/router/types";
 import { useMutation } from "@tanstack/react-query";
 import { appQueryKeys } from "../queries/query-key";
+import { useLikedServicesIdCache } from "@src/cache";
+import { useLikedServiceId } from "../likedService";
 
 export const useScheduleConsultation = () => {
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -100,6 +102,7 @@ export const useSendMessage = () => {
 };
 
 export const useAddProductToWishList = () => {
+  const { likeUnlikeService } = useLikedServiceId();
   const { userData } = useAuthStore();
   const {
     data,
@@ -109,7 +112,8 @@ export const useAddProductToWishList = () => {
   } = useMutation({
     mutationFn: (payload: apiAddProductToWishList) =>
       addProductToWishList(payload, userData?.token),
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
+      const { service_id } = variables;
       APIRequest.RESPONSE_HANDLER({
         type: "flash",
         status: response?.data?.success ? 200 : 401, //200 | 401 | 500
@@ -124,6 +128,9 @@ export const useAddProductToWishList = () => {
         queryClient.invalidateQueries({
           queryKey: [appQueryKeys.GET_USER_WISHLIST, userData?.token],
         });
+        if (service_id) {
+          likeUnlikeService(service_id);
+        }
       }
     },
     onError: (error) => {

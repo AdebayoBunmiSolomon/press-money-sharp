@@ -23,6 +23,7 @@ import { FilterModal } from "@src/components/app/categories";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
 import { useFilterServices } from "@src/api/hooks";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import { useLikedServicesIdCache } from "@src/cache";
 
 export const Categories = ({
   navigation,
@@ -30,6 +31,7 @@ export const Categories = ({
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[0]
@@ -113,25 +115,35 @@ export const Categories = ({
                 paddingBottom: DVH(25),
               }}
               keyExtractor={(__, index) => index.toString()}
-              renderItem={({ item }: { item: apiGetAllServicesResponse }) => (
-                <ProductCard
-                  title={`${item?.brand} ${item?.model}`}
-                  price={String(item?.fee)}
-                  location={item?.location}
-                  onClickCard={() =>
-                    navigation.navigate(appScreenNames.CAR_DETAILS, {
-                      service_uuid: item?.uuid,
-                    })
-                  }
-                  image={item?.image_urls[0]}
-                  onLikeProd={() =>
-                    AddProductToWishList({
-                      service_id: item?.id,
-                    })
-                  }
-                  loading={isPending}
-                />
-              )}
+              renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
+                const isLiked =
+                  likedServiceId &&
+                  likedServiceId.some((id) => id === item?.id);
+                return (
+                  <ProductCard
+                    title={`${item?.brand} ${item?.model}`}
+                    price={String(item?.fee)}
+                    location={item?.location}
+                    onClickCard={() =>
+                      navigation.navigate(appScreenNames.CAR_DETAILS, {
+                        service_uuid: item?.uuid,
+                      })
+                    }
+                    image={item?.image_urls[0]}
+                    onLikeProd={() => {
+                      if (!isLiked) {
+                        AddProductToWishList({
+                          service_id: item?.id,
+                        });
+                      } else {
+                        //write the delete from wishlist functionality
+                      }
+                    }}
+                    loading={isPending}
+                    liked={isLiked}
+                  />
+                );
+              }}
               horizontal={false}
               showsVerticalScrollIndicator={false}
               maxToRenderPerBatch={2}

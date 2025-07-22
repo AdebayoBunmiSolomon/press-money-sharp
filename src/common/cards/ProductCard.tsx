@@ -23,6 +23,7 @@ interface IProductCardProps {
   onLikeProd?: () => void;
   loading?: boolean;
   loaderColor?: string;
+  liked?: boolean;
 }
 
 export const ProductCard: React.FC<IProductCardProps> = ({
@@ -34,6 +35,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
   onLikeProd,
   loaderColor,
   loading,
+  liked,
 }) => {
   return (
     <View>
@@ -50,7 +52,7 @@ export const ProductCard: React.FC<IProductCardProps> = ({
                 </View>
               ) : (
                 <FontAwesome
-                  name='heart-o'
+                  name={liked ? "heart" : "heart-o"}
                   size={moderateScale(15)}
                   color={colors.red}
                 />

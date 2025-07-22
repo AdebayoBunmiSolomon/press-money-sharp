@@ -20,10 +20,11 @@ import { useAuthStore } from "@src/api/store/auth";
 import { useGetUserWishList } from "@src/api/hooks/queries/app";
 import { apiGetUserWishListResponse } from "@src/api/types/app";
 import { CustomText } from "@src/components/shared";
-import { useAllServicesStore } from "@src/api/store/app";
 import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+import { useLikedServicesIdCache } from "@src/cache";
+import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 
 export const Wishlist = ({
   navigation,
@@ -33,6 +34,8 @@ export const Wishlist = ({
   const { userWishList, isFetching } = useGetUserWishList(userData?.token);
   const { getServiceInfoFromAllServiceStore } =
     useGetServiceInfoFromAllServiceStore();
+  const { likedServiceId } = useLikedServicesIdCache();
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
 
   return (
     <>
@@ -88,6 +91,9 @@ export const Wishlist = ({
                 const data = getServiceInfoFromAllServiceStore(
                   item?.our_service_id
                 );
+                const isLiked =
+                  likedServiceId &&
+                  likedServiceId.some((id) => id === item?.our_service_id);
                 return (
                   <ProductCard
                     key={index}
@@ -100,6 +106,17 @@ export const Wishlist = ({
                       })
                     }
                     image={data?.image_url}
+                    onLikeProd={() => {
+                      if (!isLiked) {
+                        AddProductToWishList({
+                          service_id: item?.id,
+                        });
+                      } else {
+                        //write the delete from wishlist functionality
+                      }
+                    }}
+                    liked={isLiked}
+                    loading={isPending}
                   />
                 );
               }}
