@@ -13,11 +13,15 @@ import { Image } from "expo-image";
 import {
   useGetAllServices,
   useGetCategory,
+  useGetUserRecentlyViewed,
   useGetUserWishList,
 } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 import { Loader } from "@src/common";
-import { useLikedServicesIdCache } from "@src/cache";
+import {
+  useLikedServicesIdCache,
+  useRecentlyViewedServicesIdCache,
+} from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
 
 export const Home = ({
@@ -32,6 +36,12 @@ export const Home = ({
   const { isFetching: isWishListFetching, userWishList } = useGetUserWishList(
     userData?.token
   );
+  const { userRecentlyViewed, isFetching: isRecentViewFetching } =
+    useGetUserRecentlyViewed(userData?.token);
+  const {
+    addRecentlyViewedServiceIdToCache,
+    clearRecentlyViewedServiceIdFromCache,
+  } = useRecentlyViewedServicesIdCache();
 
   //on mount of application, save user's wishlist id to device cache
   useEffect(() => {
@@ -46,8 +56,23 @@ export const Home = ({
     addWishListToCache();
   }, [isWishListFetching, userWishList]);
 
+  //on mount of application, save user's recently-view id to device cache
+  useEffect(() => {
+    const addRecentlyViewToCache = () => {
+      if (!isRecentViewFetching && userRecentlyViewed) {
+        const ids =
+          userRecentlyViewed && userRecentlyViewed.map((i) => i.our_service_id);
+        if (ids) {
+          addRecentlyViewedServiceIdToCache(ids);
+        }
+      }
+    };
+    addRecentlyViewToCache();
+  }, [isRecentViewFetching, userRecentlyViewed]);
+
   useEffect(() => {
     clearLikedServiceIdFromCache();
+    clearRecentlyViewedServiceIdFromCache();
   }, []);
 
   return (

@@ -113,3 +113,22 @@ export type apiGetUserWishListResponse = {
   updated_at: string;
   service: null;
 };
+
+export type apiAddProductToRecentlyViewed = {
+  service_id: number;
+};
+
+export type apiGetUserRecentlyViewedResponse = {
+  id: number;
+  uuid: string;
+  user_id: number;
+  our_service_id: number;
+  created_at: string;
+  updated_at: string;
+  service: null;
+};
+
+export type apiDeleteFromRecentlyViewed = {
+  recentlyViewed_uuid: string;
+  service_id: number;
+};

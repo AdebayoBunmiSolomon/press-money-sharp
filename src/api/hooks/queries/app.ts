@@ -4,12 +4,14 @@ import {
   getCategory,
   getSettings,
   getUserNotifications,
+  getUserRecentlyViewed,
   getUserWishList,
   viewService,
 } from "@src/api/services/app";
 import {
   useAllServicesStore,
   useCategoriesStore,
+  useRecentlyViewedStore,
   useUserNotificationsStore,
   useUserWishListStore,
 } from "@src/api/store/app";
@@ -17,6 +19,7 @@ import {
   apiGetAllServicesResponse,
   apiGetSettingsResponse,
   apiGetUserNotificationsResponse,
+  apiGetUserRecentlyViewedResponse,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
 } from "@src/api/types/app";
@@ -268,6 +271,48 @@ export const useGetUserWishList = (token: string) => {
 
   return {
     userWishList: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetUserRecentlyViewed = (token: string) => {
+  const { setUserRecentlyViewed } = useRecentlyViewedStore();
+  const { data, isFetching, isError } = useQuery<
+    apiGetUserRecentlyViewedResponse[]
+  >({
+    queryKey: [appQueryKeys.GET_RECENTLY_VIEWED, token],
+    queryFn: async () => {
+      const response = await getUserRecentlyViewed(token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const userRecentlyViewedResp: apiGetUserRecentlyViewedResponse[] =
+          response?.data?.data || [];
+        setUserRecentlyViewed(userRecentlyViewedResp);
+        return userRecentlyViewedResp; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+
+  return {
+    userRecentlyViewed: data,
     isFetching,
     isError,
   };

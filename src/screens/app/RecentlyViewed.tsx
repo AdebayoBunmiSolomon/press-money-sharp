@@ -10,18 +10,40 @@ import {
 import { RootStackScreenProps } from "@src/router/types";
 import { appScreenNames } from "@src/navigation";
 import { DVH, moderateScale } from "@src/resources/responsiveness";
-import { CustomButton } from "@src/components/shared";
+import { CustomButton, CustomText } from "@src/components/shared";
 import { colors } from "@src/resources/color/color";
 import { AntDesign } from "@expo/vector-icons";
 import { Header } from "@src/components/app/home";
 import { ProductCard } from "@src/common/cards";
-import { FloatActionButton } from "@src/common";
-import { wishList } from "@src/constants/products";
+import { FloatActionButton, Loader } from "@src/common";
+import { useGetUserRecentlyViewed } from "@src/api/hooks/queries/app";
+import { useAuthStore } from "@src/api/store/auth";
+import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
+import { queryClient } from "@src/helper/utils";
+import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+import { apiGetUserRecentlyViewedResponse } from "@src/api/types/app";
+import { useRecentlyViewedServicesIdCache } from "@src/cache";
+import {
+  useAddProductToRecentlyViewed,
+  useDeleteRecentlyViewed,
+} from "@src/api/hooks/mutation/app";
 
 export const RecentlyViewed = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.RECENTLY_VIEWED>) => {
   const flatListRef = useRef<FlatList>(null);
+  const { userData } = useAuthStore();
+  const { userRecentlyViewed, isFetching } = useGetUserRecentlyViewed(
+    userData?.token
+  );
+  const { DeleteFromRecentlyViewed, isPending: isDeleting } =
+    useDeleteRecentlyViewed();
+  const { getServiceInfoFromAllServiceStore } =
+    useGetServiceInfoFromAllServiceStore();
+  const { recentlyViewedServiceId } = useRecentlyViewedServicesIdCache();
+  const { AddProductToRecentlyViewed, isPending } =
+    useAddProductToRecentlyViewed();
+
   return (
     <Screen style={styles.screenContainer} bgColor={colors.white}>
       <Header
@@ -40,32 +62,100 @@ export const RecentlyViewed = ({
         showSearchIcon
       />
       <View style={styles.contentContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={wishList}
-          contentContainerStyle={{
-            gap: moderateScale(15),
-            paddingBottom: DVH(40),
-          }}
-          keyExtractor={(__, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <ProductCard
-              key={index}
-              title={item?.title}
-              price={item?.price}
-              location={item?.location}
-              onClickCard={() =>
-                navigation.navigate(appScreenNames.CAR_DETAILS)
-              }
-              image={item?.image}
-            />
-          )}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          maxToRenderPerBatch={2}
-          initialNumToRender={2}
-          windowSize={2}
-        />
+        {isFetching ? (
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <Loader size='large' color={colors.red} />
+          </View>
+        ) : userRecentlyViewed && userRecentlyViewed.length > 0 ? (
+          <FlatList
+            refreshing={isFetching}
+            onRefresh={() => {
+              queryClient.invalidateQueries({
+                queryKey: [appQueryKeys.GET_RECENTLY_VIEWED, userData?.token],
+              });
+            }}
+            ref={flatListRef}
+            data={userRecentlyViewed}
+            contentContainerStyle={{
+              gap: moderateScale(15),
+              paddingBottom: DVH(20),
+            }}
+            keyExtractor={(__, index) => index.toString()}
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: apiGetUserRecentlyViewedResponse;
+              index: number;
+            }) => {
+              const data = getServiceInfoFromAllServiceStore(
+                item?.our_service_id
+              );
+              const isLiked =
+                recentlyViewedServiceId &&
+                recentlyViewedServiceId.some(
+                  (id) => id === item?.our_service_id
+                );
+              return (
+                <ProductCard
+                  key={index}
+                  title={String(data?.title)}
+                  price={String(data?.price)}
+                  location={String(data?.location)}
+                  onClickCard={() =>
+                    navigation.navigate(appScreenNames.CAR_DETAILS, {
+                      service_uuid: String(data?.uuid),
+                    })
+                  }
+                  image={data?.image_url}
+                  onLikeProd={() => {
+                    if (!isLiked) {
+                      AddProductToRecentlyViewed({
+                        service_id: item?.id,
+                      });
+                    } else {
+                      DeleteFromRecentlyViewed({
+                        service_id: item?.our_service_id,
+                        recentlyViewed_uuid: item?.uuid,
+                      });
+                    }
+                  }}
+                  liked={isLiked}
+                  loading={isPending || isDeleting}
+                />
+              );
+            }}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            maxToRenderPerBatch={2}
+            initialNumToRender={2}
+            windowSize={2}
+          />
+        ) : (
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <CustomText
+              type='medium'
+              size={14}
+              lightGray
+              style={{
+                textAlign: "center",
+              }}>
+              No recently viewed service{"\n"}available for you
+            </CustomText>
+          </View>
+        )}
       </View>
       <View style={styles.floatActionContainer}>
         <FloatActionButton

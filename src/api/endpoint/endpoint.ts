@@ -18,5 +18,8 @@ export const endpoint = {
     addProductToWishList: "/wishlists",
     getUserWishList: "/wishlists/mywish",
     deleteUserWishList: "/wishlists", //pass the wishlist uuid -> /wishlist/{uuid}/remove
+    addProductToRecentlyViewed: "/recent-views",
+    getUserRecentlyViewed: "/recent-views/myviews",
+    deleteUserRecentlyViewed: "/recent-views", //pass the wishlist uuid -> /recent-views/{uuid}
   },
 };

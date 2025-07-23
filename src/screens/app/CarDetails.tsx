@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Screen } from "../Screen";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RootStackScreenProps } from "@src/router/types";
@@ -21,13 +21,12 @@ import {
   MessageAction,
   WhatsAppAction,
 } from "@src/components/app/actions";
-import { useGetSettings, useViewService } from "@src/api/hooks/queries/app";
+import { useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
-import { useFocusEffect } from "@react-navigation/native";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
-import { settingsType } from "@src/types/types";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+import { useAddProductToRecentlyViewed } from "@src/api/hooks/mutation/app";
 
 export const CarDetails = ({
   navigation,
@@ -35,47 +34,25 @@ export const CarDetails = ({
 }: RootStackScreenProps<appScreenNames.CAR_DETAILS>) => {
   const { service_uuid } = route?.params;
   const { serviceInfo, isFetching } = useViewService(service_uuid);
+  const { AddProductToRecentlyViewed } = useAddProductToRecentlyViewed();
   const { actionModal, setActionModal } = useActionModal();
   const [returnedData, setReturnedData] = useState<any>(null);
   const [currIndex, setCurrIndex] = useState<number>(0);
-  const [pressedSettings, setPressedSettings] = useState<settingsType | string>(
-    ""
-  );
-  const { isFetching: isFetchingSettings, settingsData } =
-    useGetSettings(pressedSettings);
-
-  useFocusEffect(
-    useCallback(() => {
-      queryClient.invalidateQueries({
-        queryKey: [appQueryKeys.VIEW_SERVICE, service_uuid], // ✅ Matches the queryKey now
-      });
-    }, [queryClient, service_uuid])
-  );
 
   useEffect(() => {
     queryClient.invalidateQueries({
-      queryKey: [appQueryKeys.GET_SETTINGS, pressedSettings], // ✅ Matches the queryKey now
+      queryKey: [appQueryKeys.VIEW_SERVICE, service_uuid], // ✅ Matches the queryKey now
     });
-  }, [queryClient, pressedSettings]);
+  }, [queryClient, service_uuid]);
 
+  //save products or service to recently viewed
   useEffect(() => {
-    if (pressedSettings === "whatsapp") {
-      setActionModal({
-        ...actionModal,
-        whatsAppVisible: !actionModal?.whatsAppVisible,
-      });
-    } else if (pressedSettings === "phone") {
-      setActionModal({
-        ...actionModal,
-        callVisible: !actionModal?.callVisible,
-      });
-    } else if (pressedSettings === "instagram") {
-      setActionModal({
-        ...actionModal,
-        messageVisible: !actionModal?.messageVisible,
+    if (serviceInfo && !isFetching) {
+      AddProductToRecentlyViewed({
+        service_id: serviceInfo?.id,
       });
     }
-  }, [pressedSettings]);
+  }, [isFetching, serviceInfo]);
 
   const extractKeyValuePairs = (data: string) => {
     try {
@@ -344,7 +321,10 @@ export const CarDetails = ({
             textType='medium'
             buttonType='Outline'
             onPress={() => {
-              setPressedSettings("whatsapp");
+              setActionModal({
+                ...actionModal,
+                callVisible: !actionModal.whatsAppVisible,
+              });
             }}
             btnStyle={styles.actionBtn}
             leftIcon={
@@ -354,7 +334,7 @@ export const CarDetails = ({
                 color={"#25D366"}
               />
             }
-            isLoading={isFetchingSettings}
+            isLoading={false}
           />
         </View>
       </Screen>
@@ -384,7 +364,6 @@ export const CarDetails = ({
             ...actionModal,
             whatsAppVisible: !actionModal.whatsAppVisible,
           });
-          console.log(actionModal?.whatsAppVisible);
         }}
       />
     </>

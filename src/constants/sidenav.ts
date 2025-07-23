@@ -22,17 +22,17 @@ export const sideNav: lisTypes = [
         toggle: false,
       },
       {
-        list: "Spare Parts",
+        list: "Car/Spare Parts",
         toggle: false,
       },
       {
         list: "Consultation Services",
         toggle: false,
       },
-      {
-        list: "Dealers Deal",
-        toggle: false,
-      },
+      // {
+      //   list: "Dealers Deal",
+      //   toggle: false,
+      // },
     ],
   },
   {

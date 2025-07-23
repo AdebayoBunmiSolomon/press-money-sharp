@@ -2,7 +2,11 @@ import { getNetworkStatus } from "@src/helper/utils";
 import { APIRequest } from "../request";
 import { endpoint } from "../endpoint/endpoint";
 import { apiScheduleConsultation } from "../types/auth";
-import { apiAddProductToWishList, apiSendMessage } from "../types/app";
+import {
+  apiAddProductToRecentlyViewed,
+  apiAddProductToWishList,
+  apiSendMessage,
+} from "../types/app";
 import { settingsType } from "@src/types/types";
 
 export const getCategory = async () => {
@@ -211,6 +215,77 @@ export const deleteProductFromWishList = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     console.log("DeleteUserWishList-Service service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const addProductToRecentlyViewed = async (
+  payload: apiAddProductToRecentlyViewed,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.POST(
+      endpoint.APP.addProductToRecentlyViewed,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("AddProduct-ToRecentlyViewed service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const getUserRecentlyViewed = async (token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      `${endpoint.APP.getUserRecentlyViewed}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("GetRecentlyViewed service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const deleteProductFromRecentlyViewed = async (
+  recentlyViewedUuId: string,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.DELETE(
+      `${endpoint.APP.deleteUserRecentlyViewed}/${recentlyViewedUuId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("DeleteUserRecentlyViewed-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };

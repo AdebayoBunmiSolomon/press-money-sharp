@@ -1,14 +1,18 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { APIRequest } from "@src/api/request";
 import {
+  addProductToRecentlyViewed,
   addProductToWishList,
+  deleteProductFromRecentlyViewed,
   deleteProductFromWishList,
   scheduleConsultation,
   sendMessage,
 } from "@src/api/services/app";
 import { useAuthStore } from "@src/api/store/auth";
 import {
+  apiAddProductToRecentlyViewed,
   apiAddProductToWishList,
+  apiDeleteFromRecentlyViewed,
   apiDeleteProductFromWishlist,
   apiSendMessage,
 } from "@src/api/types/app";
@@ -18,8 +22,8 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { RootStackParamList } from "@src/router/types";
 import { useMutation } from "@tanstack/react-query";
 import { appQueryKeys } from "../queries/query-key";
-import { useLikedServicesIdCache } from "@src/cache";
 import { useLikedServiceId } from "../likedService";
+import { useRecentlyViewedServiceId } from "../recentlyServiceViewed";
 
 export const useScheduleConsultation = () => {
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -205,5 +209,101 @@ export const useDeleteProductFromWishList = () => {
     isError,
     isPending,
     DeleteProductFromWishList,
+  };
+};
+
+export const useAddProductToRecentlyViewed = () => {
+  const { likeUnlikeRecentlyViewed } = useRecentlyViewedServiceId();
+  const { userData } = useAuthStore();
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: AddProductToRecentlyViewed,
+  } = useMutation({
+    mutationFn: (payload: apiAddProductToRecentlyViewed) =>
+      addProductToRecentlyViewed(payload, userData?.token),
+    onSuccess: (response, variables) => {
+      const { service_id } = variables;
+      // ✅ Refetch the user wishlist query
+      if (response?.data?.success) {
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_RECENTLY_VIEWED, userData?.token],
+        });
+        if (service_id) {
+          likeUnlikeRecentlyViewed(service_id);
+        }
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    AddProductToRecentlyViewed,
+  };
+};
+
+export const useDeleteRecentlyViewed = () => {
+  const { likeUnlikeRecentlyViewed } = useRecentlyViewedServiceId();
+  const { userData } = useAuthStore();
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: DeleteFromRecentlyViewed,
+  } = useMutation({
+    mutationFn: (payload: apiDeleteFromRecentlyViewed) =>
+      deleteProductFromRecentlyViewed(
+        payload?.recentlyViewed_uuid,
+        userData?.token
+      ),
+    onSuccess: (response, variables) => {
+      const { service_id } = variables;
+      APIRequest.RESPONSE_HANDLER({
+        type: "flash",
+        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "Product removed from recently-viewed successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      // ✅ Refetch the user wishlist query
+      if (response?.data?.success) {
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_RECENTLY_VIEWED, userData?.token],
+        });
+        if (service_id) {
+          likeUnlikeRecentlyViewed(service_id);
+        }
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    DeleteFromRecentlyViewed,
   };
 };
