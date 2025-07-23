@@ -23,6 +23,8 @@ import { apiGetAllServicesResponse } from "@src/api/types/app";
 import { useCategoriesStore } from "@src/api/store/app";
 import { useLikedServicesIdCache } from "@src/cache";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import { ModalMessageProvider } from "@src/helper/ui-utils";
+import { useAuthStore } from "@src/api/store/auth";
 
 export const CarSales = ({
   navigation,
@@ -32,6 +34,7 @@ export const CarSales = ({
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[1]
   );
+  const { userData } = useAuthStore();
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const { likedServiceId } = useLikedServicesIdCache();
   const { AddProductToWishList, isPending } = useAddProductToWishList();
@@ -124,7 +127,11 @@ export const CarSales = ({
                         service_id: item?.id,
                       });
                     } else {
-                      //write the delete from wishlist functionality
+                      ModalMessageProvider.showModalMsg({
+                        title: `Hello ${userData?.first_name.toUpperCase()}`,
+                        description: "Go to your wishlist to remove item",
+                        msgType: "FAILED",
+                      });
                     }
                   }}
                   liked={isLiked}

@@ -53,6 +53,15 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
             style={{
               textAlign: "center",
             }}>
+            {modalData.title}
+          </CustomText>
+          <CustomText
+            size={14}
+            type='regular'
+            black
+            style={{
+              textAlign: "center",
+            }}>
             {modalData.description}
           </CustomText>
           <CustomButton

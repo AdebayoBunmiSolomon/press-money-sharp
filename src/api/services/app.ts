@@ -190,3 +190,27 @@ export const getUserWishList = async (token: string) => {
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
+
+export const deleteProductFromWishList = async (
+  wishListUuId: string,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.DELETE(
+      `${endpoint.APP.deleteUserWishList}/${wishListUuId}/remove`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("DeleteUserWishList-Service service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};

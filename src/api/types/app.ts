@@ -99,6 +99,11 @@ export type apiAddProductToWishList = {
   service_id: number;
 };
 
+export type apiDeleteProductFromWishlist = {
+  wishList_uuid: string;
+  service_id: number;
+};
+
 export type apiGetUserWishListResponse = {
   id: number;
   uuid: string;

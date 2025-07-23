@@ -236,15 +236,15 @@ export const useGetUserWishList = (token: string) => {
       ) {
         const userWishListResp: apiGetUserWishListResponse[] =
           response?.data?.data || [];
-        APIRequest.RESPONSE_HANDLER({
-          type: "flash",
-          status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-          success: response?.data?.success, //true | false
-          code: response?.data?.error?.code || "Success",
-          message: response?.data?.success
-            ? "User Wishlist fetched successfully"
-            : formatApiErrorMessage(response?.data?.error),
-        });
+        // APIRequest.RESPONSE_HANDLER({
+        //   type: "flash",
+        //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        //   success: response?.data?.success, //true | false
+        //   code: response?.data?.error?.code || "Success",
+        //   message: response?.data?.success
+        //     ? "User Wishlist fetched successfully"
+        //     : formatApiErrorMessage(response?.data?.error),
+        // });
         setUserWishList(userWishListResp);
         return userWishListResp; // ✅ Return the real data
       }

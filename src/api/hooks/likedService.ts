@@ -1,7 +1,7 @@
 import { useLikedServicesIdCache } from "@src/cache";
 
 /**
- * Hook that performs the liking and un-liking of product...
+ * Hook that performs the liking and un-liking of product from device storage...
  * @returns ids of liked services or products
  */
 export const useLikedServiceId = () => {

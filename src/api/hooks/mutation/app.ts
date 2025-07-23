@@ -2,11 +2,16 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { APIRequest } from "@src/api/request";
 import {
   addProductToWishList,
+  deleteProductFromWishList,
   scheduleConsultation,
   sendMessage,
 } from "@src/api/services/app";
 import { useAuthStore } from "@src/api/store/auth";
-import { apiAddProductToWishList, apiSendMessage } from "@src/api/types/app";
+import {
+  apiAddProductToWishList,
+  apiDeleteProductFromWishlist,
+  apiSendMessage,
+} from "@src/api/types/app";
 import { apiScheduleConsultation } from "@src/api/types/auth";
 import { formatApiErrorMessage, queryClient } from "@src/helper/utils";
 import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
@@ -149,5 +154,56 @@ export const useAddProductToWishList = () => {
     isError,
     isPending,
     AddProductToWishList,
+  };
+};
+
+export const useDeleteProductFromWishList = () => {
+  const { likeUnlikeService } = useLikedServiceId();
+  const { userData } = useAuthStore();
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: DeleteProductFromWishList,
+  } = useMutation({
+    mutationFn: (payload: apiDeleteProductFromWishlist) =>
+      deleteProductFromWishList(payload?.wishList_uuid, userData?.token),
+    onSuccess: (response, variables) => {
+      const { service_id } = variables;
+      APIRequest.RESPONSE_HANDLER({
+        type: "flash",
+        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "Product removed from wish list successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      // ✅ Refetch the user wishlist query
+      if (response?.data?.success) {
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_USER_WISHLIST, userData?.token],
+        });
+        if (service_id) {
+          likeUnlikeService(service_id);
+        }
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    DeleteProductFromWishList,
   };
 };

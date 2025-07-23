@@ -17,5 +17,6 @@ export const endpoint = {
     getUserNotifications: "/notifications/user", //pass the user uuid
     addProductToWishList: "/wishlists",
     getUserWishList: "/wishlists/mywish",
+    deleteUserWishList: "/wishlists", //pass the wishlist uuid -> /wishlist/{uuid}/remove
   },
 };

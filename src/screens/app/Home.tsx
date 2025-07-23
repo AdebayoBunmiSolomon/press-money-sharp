@@ -3,17 +3,22 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { CategoryList, Header } from "@src/components/app/home";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
-import { useGetAllServices, useGetCategory } from "@src/api/hooks/queries/app";
+import {
+  useGetAllServices,
+  useGetCategory,
+  useGetUserWishList,
+} from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 import { Loader } from "@src/common";
 import { useLikedServicesIdCache } from "@src/cache";
+import { useAuthStore } from "@src/api/store/auth";
 
 export const Home = ({
   navigation,
@@ -21,7 +26,30 @@ export const Home = ({
   const [searchString, setSearchString] = useState<string>("");
   const { isFetching, categories } = useGetCategory();
   const { allServices, isFetching: isFetchingAllService } = useGetAllServices();
-  const { likedServiceId } = useLikedServicesIdCache();
+  const { userData } = useAuthStore();
+  const { addLikedServiceIdToCache, clearLikedServiceIdFromCache } =
+    useLikedServicesIdCache();
+  const { isFetching: isWishListFetching, userWishList } = useGetUserWishList(
+    userData?.token
+  );
+
+  //on mount of application, save user's wishlist id to device cache
+  useEffect(() => {
+    const addWishListToCache = () => {
+      if (!isWishListFetching && userWishList) {
+        const ids = userWishList && userWishList.map((i) => i.our_service_id);
+        if (ids) {
+          addLikedServiceIdToCache(ids);
+        }
+      }
+    };
+    addWishListToCache();
+  }, [isWishListFetching, userWishList]);
+
+  useEffect(() => {
+    clearLikedServiceIdFromCache();
+  }, []);
+
   return (
     <>
       <StatusBar style='dark' />

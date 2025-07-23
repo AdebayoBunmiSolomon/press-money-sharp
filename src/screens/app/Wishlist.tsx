@@ -24,7 +24,10 @@ import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { useLikedServicesIdCache } from "@src/cache";
-import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import {
+  useAddProductToWishList,
+  useDeleteProductFromWishList,
+} from "@src/api/hooks/mutation/app";
 
 export const Wishlist = ({
   navigation,
@@ -36,6 +39,8 @@ export const Wishlist = ({
     useGetServiceInfoFromAllServiceStore();
   const { likedServiceId } = useLikedServicesIdCache();
   const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { DeleteProductFromWishList, isPending: isDeleting } =
+    useDeleteProductFromWishList();
 
   return (
     <>
@@ -112,11 +117,14 @@ export const Wishlist = ({
                           service_id: item?.id,
                         });
                       } else {
-                        //write the delete from wishlist functionality
+                        DeleteProductFromWishList({
+                          wishList_uuid: item?.uuid,
+                          service_id: item?.our_service_id,
+                        });
                       }
                     }}
                     liked={isLiked}
-                    loading={isPending}
+                    loading={isPending || isDeleting}
                   />
                 );
               }}
