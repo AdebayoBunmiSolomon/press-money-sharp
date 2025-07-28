@@ -1,6 +1,10 @@
 import { apiGetUserNotificationsResponse } from "@src/api/types/app";
 import { CustomText } from "@src/components/shared";
-import { extractTextFromHtml, truncateText } from "@src/helper/utils";
+import {
+  extractTextFromHtml,
+  getDateStringVal,
+  truncateText,
+} from "@src/helper/utils";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import React from "react";
@@ -58,7 +62,7 @@ export const NotificationCard: React.FC<INotificationCardProps> = ({
           justifyContent: "space-between",
         }}>
         <CustomText type='regular' size={10} lightBlack>
-          {data?.notifiable?.created_at}
+          {getDateStringVal(data?.notifiable?.created_at)}
         </CustomText>
         <TouchableOpacity
           style={{

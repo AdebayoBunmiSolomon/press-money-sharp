@@ -143,3 +143,31 @@ export const truncateText = (text: string, length?: number) => {
     return text.substring(0, 10).trim() + "...";
   }
 };
+
+export const getDateStringVal = (dateVal: string) => {
+  if (!dateVal || isNaN(new Date(dateVal).getTime())) {
+    return "Invalid date";
+  }
+
+  const date = new Date(dateVal + "T00:00:00");
+
+  const year = date.getFullYear();
+  const monthName = date.toLocaleString("default", { month: "long" });
+  const day = date.getDate();
+
+  const getOrdinal = (n: number): string => {
+    if (n > 3 && n < 21) return `${n}th`;
+    switch (n % 10) {
+      case 1:
+        return `${n}st`;
+      case 2:
+        return `${n}nd`;
+      case 3:
+        return `${n}rd`;
+      default:
+        return `${n}th`;
+    }
+  };
+
+  return `${getOrdinal(day)} ${monthName}, ${year}`;
+};

@@ -9,13 +9,13 @@ export const useFontLoading = () => {
     setIsFontLoadingComplete(false);
     try {
       await Fonts.loadAsync({
-        bold: require("../../../assets/fonts/ClashGrotesk-Bold.ttf"),
-        semi_bold: require("../../../assets/fonts/ClashGrotesk-Semibold.ttf"),
-        light: require("../../../assets/fonts/ClashGrotesk-Light.ttf"),
-        extra_light: require("../../../assets/fonts/ClashGrotesk-Extralight.ttf"),
-        medium: require("../../../assets/fonts/ClashGrotesk-Medium.ttf"),
-        regular: require("../../../assets/fonts/ClashGrotesk-Regular.ttf"),
-        variable: require("../../../assets/fonts/ClashGrotesk-Variable.ttf"),
+        bold: require("../../../assets/fonts/Poppins-Bold.ttf"),
+        semi_bold: require("../../../assets/fonts/Poppins-SemiBold.ttf"),
+        light: require("../../../assets/fonts/Poppins-Light.ttf"),
+        extra_light: require("../../../assets/fonts/Poppins-Light.ttf"),
+        medium: require("../../../assets/fonts/Poppins-Medium.ttf"),
+        regular: require("../../../assets/fonts/Poppins-Regular.ttf"),
+        variable: require("../../../assets/fonts/Poppins-Bold.ttf"),
       });
     } catch (error) {
       console.warn(error);

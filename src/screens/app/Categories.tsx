@@ -40,6 +40,9 @@ export const Categories = ({
   );
   const { userData } = useAuthStore();
   const { filteredServicesData, getFilteredServices } = useFilterServices();
+  const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     if (pressedCategory) {
@@ -118,7 +121,13 @@ export const Categories = ({
                 paddingBottom: DVH(25),
               }}
               keyExtractor={(__, index) => index.toString()}
-              renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: apiGetAllServicesResponse;
+                index: number;
+              }) => {
                 const isLiked =
                   likedServiceId &&
                   likedServiceId.some((id) => id === item?.id);
@@ -135,10 +144,12 @@ export const Categories = ({
                     image={item?.image_urls[0]}
                     onLikeProd={() => {
                       if (!isLiked) {
+                        setSelectedProdIndex(index);
                         AddProductToWishList({
                           service_id: item?.id,
                         });
                       } else {
+                        setSelectedProdIndex(index);
                         ModalMessageProvider.showModalMsg({
                           title: `Hello ${userData?.first_name.toUpperCase()}`,
                           description: "Go to your wishlist to remove item",
@@ -146,7 +157,7 @@ export const Categories = ({
                         });
                       }
                     }}
-                    loading={isPending}
+                    loading={selectedProdIndex === index ? isPending : false}
                     liked={isLiked}
                   />
                 );

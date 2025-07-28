@@ -74,6 +74,13 @@ export const RecentlyViewed = ({
           </View>
         ) : userRecentlyViewed && userRecentlyViewed.length > 0 ? (
           <FlatList
+            ListFooterComponent={
+              <View
+                style={{
+                  paddingVertical: DVH(5),
+                }}
+              />
+            }
             refreshing={isFetching}
             onRefresh={() => {
               queryClient.invalidateQueries({

@@ -267,6 +267,7 @@ export const useGetUserWishList = (token: string) => {
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchInterval: 60000,
   });
 
   return {
@@ -309,6 +310,7 @@ export const useGetUserRecentlyViewed = (token: string) => {
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchInterval: 60000,
   });
 
   return {

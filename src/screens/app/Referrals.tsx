@@ -22,6 +22,8 @@ import { CustomButton, CustomText } from "@src/components/shared";
 import { Image } from "expo-image";
 import { formatAmountWithCommas } from "@src/helper/utils";
 import { ReferralModal } from "@src/components/app/referrals";
+import { useAuthStore } from "@src/api/store/auth";
+import * as Clipboard from "expo-clipboard";
 
 type earningSystemType = {
   image: ImageSourcePropType;
@@ -46,8 +48,14 @@ const earningSystem: earningSystemType[] = [
 export const Referrals = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.REFERRALS>) => {
+  const { userData } = useAuthStore();
   const [showReferralHistory, setShowReferralHistory] =
     useState<boolean>(false);
+
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(userData?.referral_code);
+  };
+
   return (
     <>
       <Screen safeArea style={styles.screen}>
@@ -122,7 +130,7 @@ export const Referrals = ({
                   ))}
               </View>
               <CustomButton
-                title={`Earn #${formatAmountWithCommas(5000)}`}
+                title={`Earn to reward`}
                 red
                 textWhite
                 buttonType='Solid'
@@ -150,9 +158,10 @@ export const Referrals = ({
                 }}>
                 <View style={styles.iconTextContainer}>
                   <CustomText type='medium' size={14} lightBlack>
-                    Earlybird-990
+                    {userData?.referral_code || "N/A"}
                   </CustomText>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={async () => await copyToClipboard()}>
                     <Ionicons
                       name='copy-outline'
                       size={moderateScale(15)}

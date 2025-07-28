@@ -38,12 +38,12 @@ export const Profile = ({
           screen: appScreenNames.DEALERS_DEAL,
         });
         break;
-      case profileList[2].subMenu[4]?.list:
+      case profileList[2].subMenu[3]?.list:
         navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
           screen: appScreenNames.CONTACT_US,
         });
         break;
-      case profileList[2].subMenu[3]?.list:
+      case profileList[2].subMenu[2]?.list:
         navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
           screen: appScreenNames.REFERRALS,
         });

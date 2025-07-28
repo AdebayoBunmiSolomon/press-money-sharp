@@ -35,10 +35,10 @@ export const profileList: lisTypes = [
   {
     title: "About Us",
     subMenu: [
-      {
-        list: "Privacy Policy",
-        toggle: false,
-      },
+      // {
+      //   list: "Privacy Policy",
+      //   toggle: false,
+      // },
       {
         list: "Terms and Condition",
         toggle: false,
