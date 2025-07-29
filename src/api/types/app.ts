@@ -133,7 +133,7 @@ export type apiDeleteFromRecentlyViewed = {
   service_id: number;
 };
 
-export type apiGetUserReferralHistoryResponse = {
+type apiGetUserReferral = {
   id: number;
   uuid: string;
   first_name: string;
@@ -153,4 +153,10 @@ export type apiGetUserReferralHistoryResponse = {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+};
+
+export type apiGetUserReferralResponse = {
+  user: apiGetUserReferral | {};
+  referral_count: number;
+  referrals: [];
 };

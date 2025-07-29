@@ -23,9 +23,10 @@ import { Image } from "expo-image";
 import { ReferralModal } from "@src/components/app/referrals";
 import { useAuthStore } from "@src/api/store/auth";
 import * as Clipboard from "expo-clipboard";
-import { useGetUserReferralHistory } from "@src/api/hooks/queries/app";
+import { useGetUserReferral } from "@src/api/hooks/queries/app";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+import { showFlashMsg } from "@src/helper/ui-utils";
 
 type earningSystemType = {
   image: ImageSourcePropType;
@@ -51,17 +52,24 @@ export const Referrals = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.REFERRALS>) => {
   const { userData } = useAuthStore();
-  const { userReferralHistory } = useGetUserReferralHistory(userData?.token);
+  const { userReferral } = useGetUserReferral(userData?.token);
   const [showReferralHistory, setShowReferralHistory] =
     useState<boolean>(false);
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(userData?.referral_code);
+    const copied = await Clipboard.setStringAsync(userData?.referral_code);
+    if (copied) {
+      showFlashMsg({
+        msgType: "SUCCESS",
+        title: "Copied to clipboard",
+        description: "Referral code copied successfully!",
+      });
+    }
   };
 
   useEffect(() => {
     queryClient.invalidateQueries({
-      queryKey: [appQueryKeys.GET_USER_REFERRAL_HISTORY, userData?.token],
+      queryKey: [appQueryKeys.GET_USER_REFERRAL, userData?.token],
     });
   }, []);
 
@@ -232,7 +240,7 @@ export const Referrals = ({
       <ReferralModal
         visible={showReferralHistory}
         onClose={() => setShowReferralHistory(!showReferralHistory)}
-        data={userReferralHistory ? userReferralHistory : []}
+        data={userReferral ? userReferral : {}}
       />
     </>
   );

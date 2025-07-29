@@ -290,14 +290,36 @@ export const deleteProductFromRecentlyViewed = async (
   }
 };
 
-export const getUserReferralHistory = async (token: string) => {
+export const getUserReferral = async (token: string) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
   }
   try {
     const { data, status } = await APIRequest.GET(
-      `${endpoint.APP.getUserReferralHistory}`,
+      `${endpoint.APP.getUserReferral}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("GetReferralHistory service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const getUserReferralRewardHistory = async (token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      `${endpoint.APP.getUserReferral}`,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,

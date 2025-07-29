@@ -21,6 +21,7 @@ export const endpoint = {
     addProductToRecentlyViewed: "/recent-views",
     getUserRecentlyViewed: "/recent-views/myviews",
     deleteUserRecentlyViewed: "/recent-views", //pass the wishlist uuid -> /recent-views/{uuid}
-    getUserReferralHistory: "/referrals/myreferral",
+    getUserReferral: "/referrals/myreferral",
+    getUserReferralRewardHistory: "/referral-rewards",
   },
 };

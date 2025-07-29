@@ -1,5 +1,12 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { Modal, View, StyleSheet } from "react-native";
+import {
+  Modal,
+  View,
+  StyleSheet,
+  ImageSourcePropType,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { Image } from "expo-image";
 import { CustomButton, CustomText } from "@src/components/shared";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
@@ -9,6 +16,11 @@ export interface IModalMessageProps {
   msgType: "SUCCESS" | "ERROR" | "FAILED";
   title: string;
   description: string;
+  icon?: ImageSourcePropType;
+  btnColor?: string;
+  containerStyle?: StyleProp<ViewStyle>;
+  animationType?: "fade" | "slide" | "";
+  btnStyle?: StyleProp<ViewStyle>;
 }
 
 export interface IGlobalModalMessageRef {
@@ -21,6 +33,11 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
     msgType: "SUCCESS",
     title: "",
     description: "",
+    icon: undefined,
+    btnColor: "",
+    containerStyle: {},
+    animationType: "",
+    btnStyle: {},
   });
 
   useImperativeHandle(ref, () => ({
@@ -31,12 +48,17 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
   }));
 
   return (
-    <Modal visible={visible} transparent animationType='fade'>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={modalData?.animationType || "fade"}>
       <View style={styles.container}>
-        <View style={styles.content}>
+        <View style={[styles.content, modalData.containerStyle]}>
           <Image
             source={
-              modalData.msgType === "ERROR"
+              modalData.icon
+                ? modalData?.icon
+                : modalData.msgType === "ERROR"
                 ? require("@src/assets/png/danger.png")
                 : modalData?.msgType === "FAILED"
                 ? require("@src/assets/png/warning.png")
@@ -73,15 +95,17 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
             btnStyle={[
               styles.button,
               {
-                backgroundColor:
-                  modalData?.msgType === "SUCCESS"
-                    ? "#0C8242"
-                    : modalData?.msgType === "ERROR"
-                    ? colors.red
-                    : modalData?.msgType === "FAILED"
-                    ? "#CDDC27"
-                    : colors.danger,
+                backgroundColor: modalData?.btnColor
+                  ? modalData.btnColor
+                  : modalData?.msgType === "SUCCESS"
+                  ? "#0C8242"
+                  : modalData?.msgType === "ERROR"
+                  ? colors.red
+                  : modalData?.msgType === "FAILED"
+                  ? "#CDDC27"
+                  : colors.danger,
               },
+              modalData?.btnStyle,
             ]}
           />
         </View>

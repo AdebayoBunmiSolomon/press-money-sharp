@@ -1,5 +1,5 @@
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
-import { View } from "react-native";
+import { ImageSourcePropType, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { Image } from "expo-image";
 import { colors } from "@src/resources/color/color";
@@ -9,12 +9,16 @@ interface IShowMsgOptionsProps {
   msgType: "SUCCESS" | "FAILED" | "ERROR";
   title?: string;
   description?: string;
+  backgroundColor?: string;
+  icon?: ImageSourcePropType;
 }
 
 export const showFlashMsg = ({
   msgType,
   title,
   description,
+  backgroundColor,
+  icon,
 }: IShowMsgOptionsProps) => {
   if (msgType === "SUCCESS") {
     showMessage({
@@ -30,7 +34,7 @@ export const showFlashMsg = ({
             marginRight: moderateScale(10),
           }}>
           <Image
-            source={require("@src/assets/png/success-icon.png")}
+            source={icon || require("@src/assets/png/success-icon.png")}
             contentFit='contain'
             style={{
               width: "100%",
@@ -41,7 +45,7 @@ export const showFlashMsg = ({
       ),
       autoHide: true,
       duration: 2500,
-      backgroundColor: "#0C8242",
+      backgroundColor: backgroundColor || "#0C8242",
     });
   } else if (msgType === "ERROR") {
     showMessage({
@@ -56,40 +60,77 @@ export const showFlashMsg = ({
             borderRadius: moderateScale(10),
             marginRight: moderateScale(10),
           }}>
-          <Ionicons
-            name='close'
-            color={colors.white}
-            size={moderateScale(30)}
-          />
+          {icon ? (
+            <View
+              style={{
+                width: DVW(10),
+                height: DVH(5),
+                borderRadius: moderateScale(10),
+                marginRight: moderateScale(10),
+              }}>
+              <Image
+                source={icon}
+                contentFit='contain'
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+            </View>
+          ) : (
+            <Ionicons
+              name='close'
+              color={colors.white}
+              size={moderateScale(30)}
+            />
+          )}
         </View>
       ),
       autoHide: true,
       duration: 2500,
-      backgroundColor: colors.danger,
+      backgroundColor: backgroundColor || colors.danger,
     });
   } else if (msgType === "FAILED") {
     showMessage({
       message: title || "Error",
       description: description || "An error occurred while processing request",
       type: "warning",
-      icon: () => (
-        <View
-          style={{
-            width: DVW(10),
-            height: DVH(5),
-            borderRadius: moderateScale(10),
-            marginRight: moderateScale(10),
-          }}>
-          <AntDesign
-            name='questioncircle'
-            color={colors.white}
-            size={moderateScale(30)}
-          />
-        </View>
-      ),
+      icon: () =>
+        icon ? (
+          <View
+            style={{
+              width: DVW(10),
+              height: DVH(5),
+              borderRadius: moderateScale(10),
+              marginRight: moderateScale(10),
+            }}>
+            <Image
+              source={icon}
+              contentFit='contain'
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              width: DVW(10),
+              height: DVH(5),
+              borderRadius: moderateScale(10),
+              marginRight: moderateScale(10),
+            }}>
+            <AntDesign
+              name='questioncircle'
+              color={colors.white}
+              size={moderateScale(30)}
+            />
+          </View>
+        ),
       autoHide: true,
       duration: 2500,
-      backgroundColor: "#CDDC27",
+      backgroundColor: backgroundColor || "#CDDC27",
     });
   }
 };

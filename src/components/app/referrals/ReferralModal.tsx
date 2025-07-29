@@ -14,19 +14,19 @@ import { EvilIcons } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { referralHistory } from "@src/constants/referral";
 import { formatAmountWithCommas } from "@src/helper/utils";
-import { apiGetUserReferralHistoryResponse } from "@src/api/types/app";
+import { apiGetUserReferralResponse } from "@src/api/types/app";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IReferralModalProps {
   visible: boolean;
   onClose: () => void;
-  data: apiGetUserReferralHistoryResponse | {};
+  data: apiGetUserReferralResponse;
 }
 
 export const ReferralModal: React.FC<IReferralModalProps> = ({
   visible,
   onClose,
-  data = [],
+  data,
 }) => {
   return (
     <View>

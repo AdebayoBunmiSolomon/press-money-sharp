@@ -5,7 +5,7 @@ import {
   getSettings,
   getUserNotifications,
   getUserRecentlyViewed,
-  getUserReferralHistory,
+  getUserReferral,
   getUserWishList,
   viewService,
 } from "@src/api/services/app";
@@ -14,7 +14,7 @@ import {
   useCategoriesStore,
   useRecentlyViewedStore,
   useUserNotificationsStore,
-  useUserReferralHistoryStore,
+  useUserReferralStore,
   useUserWishListStore,
 } from "@src/api/store/app";
 import {
@@ -22,7 +22,7 @@ import {
   apiGetSettingsResponse,
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
-  apiGetUserReferralHistoryResponse,
+  apiGetUserReferralResponse,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
 } from "@src/api/types/app";
@@ -323,22 +323,25 @@ export const useGetUserRecentlyViewed = (token: string) => {
   };
 };
 
-export const useGetUserReferralHistory = (token: string) => {
-  const { setUserReferralHistory } = useUserReferralHistoryStore();
-  const { data, isFetching, isError } = useQuery<
-    apiGetUserReferralHistoryResponse | {}
-  >({
-    queryKey: [appQueryKeys.GET_USER_REFERRAL_HISTORY, token],
+export const useGetUserReferral = (token: string) => {
+  const { setUserReferral, userReferral: userReferralStore } =
+    useUserReferralStore();
+  const { data, isFetching, isError } = useQuery<apiGetUserReferralResponse>({
+    queryKey: [appQueryKeys.GET_USER_REFERRAL, token],
     queryFn: async () => {
-      const response = await getUserReferralHistory(token);
+      const response = await getUserReferral(token);
       if (
         response?.data?.success === true ||
         response?.data?.success !== true
       ) {
-        const userReferralHistoryResp: apiGetUserReferralHistoryResponse | {} =
-          response?.data?.data?.user || {};
-        setUserReferralHistory(userReferralHistoryResp);
-        return userReferralHistoryResp; // ✅ Return the real data
+        const userReferralResp = response?.data?.data;
+        setUserReferral({
+          ...userReferralStore,
+          user: userReferralResp?.user,
+          referral_count: userReferralResp?.referral_count,
+          referrals: userReferralResp?.referrals,
+        });
+        return userReferralResp; // ✅ Return the real data
       }
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
@@ -350,17 +353,15 @@ export const useGetUserReferralHistory = (token: string) => {
           "Network error. Please check your connection.",
       });
 
-      return []; // fallback
+      return {}; // fallback
     },
     enabled: !!token,
     retry: true,
     refetchOnReconnect: true,
-    refetchOnMount: true,
-    refetchInterval: 60000,
   });
 
   return {
-    userReferralHistory: data,
+    userReferral: data,
     isFetching,
     isError,
   };
