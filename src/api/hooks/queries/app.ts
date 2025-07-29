@@ -5,6 +5,7 @@ import {
   getSettings,
   getUserNotifications,
   getUserRecentlyViewed,
+  getUserReferralHistory,
   getUserWishList,
   viewService,
 } from "@src/api/services/app";
@@ -13,6 +14,7 @@ import {
   useCategoriesStore,
   useRecentlyViewedStore,
   useUserNotificationsStore,
+  useUserReferralHistoryStore,
   useUserWishListStore,
 } from "@src/api/store/app";
 import {
@@ -20,6 +22,7 @@ import {
   apiGetSettingsResponse,
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
+  apiGetUserReferralHistoryResponse,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
 } from "@src/api/types/app";
@@ -315,6 +318,49 @@ export const useGetUserRecentlyViewed = (token: string) => {
 
   return {
     userRecentlyViewed: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetUserReferralHistory = (token: string) => {
+  const { setUserReferralHistory } = useUserReferralHistoryStore();
+  const { data, isFetching, isError } = useQuery<
+    apiGetUserReferralHistoryResponse | {}
+  >({
+    queryKey: [appQueryKeys.GET_USER_REFERRAL_HISTORY, token],
+    queryFn: async () => {
+      const response = await getUserReferralHistory(token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const userReferralHistoryResp: apiGetUserReferralHistoryResponse | {} =
+          response?.data?.data?.user || {};
+        setUserReferralHistory(userReferralHistoryResp);
+        return userReferralHistoryResp; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    refetchInterval: 60000,
+  });
+
+  return {
+    userReferralHistory: data,
     isFetching,
     isError,
   };

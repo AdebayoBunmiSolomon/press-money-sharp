@@ -132,3 +132,25 @@ export type apiDeleteFromRecentlyViewed = {
   recentlyViewed_uuid: string;
   service_id: number;
 };
+
+export type apiGetUserReferralHistoryResponse = {
+  id: number;
+  uuid: string;
+  first_name: string;
+  last_name: string;
+  referred_by: string | null;
+  referral_code: string;
+  gender: string;
+  profile_img: string;
+  email: string;
+  phone: string;
+  address: string | null;
+  dob: string;
+  email_verified_at: string;
+  login_at: string;
+  is_admin: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};

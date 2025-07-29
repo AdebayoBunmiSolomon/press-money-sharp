@@ -4,3 +4,4 @@ export * from "./settingsStore";
 export * from "./notificationsStore";
 export * from "./userWishListStore";
 export * from "./recentlyViwedStore";
+export * from "./userReferralHistoryStore";

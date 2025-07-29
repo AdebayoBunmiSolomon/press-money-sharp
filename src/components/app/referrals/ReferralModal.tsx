@@ -3,7 +3,9 @@ import { moderateScale } from "@src/resources/responsiveness";
 import React from "react";
 import {
   Modal,
+  Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -12,20 +14,24 @@ import { EvilIcons } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { referralHistory } from "@src/constants/referral";
 import { formatAmountWithCommas } from "@src/helper/utils";
+import { apiGetUserReferralHistoryResponse } from "@src/api/types/app";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IReferralModalProps {
   visible: boolean;
   onClose: () => void;
+  data: apiGetUserReferralHistoryResponse | {};
 }
 
 export const ReferralModal: React.FC<IReferralModalProps> = ({
   visible,
   onClose,
+  data = [],
 }) => {
   return (
     <View>
       <Modal visible={visible} transparent animationType='slide'>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <View style={styles.content}>
             <View style={styles.tittleContainer}>
               <CustomText type='medium' size={15} lightBlack>
@@ -69,7 +75,7 @@ export const ReferralModal: React.FC<IReferralModalProps> = ({
                 ))}
             </ScrollView>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     </View>
   );
@@ -81,7 +87,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: moderateScale(20),
+    paddingTop:
+      Platform.OS === "ios" ? moderateScale(20) : StatusBar.currentHeight,
   },
   content: {
     width: "95%",
