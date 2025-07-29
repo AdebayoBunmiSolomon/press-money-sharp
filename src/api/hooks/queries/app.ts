@@ -6,6 +6,7 @@ import {
   getUserNotifications,
   getUserRecentlyViewed,
   getUserReferral,
+  getUserReferralRewardHistory,
   getUserWishList,
   viewService,
 } from "@src/api/services/app";
@@ -14,6 +15,7 @@ import {
   useCategoriesStore,
   useRecentlyViewedStore,
   useUserNotificationsStore,
+  useUserReferralRewardHistoryStore,
   useUserReferralStore,
   useUserWishListStore,
 } from "@src/api/store/app";
@@ -23,6 +25,8 @@ import {
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
   apiGetUserReferralResponse,
+  apiGetUserReferralRewardHistoryResponse,
+  apiGetUserReferralRewardHistoryTypes,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
 } from "@src/api/types/app";
@@ -362,6 +366,46 @@ export const useGetUserReferral = (token: string) => {
 
   return {
     userReferral: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetUserReferralRewardHistory = (token: string) => {
+  const { setUserReferralRewardHistory } = useUserReferralRewardHistoryStore();
+  const { data, isFetching, isError } =
+    useQuery<apiGetUserReferralRewardHistoryResponse>({
+      queryKey: [appQueryKeys.GET_USER_REFERRAL_REWARD_HISTORY, token],
+      queryFn: async () => {
+        const response = await getUserReferralRewardHistory(token);
+        if (
+          response?.data?.success === true ||
+          response?.data?.success !== true
+        ) {
+          const userReferralRewardHistoryResp: apiGetUserReferralRewardHistoryResponse =
+            response?.data?.data;
+          setUserReferralRewardHistory(userReferralRewardHistoryResp);
+          return userReferralRewardHistoryResp; // ✅ Return the real data
+        }
+        APIRequest.RESPONSE_HANDLER({
+          type: "modal",
+          status: 500,
+          success: false,
+          code: "NETWORK ERROR",
+          message:
+            response?.error?.message ||
+            "Network error. Please check your connection.",
+        });
+
+        return []; // fallback
+      },
+      enabled: !!token,
+      retry: true,
+      refetchOnReconnect: true,
+    });
+
+  return {
+    userReferralRewardHistory: data,
     isFetching,
     isError,
   };

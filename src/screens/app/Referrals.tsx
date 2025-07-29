@@ -23,7 +23,10 @@ import { Image } from "expo-image";
 import { ReferralModal } from "@src/components/app/referrals";
 import { useAuthStore } from "@src/api/store/auth";
 import * as Clipboard from "expo-clipboard";
-import { useGetUserReferral } from "@src/api/hooks/queries/app";
+import {
+  useGetUserReferral,
+  useGetUserReferralRewardHistory,
+} from "@src/api/hooks/queries/app";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { showFlashMsg } from "@src/helper/ui-utils";
@@ -52,6 +55,9 @@ export const Referrals = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.REFERRALS>) => {
   const { userData } = useAuthStore();
+  const { userReferralRewardHistory } = useGetUserReferralRewardHistory(
+    userData?.token
+  );
   const { userReferral } = useGetUserReferral(userData?.token);
   const [showReferralHistory, setShowReferralHistory] =
     useState<boolean>(false);
@@ -70,6 +76,12 @@ export const Referrals = ({
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: [appQueryKeys.GET_USER_REFERRAL, userData?.token],
+    });
+    queryClient.invalidateQueries({
+      queryKey: [
+        appQueryKeys.GET_USER_REFERRAL_REWARD_HISTORY,
+        userData?.token,
+      ],
     });
   }, []);
 

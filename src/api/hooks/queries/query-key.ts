@@ -8,4 +8,5 @@ export enum appQueryKeys {
   GET_USER_WISHLIST = "get-user-wishlist",
   GET_RECENTLY_VIEWED = "get-recently-viewed",
   GET_USER_REFERRAL = "get-user-referral",
+  GET_USER_REFERRAL_REWARD_HISTORY = "get-user-referral-reward-history",
 }

@@ -160,3 +160,15 @@ export type apiGetUserReferralResponse = {
   referral_count: number;
   referrals: [];
 };
+
+export type apiGetUserReferralRewardHistoryTypes = {
+  sort: "";
+  search: "";
+  is_claimed: boolean;
+  range: {
+    from: string;
+    to: string;
+  };
+};
+
+export type apiGetUserReferralRewardHistoryResponse = {};

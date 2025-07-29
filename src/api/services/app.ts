@@ -5,6 +5,7 @@ import { apiScheduleConsultation } from "../types/auth";
 import {
   apiAddProductToRecentlyViewed,
   apiAddProductToWishList,
+  apiGetUserReferralRewardHistoryTypes,
   apiSendMessage,
 } from "../types/app";
 import { settingsType } from "@src/types/types";
@@ -319,7 +320,7 @@ export const getUserReferralRewardHistory = async (token: string) => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      `${endpoint.APP.getUserReferral}`,
+      `${endpoint.APP.getUserReferralRewardHistory}`,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
@@ -329,7 +330,7 @@ export const getUserReferralRewardHistory = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetReferralHistory service error:", err);
+    console.log("GetUserReferralRewardHistory service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };

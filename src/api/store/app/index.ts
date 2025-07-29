@@ -5,3 +5,4 @@ export * from "./notificationsStore";
 export * from "./userWishListStore";
 export * from "./recentlyViwedStore";
 export * from "./userReferralStore";
+export * from "./userReferralRewardHistoryStore";
