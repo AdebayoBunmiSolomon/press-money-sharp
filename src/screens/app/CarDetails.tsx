@@ -26,24 +26,44 @@ import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
-import { useAddProductToRecentlyViewed } from "@src/api/hooks/mutation/app";
+import {
+  useAddProductToRecentlyViewed,
+  useAddProductToWishList,
+  useDeleteProductFromWishList,
+} from "@src/api/hooks/mutation/app";
+import { useLikedServicesIdCache } from "@src/cache";
+import { useAuthStore } from "@src/api/store/auth";
+import { useUserWishListStore } from "@src/api/store/app";
 
 export const CarDetails = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CAR_DETAILS>) => {
   const { service_uuid } = route?.params;
+  const { userData } = useAuthStore();
   const { serviceInfo, isFetching } = useViewService(service_uuid);
   const { AddProductToRecentlyViewed } = useAddProductToRecentlyViewed();
+  const { AddProductToWishList, isPending: isAdding } =
+    useAddProductToWishList();
+  const { DeleteProductFromWishList, isPending: isDeleting } =
+    useDeleteProductFromWishList();
+  const { likedServiceId } = useLikedServicesIdCache();
   const { actionModal, setActionModal } = useActionModal();
   const [returnedData, setReturnedData] = useState<any>(null);
   const [currIndex, setCurrIndex] = useState<number>(0);
+  const { userWishList } = useUserWishListStore();
 
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: [appQueryKeys.VIEW_SERVICE, service_uuid], // ✅ Matches the queryKey now
     });
   }, [queryClient, service_uuid]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [appQueryKeys.GET_USER_WISHLIST, userData?.token],
+    });
+  }, [userData?.token]);
 
   //save products or service to recently viewed
   useEffect(() => {
@@ -104,21 +124,49 @@ export const CarDetails = ({
               <View style={styles.imgContainer}>
                 <ReanimatedCarousel
                   data={serviceInfo?.image_urls}
-                  renderItem={({ item, index }) => (
-                    <ImageBackground
-                      key={index}
-                      source={{ uri: item }}
-                      contentFit='cover'
-                      style={styles.img}>
-                      <TouchableOpacity style={styles.heartBtn}>
-                        <FontAwesome
-                          name='heart-o'
-                          size={moderateScale(15)}
-                          color={colors.red}
-                        />
-                      </TouchableOpacity>
-                    </ImageBackground>
-                  )}
+                  renderItem={({ item, index }) => {
+                    const isLiked =
+                      likedServiceId &&
+                      likedServiceId.some((id) => id === serviceInfo?.id);
+                    const wishListItem = userWishList?.find(
+                      (item) => item?.our_service_id === serviceInfo?.id
+                    );
+                    const wishListUuid = wishListItem?.uuid;
+                    return (
+                      <ImageBackground
+                        key={index}
+                        source={{ uri: item }}
+                        contentFit='cover'
+                        style={styles.img}>
+                        <TouchableOpacity
+                          style={styles.heartBtn}
+                          onPress={() => {
+                            if (!isLiked) {
+                              AddProductToWishList({
+                                service_id: Number(serviceInfo?.id),
+                              });
+                            } else {
+                              DeleteProductFromWishList({
+                                service_id: Number(serviceInfo?.id),
+                                wishList_uuid: String(wishListUuid),
+                              });
+                            }
+                          }}>
+                          {isAdding || isDeleting ? (
+                            <View style={{ flex: 1 }}>
+                              <Loader size='small' color={colors.red} />
+                            </View>
+                          ) : (
+                            <FontAwesome
+                              name={isLiked ? "heart" : "heart-o"}
+                              size={moderateScale(15)}
+                              color={colors.red}
+                            />
+                          )}
+                        </TouchableOpacity>
+                      </ImageBackground>
+                    );
+                  }}
                   onSnapToItem={(index) => setCurrIndex(index)}
                   pagingEnabled={true}
                   width={screenWidth - 30}

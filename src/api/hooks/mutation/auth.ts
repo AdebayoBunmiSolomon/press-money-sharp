@@ -143,12 +143,12 @@ export const useVerifyEmail = () => {
     onSuccess: (response) => {
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
-        status: response?.data?.data?.validity ? 200 : 401, //200 | 401 | 500
-        success: response?.data?.data?.validity, //true | false
+        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
         message: response?.data?.data?.message,
       });
-      if (response?.data?.data?.validity) {
+      if (response?.data?.success) {
         navigation.navigate(authScreenNames.LOGIN);
       }
     },

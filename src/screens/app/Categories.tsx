@@ -1,5 +1,5 @@
 import { CustomText } from "@src/components/shared";
-import { appScreenNames } from "@src/navigation";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
@@ -73,6 +73,11 @@ export const Categories = ({
           color={colors.white}
           showSearchIcon
           onPressSearchIcon={() => setShowFilter(!showFilter)}
+          onPressBellIcon={() =>
+            navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
+              screen: appScreenNames.NOTIFICATION,
+            })
+          }
           showMenuIcon
           showBellIcon
         />

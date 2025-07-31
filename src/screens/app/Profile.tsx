@@ -13,11 +13,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useSharedValue } from "react-native-reanimated";
 import { ToggleSwitch } from "@src/common";
+import { useAuthStore } from "@src/api/store/auth";
 
 export const Profile = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.PROFILE>) => {
   const isOn = useSharedValue(false);
+  const { userData } = useAuthStore();
 
   const handlePress = () => {
     isOn.value = !isOn.value;
@@ -71,7 +73,7 @@ export const Profile = ({
               Welcome,
             </CustomText>
             <CustomText type='medium' size={15} black>
-              John
+              {userData?.first_name}
             </CustomText>
           </View>
         </View>

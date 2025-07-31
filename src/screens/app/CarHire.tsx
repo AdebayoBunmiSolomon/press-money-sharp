@@ -11,6 +11,7 @@ import {
   View,
   ScrollView,
   FlatList,
+  Alert,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";

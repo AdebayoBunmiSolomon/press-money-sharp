@@ -163,7 +163,9 @@ export const Referrals = ({
                 red
                 textWhite
                 buttonType='Solid'
-                onPress={() => {}}
+                onPress={() => {
+                  // if(userReferral?.user?.)
+                }}
                 textType='medium'
                 textSize={13}
                 btnStyle={styles.earnBtn}
