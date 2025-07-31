@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Screen } from "../Screen";
 import {
   FlatList,
@@ -40,9 +40,30 @@ export const RecentlyViewed = ({
     useDeleteRecentlyViewed();
   const { getServiceInfoFromAllServiceStore } =
     useGetServiceInfoFromAllServiceStore();
-  const { recentlyViewedServiceId } = useRecentlyViewedServicesIdCache();
+  const { recentlyViewedServiceId, clearRecentlyViewedServiceIdFromCache } =
+    useRecentlyViewedServicesIdCache();
   const { AddProductToRecentlyViewed, isPending } =
     useAddProductToRecentlyViewed();
+  const [isClearing, setIsClearing] = useState<boolean>(false);
+
+  const clearAllRecentlyViewed = async () => {
+    setIsClearing(true);
+    try {
+      if (userRecentlyViewed && userRecentlyViewed.length > 0) {
+        for (const item of userRecentlyViewed) {
+          DeleteFromRecentlyViewed({
+            service_id: item?.our_service_id,
+            recentlyViewed_uuid: item?.uuid,
+          });
+        }
+        clearRecentlyViewedServiceIdFromCache();
+      }
+    } catch (err: any) {
+      console.log("Error", err);
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   return (
     <Screen style={styles.screenContainer} bgColor={colors.white}>
@@ -181,9 +202,10 @@ export const RecentlyViewed = ({
           buttonType='Solid'
           textSize={16}
           textType='medium'
-          onPress={() => {}}
+          onPress={async () => await clearAllRecentlyViewed()}
           btnStyle={styles.clearBtn}
-          loaderColor={colors.white}
+          loaderColor={colors.red}
+          isLoading={isClearing}
         />
       </View>
     </Screen>
