@@ -34,4 +34,5 @@ export enum appScreenNames {
   CONTACT_US = "ContactUs",
   REFERRALS = "Referrals",
   NOTIFICATION = "Notification",
+  MY_CART = "MyCart",
 }

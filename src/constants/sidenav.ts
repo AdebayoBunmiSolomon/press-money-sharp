@@ -46,6 +46,10 @@ export const sideNav: lisTypes = [
         list: "Recently Viewed",
         toggle: false,
       },
+      {
+        list: "Cart",
+        toggle: false,
+      },
     ],
   },
 ];

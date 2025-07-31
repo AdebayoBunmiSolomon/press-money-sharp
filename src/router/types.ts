@@ -54,6 +54,7 @@ export interface RootStackParamList extends ParamListBase {
   RecentlyViewed: undefined;
   ContactUs: undefined;
   Notification: undefined;
+  MyCart: undefined;
 }
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =

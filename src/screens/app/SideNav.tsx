@@ -54,6 +54,9 @@ export const SideNav = ({
       case sideNav[2].subMenu[1]?.list:
         navigation.navigate(appScreenNames.RECENTLY_VIEWED);
         break;
+      case sideNav[2].subMenu[2]?.list:
+        navigation.navigate(appScreenNames.MY_CART);
+        break;
       default:
         // Optionally handle unknown action
         break;

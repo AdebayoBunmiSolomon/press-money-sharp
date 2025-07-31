@@ -8,6 +8,7 @@ export type apiGetAllServicesResponse = {
   type: string;
   model: string;
   fee: number;
+  has_online_payment: boolean;
   description: string;
   image_urls: string[];
   status: string;
@@ -25,6 +26,7 @@ export type apiViewServicesResponse = {
   type: string;
   model: string;
   fee: number;
+  has_online_payment: boolean;
   description: string;
   image_urls: string[];
   status: string;
