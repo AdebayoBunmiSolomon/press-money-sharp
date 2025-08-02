@@ -159,7 +159,7 @@ export const Referrals = ({
                   ))}
               </View>
               <CustomButton
-                title={`Earn to reward`}
+                title={`View reward`}
                 red
                 textWhite
                 buttonType='Solid'

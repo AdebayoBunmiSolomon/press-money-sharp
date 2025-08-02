@@ -15,3 +15,4 @@ export * from "./ContactUs";
 export * from "./Referrals";
 export * from "./Notification";
 export * from "./MyCart";
+export * from "./Checkout";

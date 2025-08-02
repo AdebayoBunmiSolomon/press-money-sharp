@@ -34,8 +34,7 @@ import {
 import { useLikedServicesIdCache } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
 import { useUserWishListStore } from "@src/api/store/app";
-import { cartTypes, useCartCache } from "@src/cache/cartCache";
-import { showFlashMsg } from "@src/helper/ui-utils";
+import { useCartCache } from "@src/cache/cartCache";
 
 export const CarDetails = ({
   navigation,
@@ -54,8 +53,7 @@ export const CarDetails = ({
   const [returnedData, setReturnedData] = useState<any>(null);
   const [currIndex, setCurrIndex] = useState<number>(0);
   const { userWishList } = useUserWishListStore();
-  const { addOrRemoveFromCart, cart } = useCartCache();
-  const [addingToCart, setAddingToCart] = useState<boolean>(false);
+  const { addToCart } = useCartCache();
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -90,47 +88,6 @@ export const CarDetails = ({
   useEffect(() => {
     extractKeyValuePairs(serviceInfo?.description!);
   }, [isFetching]);
-
-  const addItemToCart = (serviceInfo: cartTypes) => {
-    setAddingToCart(true);
-    try {
-      if (serviceInfo?.id) {
-        const isServiceInCart =
-          cart &&
-          cart.some((cartService) => cartService.id === serviceInfo?.id);
-        if (isServiceInCart) {
-          showFlashMsg({
-            title: "Add Error",
-            msgType: "ERROR",
-            description: "Product already in cart",
-          });
-        } else {
-          const updatedCart = [
-            ...cart,
-            {
-              id: serviceInfo?.id,
-              uuid: serviceInfo?.uuid,
-              image: serviceInfo?.image,
-              price: serviceInfo?.price,
-              title: serviceInfo?.title,
-              number: serviceInfo?.number,
-            },
-          ];
-          addOrRemoveFromCart(updatedCart);
-          showFlashMsg({
-            title: "Add Successful",
-            msgType: "SUCCESS",
-            description: "Product added to cart successfully",
-          });
-        }
-      }
-    } catch (err: any) {
-      console.log("Error", err);
-      setAddingToCart(false);
-    } finally {
-      setAddingToCart(false);
-    }
-  };
 
   return (
     <>
@@ -417,13 +374,13 @@ export const CarDetails = ({
             buttonType='Outline'
             onPress={() => {
               if (!serviceInfo?.has_online_payment) {
-                addItemToCart({
+                addToCart({
                   id: Number(serviceInfo?.id),
                   uuid: String(serviceInfo?.uuid),
                   image: String(serviceInfo?.image_urls[0]),
                   title: String(`${serviceInfo?.brand} ${serviceInfo?.model}`),
-                  price: serviceInfo?.fee,
-                  number: 1,
+                  price: Number(serviceInfo?.fee),
+                  quantity: 1,
                 });
               } else {
                 setActionModal({
@@ -448,7 +405,6 @@ export const CarDetails = ({
                 />
               )
             }
-            isLoading={addingToCart}
           />
         </View>
       </Screen>

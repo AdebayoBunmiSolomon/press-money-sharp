@@ -12,7 +12,9 @@ const headerOptions: NativeStackNavigationOptions = { headerShown: false };
 
 export const CategoriesStack = () => {
   return (
-    <ScreenStack.Navigator screenOptions={headerOptions}>
+    <ScreenStack.Navigator
+      screenOptions={headerOptions}
+      initialRouteName='Categories'>
       <ScreenStack.Screen
         name={appScreenNames.CATEGORIES}
         component={CategoriesScreen.Categories}

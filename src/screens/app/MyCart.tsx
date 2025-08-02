@@ -1,10 +1,15 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Screen } from "../Screen";
 import { colors } from "@src/resources/color/color";
-import { RootStackScreenProps } from "@src/router/types";
-import { appScreenNames } from "@src/navigation";
+import {
+  BottomTabBarStackParamList,
+  RootStackParamList,
+  RootStackScreenProps,
+} from "@src/router/types";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { Header } from "@src/components/app/home";
 import {
+  Alert,
   FlatList,
   Platform,
   StyleSheet,
@@ -12,108 +17,171 @@ import {
   View,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
-import { cartTypes, useCartCache } from "@src/cache/cartCache";
-import { FloatActionButton } from "@src/common";
-import { Image } from "expo-image";
-import { CustomText } from "@src/components/shared";
+import { DVH, moderateScale } from "@src/resources/responsiveness";
+import { cartItemTypes, useCartCache } from "@src/cache/cartCache";
+import { CustomButton, CustomText } from "@src/components/shared";
 import { formatAmountWithCommas } from "@src/helper/utils";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { CartCard } from "@src/common/cards";
+
+type NavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<BottomTabBarStackParamList, "CategoriesStack">,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
 export const MyCart = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.MY_CART>) => {
-  const { cart } = useCartCache();
-  const flatListRef = useRef<FlatList>(null);
+  const {
+    cart,
+    incrementQuantity,
+    decrementQuantity,
+    removeFromCart,
+    totalPrice,
+    totalItems,
+  } = useCartCache();
+  const bottomNavigation = useNavigation<NavigationProp>();
+
+  const navigateToAddProductToCart = () => {
+    bottomNavigation.navigate(appScreenNames.BOTTOM_TAB_STACK, {
+      screen: bottomTabScreenNames.CATEGORIES_STACK,
+      params: {
+        screen: appScreenNames.CATEGORIES,
+      },
+    });
+  };
+
   return (
     <>
       <Screen bgColor={colors.white} style={styles.screen}>
         <Header
           leftIcon={
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign
-                name='arrowleft'
-                size={moderateScale(20)}
-                color={colors.black}
-              />
-            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: moderateScale(10),
+                }}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <AntDesign
+                    name='arrowleft'
+                    size={moderateScale(20)}
+                    color={colors.black}
+                  />
+                </TouchableOpacity>
+                <CustomText type='medium' size={16} lightBlack>
+                  My Cart {`(${cart.length > 0 ? cart.length : ""})`}
+                </CustomText>
+              </View>
+              <TouchableOpacity onPress={() => navigateToAddProductToCart()}>
+                <CustomText type='semi-bold' size={14} red>
+                  Add More
+                </CustomText>
+              </TouchableOpacity>
+            </View>
           }
           headerStyle={styles.header}
         />
-        <FlatList
-          ref={flatListRef}
-          data={cart}
-          contentContainerStyle={{
-            gap: moderateScale(15),
-            paddingBottom: DVH(25),
-            paddingHorizontal: moderateScale(10),
-          }}
-          keyExtractor={(__, index) => index.toString()}
-          renderItem={({ item, index }: { item: cartTypes; index: number }) => {
-            return (
-              <View key={index} style={styles.cartCard}>
-                <View style={styles.imgContainer}>
-                  <Image
-                    source={item?.image}
-                    contentFit='cover'
-                    style={styles.img}
-                  />
-                </View>
-                <View>
-                  <CustomText size={12} type='medium' lightBlack>
-                    {item?.title}
-                  </CustomText>
-                  <CustomText type='semi-bold' size={20} red>
-                    #{formatAmountWithCommas(Number(item?.price))}
-                  </CustomText>
-                  <View style={styles.actionBtnContainer}>
-                    <View style={styles.addSubtractContainer}>
-                      <TouchableOpacity style={styles.addSubtractBtn}>
-                        <CustomText size={18} lightBlack type='medium'>
-                          -
-                        </CustomText>
-                      </TouchableOpacity>
-                      <CustomText
-                        type='medium'
-                        size={18}
-                        lightBlack
-                        style={{
-                          borderLeftWidth: DVW(0.3),
-                          borderRightWidth: DVW(0.3),
-                          borderColor: colors.lightGray,
-                          paddingHorizontal: moderateScale(10),
-                        }}>
-                        1
-                      </CustomText>
-                      <TouchableOpacity style={styles.addSubtractBtn}>
-                        <CustomText size={18} lightBlack type='medium'>
-                          +
-                        </CustomText>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity>
-                      <AntDesign
-                        name='delete'
-                        size={moderateScale(20)}
-                        color={colors.red}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            );
-          }}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          maxToRenderPerBatch={2}
-          initialNumToRender={2}
-          windowSize={2}
-        />
-        <FloatActionButton
-          onPressArrowUp={() =>
-            flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
-          }
-          onPressWhatsApp={() => {}}
-        />
+        {cart && cart.length > 0 ? (
+          <FlatList
+            data={cart}
+            contentContainerStyle={{
+              gap: moderateScale(15),
+              paddingBottom: DVH(25),
+              paddingHorizontal: moderateScale(10),
+            }}
+            keyExtractor={(__, index) => index.toString()}
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: cartItemTypes;
+              index: number;
+            }) => {
+              return (
+                <CartCard
+                  key={index}
+                  item={item}
+                  removeFromCart={() => removeFromCart(item?.id)}
+                  decrementQuantity={() => decrementQuantity(item?.id)}
+                  incrementQuantity={() => incrementQuantity(item?.id)}
+                />
+              );
+            }}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            maxToRenderPerBatch={2}
+            initialNumToRender={2}
+            windowSize={2}
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingHorizontal: moderateScale(10),
+            }}>
+            <CustomText
+              type='regular'
+              size={16}
+              lightGray
+              style={{
+                textAlign: "center",
+              }}>
+              Cart is empty. Click button to add product to cart
+            </CustomText>
+            <CustomButton
+              title='Add Products'
+              onPress={() => navigateToAddProductToCart()}
+              buttonType='Solid'
+              red
+              textWhite
+              textType='medium'
+            />
+          </View>
+        )}
+        {cart && cart.length > 0 && (
+          <View style={styles.checkoutContainer}>
+            <View style={styles.cartInfoContainer}>
+              <CustomText type='semi-bold' size={16} lightBlack>
+                Total Items
+              </CustomText>
+              <CustomText type='semi-bold' size={16} lightGray>
+                {formatAmountWithCommas(totalItems())}
+              </CustomText>
+            </View>
+            <View style={styles.cartInfoContainer}>
+              <CustomText type='semi-bold' size={16} lightBlack>
+                Total Price
+              </CustomText>
+              <CustomText type='semi-bold' size={16} lightGray>
+                #{formatAmountWithCommas(totalPrice())}
+              </CustomText>
+            </View>
+            <CustomButton
+              title={`Checkout`}
+              red
+              textWhite
+              textType='medium'
+              textSize={14}
+              onPress={() => navigation.navigate(appScreenNames.CHECKOUT)}
+              buttonType='Solid'
+            />
+          </View>
+        )}
       </Screen>
     </>
   );
@@ -132,44 +200,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(12),
     paddingBottom: moderateScale(20),
   },
-  imgContainer: {
-    width: DVW(25),
-    height: DVH(10),
-    overflow: "hidden",
-    borderRadius: moderateScale(10),
-  },
-  img: {
+
+  checkoutContainer: {
+    position: "absolute",
+    justifyContent: "center",
+    bottom: moderateScale(40),
+    alignSelf: "center",
     width: "100%",
-    height: "100%",
+    paddingHorizontal: moderateScale(15),
   },
-  cartCard: {
-    paddingVertical: moderateScale(7),
-    paddingHorizontal: moderateScale(7),
-    borderWidth: DVW(0.3),
-    borderColor: colors.lightGray,
-    borderRadius: moderateScale(10),
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: moderateScale(10),
-  },
-  addSubtractContainer: {
-    borderWidth: DVW(0.3),
-    borderColor: colors.lightGray,
-    borderRadius: moderateScale(7),
+  cartInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "50%",
-    overflow: "hidden",
-  },
-  addSubtractBtn: {
-    paddingHorizontal: moderateScale(10),
-    // backgroundColor: "red",
-  },
-  actionBtnContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "82%",
+    marginVertical: moderateScale(10),
   },
 });

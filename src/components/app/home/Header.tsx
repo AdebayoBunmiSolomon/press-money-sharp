@@ -24,6 +24,7 @@ interface IHeaderProps {
   headerStyle?: StyleProp<ViewStyle>;
   showSearchIcon?: boolean;
   onPressSearchIcon?: () => void;
+  extraComponent?: React.ReactNode;
 }
 
 export const Header: React.FC<IHeaderProps> = ({
@@ -38,9 +39,19 @@ export const Header: React.FC<IHeaderProps> = ({
   headerStyle,
   showSearchIcon = false,
   onPressSearchIcon,
+  extraComponent,
 }) => {
   return (
-    <View style={[styles.container, headerStyle]}>
+    <View
+      style={[
+        styles.container,
+        headerStyle,
+        {
+          flexDirection: extraComponent ? "column" : "row",
+          alignItems: extraComponent ? undefined : "center",
+          justifyContent: extraComponent ? undefined : "space-between",
+        },
+      ]}>
       {showAppIcon ? (
         <View style={styles.imgContainer}>
           <Image
@@ -97,15 +108,13 @@ export const Header: React.FC<IHeaderProps> = ({
           </TouchableOpacity>
         ) : null}
       </View>
+      {extraComponent && extraComponent}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     paddingBottom: moderateScale(10),
   },
   imgContainer: {

@@ -19,7 +19,6 @@ import { consultationFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { consultationFormValidationSchema } from "@src/form/validation/rules";
 import { useScheduleConsultation } from "@src/api/hooks/mutation/app";
-import { APILogger } from "@src/helper/utils";
 
 export const ConsultationServices = ({
   navigation,
