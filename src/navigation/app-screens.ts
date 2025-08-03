@@ -1,7 +1,13 @@
 import { appScreenTypes } from "@src/types/types";
 import { appScreenNames } from "./navigation-names";
 import { BottomTabStack } from "@src/router/bottom-tab-stack";
-import { CarDetails, CheckOut, MyCart, RecentlyViewed } from "@src/screens/app";
+import {
+  CarDetails,
+  Chat,
+  CheckOut,
+  MyCart,
+  RecentlyViewed,
+} from "@src/screens/app";
 
 export const appScreen: appScreenTypes[] = [
   {
@@ -23,5 +29,9 @@ export const appScreen: appScreenTypes[] = [
   {
     screenName: appScreenNames.CHECKOUT,
     component: CheckOut,
+  },
+  {
+    screenName: appScreenNames.CHAT,
+    component: Chat,
   },
 ];

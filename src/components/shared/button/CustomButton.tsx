@@ -15,9 +15,9 @@ import { Loader } from "@src/common";
 export type buttonType = "Outline" | "Solid";
 
 interface ICustomButtonProps {
-  title: string;
+  title?: string;
   onPress: () => void;
-  textType: textType;
+  textType?: textType;
   buttonType: buttonType;
   textSize?: number;
   rightIcon?: React.ReactNode;

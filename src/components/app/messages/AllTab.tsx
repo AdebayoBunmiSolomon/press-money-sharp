@@ -30,7 +30,7 @@ export const AllTab: React.FC<IAllTabProps> = ({ data }) => {
           style={styles.card}
           key={index}
           activeOpacity={0.6}
-          onPress={() => {}}>
+          onPress={() => navigation.navigate(appScreenNames.CHAT)}>
           <View
             style={{
               flexDirection: "row",
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     gap: moderateScale(10),
   },
   imgContainer: {
-    width: DVW(25),
-    height: DVH(10),
+    width: DVW(22),
+    height: DVH(7),
     overflow: "hidden",
     borderRadius: moderateScale(10),
   },

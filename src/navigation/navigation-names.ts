@@ -36,4 +36,5 @@ export enum appScreenNames {
   NOTIFICATION = "Notification",
   MY_CART = "MyCart",
   CHECKOUT = "Checkout",
+  CHAT = "Chat",
 }

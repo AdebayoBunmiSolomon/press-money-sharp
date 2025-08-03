@@ -16,3 +16,4 @@ export * from "./Referrals";
 export * from "./Notification";
 export * from "./MyCart";
 export * from "./Checkout";
+export * from "./Chat";
