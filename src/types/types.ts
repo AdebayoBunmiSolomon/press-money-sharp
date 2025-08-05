@@ -39,4 +39,9 @@ export type lisTypes = {
   }[];
 }[];
 
-export type settingsType = "whatsapp" | "phone" | "instagram" | "payment";
+export type settingsType =
+  | "Whatsapp"
+  | "Phone"
+  | "Instagram"
+  | "Payment"
+  | "Address";

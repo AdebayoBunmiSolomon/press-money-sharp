@@ -1,27 +1,49 @@
+import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   Platform,
   View,
+  ScrollView,
   FlatList,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Foundation } from "@expo/vector-icons";
 import { ProductCard } from "@src/common/cards";
-import { spareParts } from "@src/constants/products";
 import { FloatActionButton } from "@src/common";
+import { useFilterServices } from "@src/api/hooks";
+import { apiGetAllServicesResponse } from "@src/api/types/app";
+import { useCategoriesStore } from "@src/api/store/app";
+import { useLikedServicesIdCache } from "@src/cache";
+import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import { ModalMessageProvider } from "@src/helper/ui-utils";
+import { useAuthStore } from "@src/api/store/auth";
 
 export const SpareParts = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.SPARE_PARTS>) => {
   const flatListRef = useRef<FlatList>(null);
+  const { categories } = useCategoriesStore();
+  const [pressedCategory, setPressedCategory] = useState<string | undefined>(
+    categories && categories[5]
+  );
+  const { userData } = useAuthStore();
+  const { filteredServicesData, getFilteredServices } = useFilterServices();
+  const { likedServiceId } = useLikedServicesIdCache();
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
+
+  useEffect(() => {
+    if (pressedCategory) {
+      getFilteredServices(pressedCategory);
+    }
+  }, [pressedCategory]);
   return (
     <>
       <StatusBar style='dark' />
@@ -36,14 +58,14 @@ export const SpareParts = ({
               />
             </TouchableOpacity>
           }
-          title={"Spare Parts"}
+          title={`Cars for ${pressedCategory}`}
           headerStyle={styles.header}
           color={colors.white}
           showSearchIcon
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}
-          {/* <View
+          <View
             style={{
               paddingBottom: moderateScale(10),
             }}>
@@ -76,36 +98,73 @@ export const SpareParts = ({
                   </TouchableOpacity>
                 ))}
             </ScrollView>
-          </View> */}
-          <FlatList
-            ref={flatListRef}
-            data={spareParts}
-            contentContainerStyle={{
-              gap: moderateScale(15),
-              paddingBottom: DVH(25),
-            }}
-            keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <ProductCard
-                key={index}
-                title={item?.title}
-                price={item?.price}
-                location={item?.location}
-                onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS)
-                }
-                image={item?.image}
-              />
-            )}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            windowSize={2}
-          />
+          </View>
+          {filteredServicesData && filteredServicesData.length > 0 ? (
+            <FlatList
+              ref={flatListRef}
+              data={filteredServicesData}
+              contentContainerStyle={{
+                gap: moderateScale(15),
+                paddingBottom: DVH(25),
+              }}
+              keyExtractor={(__, index) => index.toString()}
+              renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
+                const isLiked =
+                  likedServiceId &&
+                  likedServiceId.some((id) => id === item?.id);
+                return (
+                  <ProductCard
+                    title={`${item?.brand} ${item?.model}`}
+                    price={String(item?.fee)}
+                    location={item?.location}
+                    onClickCard={() =>
+                      navigation.navigate(appScreenNames.CAR_DETAILS, {
+                        service_uuid: item?.uuid,
+                      })
+                    }
+                    image={item?.image_urls[0]}
+                    onLikeProd={() => {
+                      if (!isLiked) {
+                        AddProductToWishList({
+                          service_id: item?.id,
+                        });
+                      } else {
+                        ModalMessageProvider.showModalMsg({
+                          title: `Hello ${userData?.first_name.toUpperCase()}`,
+                          description: "Go to your wishlist to remove item",
+                          msgType: "FAILED",
+                        });
+                      }
+                    }}
+                    liked={isLiked}
+                    loading={isPending}
+                  />
+                );
+              }}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              maxToRenderPerBatch={2}
+              initialNumToRender={2}
+              windowSize={2}
+            />
+          ) : (
+            <View
+              style={{
+                // flex: 1,
+                width: "100%",
+                height: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <CustomText type='regular' size={16} lightGray>
+                No record found for {`Car ${pressedCategory}`}
+              </CustomText>
+            </View>
+          )}
+
           <View
             style={{
-              paddingVertical: DVH(5),
+              paddingVertical: DVH(10),
             }}
           />
         </View>

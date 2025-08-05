@@ -1,12 +1,16 @@
+import { useSettingsStore } from "@src/api/store/app";
+import { useAuthStore } from "@src/api/store/auth";
 import { RadioButton } from "@src/common";
 import { CustomInput, CustomText } from "@src/components/shared";
 import { usePickupTabStore } from "@src/form/store";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
 import { ScrollContainer } from "@src/screens/ScrollContainer";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
 export const PickupTab: React.FC<{}> = () => {
+  const { userData } = useAuthStore();
+  const { settings } = useSettingsStore();
   const {
     paymentMode,
     setPaymentMode,
@@ -17,6 +21,12 @@ export const PickupTab: React.FC<{}> = () => {
     PMS,
     setPMS,
   } = usePickupTabStore();
+
+  useEffect(() => {
+    (settings ?? [])
+      .filter((i) => i.type === "Address")
+      .map((i) => i.value?.toString());
+  }, []);
   return (
     <ScrollContainer style={styles.container}>
       <View>
@@ -33,11 +43,15 @@ export const PickupTab: React.FC<{}> = () => {
         <CustomInput
           title='Pickup Address'
           value={pickupAddress}
-          onChangeText={(enteredValue) => setPickupAddress(enteredValue)}
-          type='custom'
+          dropDownItems={(settings ?? [])
+            .filter((i) => i.type === "Address")
+            .map((i) => i.value?.toString())}
+          onSelectDropDownItem={(selectedValue) => {
+            setPickupAddress(selectedValue);
+          }}
+          type='dropdown'
           placeholder='Your pickup address'
           placeHolderTextColor={"#BDBDBD"}
-          keyboardType='default'
           showErrorText
           style={styles.input}
         />
@@ -46,7 +60,7 @@ export const PickupTab: React.FC<{}> = () => {
       <View>
         <CustomInput
           title='Delivery Address'
-          value={deliveryAddress}
+          value={userData?.address || deliveryAddress}
           onChangeText={(enteredValue) => setDeliveryAddress(enteredValue)}
           type='custom'
           placeholder='Your delivery address'

@@ -23,5 +23,6 @@ export const endpoint = {
     deleteUserRecentlyViewed: "/recent-views", //pass the wishlist uuid -> /recent-views/{uuid}
     getUserReferral: "/referrals/myreferral",
     getUserReferralRewardHistory: "/referral-rewards/user",
+    getAllUserChats: `/admin/my-chats`, //pass the user uuid -> /admin/my-chats/{uuid}/service
   },
 };

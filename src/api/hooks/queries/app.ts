@@ -1,6 +1,7 @@
 import { APIRequest } from "@src/api/request";
 import {
   getAllServices,
+  getAllUserChats,
   getCategory,
   getSettings,
   getUserNotifications,
@@ -12,8 +13,10 @@ import {
 } from "@src/api/services/app";
 import {
   useAllServicesStore,
+  useAllUserChatsStore,
   useCategoriesStore,
   useRecentlyViewedStore,
+  useSettingsStore,
   useUserNotificationsStore,
   useUserReferralRewardHistoryStore,
   useUserReferralStore,
@@ -21,6 +24,7 @@ import {
 } from "@src/api/store/app";
 import {
   apiGetAllServicesResponse,
+  apiGetAllUserChatsResponse,
   apiGetSettingsResponse,
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
@@ -45,6 +49,7 @@ export const useGetCategory = () => {
 
       if (response?.data?.success) {
         const categories = response?.data?.data || [];
+        console.log("Categories", categories);
         setCategories(categories); // ✅ Now setting correctly
         return categories; // ✅ Return the real data
       }
@@ -147,15 +152,18 @@ export const useViewService = (service_uuid: string) => {
   };
 };
 
-export const useGetSettings = (type: settingsType) => {
+export const useGetSettings = () => {
+  const { setSettings } = useSettingsStore();
   const { data, isFetching, isError } = useQuery<apiGetSettingsResponse[]>({
-    queryKey: [appQueryKeys.GET_SETTINGS, type],
+    queryKey: [appQueryKeys.GET_SETTINGS],
     queryFn: async () => {
-      const response = await getSettings(type);
+      const response = await getSettings();
 
       if (response?.data?.success) {
-        const serviceInfo = response?.data?.data || [];
-        return serviceInfo; // ✅ Return the real data
+        const settingsResponse: apiGetSettingsResponse[] =
+          response?.data?.data || [];
+        setSettings(settingsResponse);
+        return settingsResponse; // ✅ Return the real data
       }
 
       APIRequest.RESPONSE_HANDLER({
@@ -170,7 +178,6 @@ export const useGetSettings = (type: settingsType) => {
 
       return []; // fallback
     },
-    enabled: !!type,
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
@@ -406,6 +413,48 @@ export const useGetUserReferralRewardHistory = (token: string) => {
 
   return {
     userReferralRewardHistory: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetAllUserChats = (user_uuid: string, token: string) => {
+  const { setAllUserChats } = useAllUserChatsStore();
+  const { data, isFetching, isError } = useQuery<apiGetAllUserChatsResponse[]>({
+    queryKey: [appQueryKeys.GET_ALL_USER_CHATS, user_uuid, token],
+    queryFn: async () => {
+      const response = await getAllUserChats(user_uuid, token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const allUserChatsResponse: apiGetAllUserChatsResponse[] =
+          response?.data?.data || [];
+        setAllUserChats(allUserChatsResponse);
+        console.log(allUserChatsResponse);
+        return response?.data; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    refetchInterval: 60000,
+  });
+
+  return {
+    allUserChats: data,
     isFetching,
     isError,
   };

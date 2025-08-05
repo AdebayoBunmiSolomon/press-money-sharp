@@ -106,14 +106,14 @@ export const sendMessage = async (payload: apiSendMessage, token: string) => {
   }
 };
 
-export const getSettings = async (type: settingsType) => {
+export const getSettings = async () => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
   }
   try {
     const { data, status } = await APIRequest.GET(
-      `${endpoint.APP.getSettings}/${type}`,
+      `${endpoint.APP.getSettings}`,
       {},
       {}
     );
@@ -331,6 +331,28 @@ export const getUserReferralRewardHistory = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     console.log("GetUserReferralRewardHistory service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const getAllUserChats = async (user_uuid: string, token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      `${endpoint.APP.getAllUserChats}/${user_uuid}/service`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("GetAllUserChats service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };

@@ -1,12 +1,9 @@
-import {
-  apiGetAllServicesResponse,
-  apiGetSettingsResponse,
-} from "@src/api/types/app";
+import { apiGetSettingsResponse } from "@src/api/types/app";
 import { create } from "zustand";
 
 interface IGetSettingsProps {
-  settings: apiGetSettingsResponse[] | undefined;
-  setSettings: (data: apiGetSettingsResponse[] | undefined) => void;
+  settings: apiGetSettingsResponse[];
+  setSettings: (data: apiGetSettingsResponse[]) => void;
 }
 
 export const useSettingsStore = create<IGetSettingsProps>((set) => ({

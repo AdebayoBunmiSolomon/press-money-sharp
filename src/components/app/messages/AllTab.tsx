@@ -1,16 +1,16 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackParamList } from "@src/router/types";
-import { productTypes } from "@src/types/types";
 import React from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
+import { apiGetAllUserChatsResponse } from "@src/api/types/app";
 
 interface IAllTabProps {
-  data: productTypes[];
+  data: apiGetAllUserChatsResponse[];
 }
 
 export const AllTab: React.FC<IAllTabProps> = ({ data }) => {

@@ -36,7 +36,7 @@ export const sideNav: lisTypes = [
     ],
   },
   {
-    title: "Profile",
+    title: "Activities",
     subMenu: [
       {
         list: "Wishlist",

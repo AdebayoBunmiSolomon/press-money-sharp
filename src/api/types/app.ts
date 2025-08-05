@@ -174,3 +174,5 @@ export type apiGetUserReferralRewardHistoryTypes = {
 };
 
 export type apiGetUserReferralRewardHistoryResponse = {};
+
+export type apiGetAllUserChatsResponse = {};

@@ -21,7 +21,7 @@ import {
   MessageAction,
   WhatsAppAction,
 } from "@src/components/app/actions";
-import { useViewService } from "@src/api/hooks/queries/app";
+import { useGetSettings, useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
@@ -33,7 +33,7 @@ import {
 } from "@src/api/hooks/mutation/app";
 import { useLikedServicesIdCache } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
-import { useUserWishListStore } from "@src/api/store/app";
+import { useSettingsStore, useUserWishListStore } from "@src/api/store/app";
 import { useCartCache } from "@src/cache/cartCache";
 
 export const CarDetails = ({
@@ -54,6 +54,8 @@ export const CarDetails = ({
   const [currIndex, setCurrIndex] = useState<number>(0);
   const { userWishList } = useUserWishListStore();
   const { addToCart } = useCartCache();
+  const { settingsData, isFetching: isFetchingSettings } = useGetSettings();
+  const { setSettings } = useSettingsStore();
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -75,6 +77,10 @@ export const CarDetails = ({
       });
     }
   }, [isFetching, serviceInfo]);
+
+  useEffect(() => {
+    console.log("settings value", actionModal?.value);
+  }, [actionModal.value]);
 
   const extractKeyValuePairs = (data: string) => {
     try {
@@ -335,6 +341,10 @@ export const CarDetails = ({
               setActionModal({
                 ...actionModal,
                 callVisible: !actionModal.callVisible,
+                value: String(
+                  settingsData &&
+                    settingsData.find((i) => i.type === "Phone")?.value
+                ),
               })
             }
             btnStyle={styles.actionBtn}
@@ -364,16 +374,14 @@ export const CarDetails = ({
             }
           />
           <CustomButton
-            title={
-              !serviceInfo?.has_online_payment ? "Add to cart" : "Whatsapp"
-            }
+            title={serviceInfo?.has_online_payment ? "Add to cart" : "Whatsapp"}
             black
             textBlack
             textSize={13}
             textType='medium'
             buttonType='Outline'
             onPress={() => {
-              if (!serviceInfo?.has_online_payment) {
+              if (serviceInfo?.has_online_payment) {
                 addToCart({
                   id: Number(serviceInfo?.id),
                   uuid: String(serviceInfo?.uuid),
@@ -385,13 +393,17 @@ export const CarDetails = ({
               } else {
                 setActionModal({
                   ...actionModal,
-                  callVisible: !actionModal.whatsAppVisible,
+                  whatsAppVisible: !actionModal.whatsAppVisible,
+                  value: String(
+                    settingsData &&
+                      settingsData.find((i) => i.type === "Whatsapp")?.value
+                  ),
                 });
               }
             }}
             btnStyle={styles.actionBtn}
             leftIcon={
-              !serviceInfo?.has_online_payment ? (
+              serviceInfo?.has_online_payment ? (
                 <AntDesign
                   size={moderateScale(15)}
                   name='shoppingcart'
@@ -410,6 +422,7 @@ export const CarDetails = ({
       </Screen>
       <CallAction
         visible={actionModal.callVisible}
+        value={actionModal?.value}
         onClose={() =>
           setActionModal({
             ...actionModal,
@@ -423,12 +436,14 @@ export const CarDetails = ({
           setActionModal({
             ...actionModal,
             messageVisible: !actionModal.messageVisible,
+            value: "",
           })
         }
         service_uuid={String(serviceInfo?.uuid)}
       />
       <WhatsAppAction
         visible={actionModal.whatsAppVisible}
+        value={actionModal?.value}
         onClose={() => {
           setActionModal({
             ...actionModal,

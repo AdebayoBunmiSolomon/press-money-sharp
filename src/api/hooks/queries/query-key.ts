@@ -9,4 +9,5 @@ export enum appQueryKeys {
   GET_RECENTLY_VIEWED = "get-recently-viewed",
   GET_USER_REFERRAL = "get-user-referral",
   GET_USER_REFERRAL_REWARD_HISTORY = "get-user-referral-reward-history",
+  GET_ALL_USER_CHATS = "get-all-user-chats",
 }

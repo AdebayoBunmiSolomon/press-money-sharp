@@ -4,6 +4,7 @@ type actionModalType = {
   callVisible: boolean;
   messageVisible: boolean;
   whatsAppVisible: boolean;
+  value: string;
 };
 
 export const useActionModal = () => {
@@ -11,6 +12,7 @@ export const useActionModal = () => {
     callVisible: false,
     messageVisible: false,
     whatsAppVisible: false,
+    value: "",
   });
   return {
     actionModal,

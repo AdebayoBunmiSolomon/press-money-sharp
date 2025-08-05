@@ -1,17 +1,24 @@
 import { CustomButton, CustomText } from "@src/components/shared";
 import { moderateScale } from "@src/resources/responsiveness";
 import React from "react";
-import { Modal, StyleSheet, View } from "react-native";
+import { Linking, Modal, StyleSheet, View } from "react-native";
 
 interface ICallActionProps {
   visible: boolean;
   onClose: () => void;
+  value: string;
 }
 
 export const CallAction: React.FC<ICallActionProps> = ({
   visible,
   onClose,
+  value,
 }) => {
+  const openDialer = () => {
+    const cleanedNumber = value.replace(/[^0-9]/g, ""); // removes '+' and non-digits
+    Linking.openURL(`tel:${cleanedNumber}`);
+  };
+
   return (
     <View>
       <Modal visible={visible} transparent animationType='slide'>
@@ -24,7 +31,7 @@ export const CallAction: React.FC<ICallActionProps> = ({
               style={{
                 paddingVertical: moderateScale(10),
               }}>
-              Call PressMoneySharp on 09034567789
+              Call PressMoneySharp on {value}
             </CustomText>
             <View style={styles.actionBtnContainer}>
               <CustomButton
@@ -42,7 +49,7 @@ export const CallAction: React.FC<ICallActionProps> = ({
                 textWhite
                 textType='medium'
                 buttonType='Solid'
-                onPress={() => {}}
+                onPress={() => openDialer()}
                 btnStyle={styles.actionBtn}
               />
             </View>

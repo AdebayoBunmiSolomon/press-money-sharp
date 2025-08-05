@@ -176,10 +176,11 @@ export const Categories = ({
           ) : (
             <View
               style={{
-                flex: 1,
+                // flex: 1,
+                width: "100%",
+                height: "80%",
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "red",
               }}>
               <CustomText type='regular' size={16} lightGray>
                 No record found for {`Car ${pressedCategory}`}
