@@ -25,6 +25,10 @@ export const ProfileStack = () => {
         name={appScreenNames.REFERRALS}
         component={ProfileScreen.Referrals}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.UPDATE_PROFILE}
+        component={ProfileScreen.UpdateProfile}
+      />
     </ScreenStack.Navigator>
   );
 };

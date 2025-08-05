@@ -18,8 +18,9 @@ import { CustomText, textType } from "../text/CustomText";
 import { colors } from "@src/resources/color/color";
 import { MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import { useCustomInput } from "../hooks";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
-export type InputType = "dropdown" | "password" | "custom";
+export type InputType = "dropdown" | "password" | "custom" | "date";
 
 interface BaseProps {
   maxLength?: number;
@@ -51,7 +52,7 @@ interface PasswordProps extends BaseProps {
 }
 
 interface CustomProps extends BaseProps {
-  type: "custom";
+  type: "custom" | "date";
   keyboardType?: KeyboardType;
   disabled?: boolean;
   multiLine?: boolean;
@@ -95,6 +96,21 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
         {error}
       </CustomText>
     ) : null;
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    value ? new Date(value) : null
+  );
+
+  const showDatepicker = () => setShowPicker(true);
+
+  const onChange = (event: any, date?: Date) => {
+    setShowPicker(false);
+    if (date) {
+      setSelectedDate(date);
+      onChangeText?.(date.toISOString());
+    }
+  };
 
   const renderDropdown = () => {
     const { dropDownItems, onSelectDropDownItem } = props as DropdownProps;
@@ -298,6 +314,58 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
     );
   };
 
+  const renderDateInput = () => {
+    return (
+      <>
+        <Pressable
+          onPress={showDatepicker}
+          style={[
+            styles.inputWrapper,
+            {
+              borderColor,
+              flexDirection: "row",
+              alignItems: "center", // aligns calendar icon
+              height: DVH(7),
+            },
+            style,
+          ]}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center", // 👈 vertical centering
+            }}>
+            <CustomText
+              type={valueFontType || "regular"}
+              style={[
+                // styles.baseInput,
+                {
+                  color: value ? colors.black : placeHolderTextColor,
+                  fontFamily: valueFont,
+                },
+                inputStyle,
+              ]}
+              size={13}>
+              {selectedDate
+                ? selectedDate.toLocaleDateString()
+                : placeholder || "Select date"}
+            </CustomText>
+          </View>
+          <Feather name='calendar' size={20} color={iconColor} />
+        </Pressable>
+
+        {showPicker && (
+          <DateTimePicker
+            value={selectedDate || new Date()}
+            mode='date'
+            display='default'
+            onChange={onChange}
+          />
+        )}
+        {renderError()}
+      </>
+    );
+  };
+
   const renderInput = () => {
     switch (type) {
       case "dropdown":
@@ -306,6 +374,8 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
         return renderPasswordInput();
       case "custom":
         return renderCustomInput();
+      case "date":
+        return renderDateInput(); // Add this
       default:
         return null;
     }

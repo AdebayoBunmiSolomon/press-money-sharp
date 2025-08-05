@@ -37,3 +37,10 @@ export type consultationFormTypes = {
   priority: string;
   type: string;
 };
+
+export type updateProfileFormTypes = {
+  address: string;
+  dob: string;
+  profile_img: string;
+  referred_by: string;
+};

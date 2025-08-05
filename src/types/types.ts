@@ -45,3 +45,5 @@ export type settingsType =
   | "Instagram"
   | "Payment"
   | "Address";
+
+export type imgType = {};

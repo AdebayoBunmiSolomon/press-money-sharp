@@ -4,7 +4,7 @@ import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { ScrollContainer } from "../ScrollContainer";
@@ -20,6 +20,7 @@ export const Profile = ({
 }: RootStackScreenProps<appScreenNames.PROFILE>) => {
   const isOn = useSharedValue(false);
   const { userData } = useAuthStore();
+  console.log(userData);
 
   const handlePress = () => {
     isOn.value = !isOn.value;
@@ -77,6 +78,20 @@ export const Profile = ({
             </CustomText>
           </View>
         </View>
+        <View>
+          {userData?.address === null && (
+            <TouchableOpacity
+              style={styles.updateBtnCard}
+              onPress={() =>
+                navigation.navigate(appScreenNames.UPDATE_PROFILE)
+              }>
+              <CustomText type='regular' size={14} white>
+                update profile
+              </CustomText>
+            </TouchableOpacity>
+          )}
+        </View>
+
         <ScrollContainer>
           {profileList &&
             profileList.map((item, index) => (
@@ -155,7 +170,7 @@ const styles = StyleSheet.create({
   },
   userImgContainer: {
     width: DVW(12),
-    height: DVH(6),
+    height: Platform.OS === "ios" ? DVH(5) : DVH(6),
     overflow: "hidden",
     borderRadius: moderateScale(100),
   },
@@ -186,5 +201,10 @@ const styles = StyleSheet.create({
     width: DVW(11),
     height: DVH(3),
     padding: moderateScale(4),
+  },
+  updateBtnCard: {
+    paddingVertical: moderateScale(2),
+    paddingHorizontal: moderateScale(5),
+    backgroundColor: "#FFA500",
   },
 });
