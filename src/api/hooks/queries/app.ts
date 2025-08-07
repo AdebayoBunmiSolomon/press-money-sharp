@@ -473,15 +473,11 @@ export const useGetUserServiceMessages = (
     queryKey: [appQueryKeys.GET_USER_SERVICE_MESSAGES, service_uuid],
     queryFn: async () => {
       const response = await getUserServiceMessages(service_uuid, token);
-      if (
-        response?.data?.success === true ||
-        response?.data?.success !== true
-      ) {
-        const userServiceMessagesResponse: apiGetUserServiceMessagesResponse[] =
-          response?.data?.data || [];
-        setUserServiceMessages(userServiceMessagesResponse);
-        console.log(response?.data);
-        return response?.data?.data; // ✅ Return the real data
+      if (response && response?.data) {
+        const userServiceMessage: apiGetUserServiceMessagesResponse[] =
+          response?.data || [];
+        setUserServiceMessages(userServiceMessage);
+        return response?.data;
       }
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
@@ -492,18 +488,16 @@ export const useGetUserServiceMessages = (
           response?.error?.message ||
           "Network error. Please check your connection.",
       });
-
-      return []; // fallback
+      return [];
     },
     enabled: !!service_uuid,
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
-    refetchInterval: 60000,
   });
 
   return {
-    userServiceMessages: data,
+    userServiceMessages: data, // Ensure data is always defined
     isFetching,
     isError,
   };
