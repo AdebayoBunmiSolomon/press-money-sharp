@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import {
   useGetAllServices,
   useGetCategory,
+  useGetSettings,
   useGetUserRecentlyViewed,
   useGetUserWishList,
 } from "@src/api/hooks/queries/app";
@@ -31,6 +32,7 @@ export const Home = ({
   const { isFetching, categories } = useGetCategory();
   const { allServices, isFetching: isFetchingAllService } = useGetAllServices();
   const { userData } = useAuthStore();
+  const {} = useGetSettings();
   const { addLikedServiceIdToCache, clearLikedServiceIdFromCache } =
     useLikedServicesIdCache();
   const { isFetching: isWishListFetching, userWishList } = useGetUserWishList(
@@ -73,6 +75,8 @@ export const Home = ({
   useEffect(() => {
     clearLikedServiceIdFromCache();
     clearRecentlyViewedServiceIdFromCache();
+
+    console.log("User Info", userData?.uuid, userData?.token);
   }, []);
 
   return (

@@ -8,66 +8,100 @@ import { Image } from "expo-image";
 import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
 import { apiGetAllUserChatsResponse } from "@src/api/types/app";
+import { Loader } from "@src/common";
+import { colors } from "@src/resources/color/color";
+import { getDateStringVal } from "@src/helper/utils";
 
 interface IAllTabProps {
   data: apiGetAllUserChatsResponse[];
+  loading: boolean;
 }
 
-export const AllTab: React.FC<IAllTabProps> = ({ data }) => {
+export const AllTab: React.FC<IAllTabProps> = ({ data, loading }) => {
   const navigation: NativeStackNavigationProp<RootStackParamList> =
     useNavigation();
   return (
-    <FlatList
-      data={data}
-      contentContainerStyle={{
-        gap: moderateScale(8),
-        paddingBottom: DVH(25),
-        paddingHorizontal: moderateScale(10),
-      }}
-      keyExtractor={(__, index) => index.toString()}
-      renderItem={({ item, index }) => (
-        <TouchableOpacity
-          style={styles.card}
-          key={index}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate(appScreenNames.CHAT)}>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: moderateScale(20),
-            }}>
-            <View style={styles.imgContainer}>
-              <Image
-                style={styles.img}
-                contentFit='fill'
-                source={item?.image}
-              />
-            </View>
-            <View
-              style={{
-                gap: moderateScale(10),
-              }}>
-              <CustomText type='medium' size={12} lightBlack>
-                {item?.title}
-              </CustomText>
-              <CustomText type='medium' size={12} lightBlack>
-                is the car free?
-              </CustomText>
-            </View>
-          </View>
-          <View>
-            <CustomText type='regular' size={9} lightBlack>
-              7 May
-            </CustomText>
-          </View>
-        </TouchableOpacity>
+    <View>
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "80%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Loader size='large' color={colors.red} />
+        </View>
+      ) : data && data.length > 0 ? (
+        <FlatList
+          data={data}
+          contentContainerStyle={{
+            gap: moderateScale(8),
+            paddingBottom: DVH(25),
+            paddingHorizontal: moderateScale(10),
+          }}
+          keyExtractor={(__, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              style={styles.card}
+              key={index}
+              activeOpacity={0.6}
+              onPress={() =>
+                navigation.navigate(appScreenNames.CHAT, {
+                  service_uuid: item?.service?.uuid,
+                })
+              }>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: moderateScale(20),
+                }}>
+                <View style={styles.imgContainer}>
+                  <Image
+                    style={styles.img}
+                    contentFit='fill'
+                    source={item?.service?.image_urls[0]}
+                  />
+                </View>
+                <View
+                  style={{
+                    gap: moderateScale(10),
+                  }}>
+                  <CustomText type='semi-bold' size={12} lightBlack>
+                    {`${item?.service?.brand} ${item?.service?.model}`}
+                  </CustomText>
+                  <CustomText type='regular' size={12} red>
+                    {item?.message}
+                  </CustomText>
+                </View>
+              </View>
+              <View>
+                <CustomText type='regular' size={9} lightBlack>
+                  {getDateStringVal(item?.created_at)}
+                </CustomText>
+              </View>
+            </TouchableOpacity>
+          )}
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          maxToRenderPerBatch={2}
+          initialNumToRender={2}
+          windowSize={2}
+        />
+      ) : (
+        <View
+          style={{
+            width: "100%",
+            height: "80%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <CustomText type='medium' size={14} lightGray>
+            No Messages Found
+          </CustomText>
+        </View>
       )}
-      horizontal={false}
-      showsVerticalScrollIndicator={false}
-      maxToRenderPerBatch={2}
-      initialNumToRender={2}
-      windowSize={2}
-    />
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -82,8 +116,8 @@ const styles = StyleSheet.create({
     gap: moderateScale(10),
   },
   imgContainer: {
-    width: DVW(22),
-    height: DVH(7),
+    width: DVW(20),
+    height: DVH(6),
     overflow: "hidden",
     borderRadius: moderateScale(10),
   },

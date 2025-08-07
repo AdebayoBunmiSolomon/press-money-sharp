@@ -2,7 +2,7 @@ import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
@@ -10,8 +10,8 @@ import { Header } from "@src/components/app/home";
 import { AllTab, ButtonLine, UnreadTab } from "@src/components/app/messages";
 import { useGetAllUserChats } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
-import { queryClient } from "@src/helper/utils";
-import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+// import { queryClient } from "@src/helper/utils";
+// import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 
 const msgHeaderNav = ["All", "Unread"];
 
@@ -20,20 +20,13 @@ export const Messages = ({
 }: RootStackScreenProps<appScreenNames.MESSAGES>) => {
   const { userData } = useAuthStore();
   const [selectedItem, setSelectedItem] = useState<string>(msgHeaderNav[0]);
-  const { allUserChats, isFetching } = useGetAllUserChats(
-    userData?.uuid,
-    userData?.token
-  );
+  const { allUserChats, isFetching } = useGetAllUserChats(userData?.token);
 
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: [
-        appQueryKeys.GET_ALL_USER_CHATS,
-        userData?.uuid,
-        userData?.token,
-      ],
-    });
-  }, []);
+  // useEffect(() => {
+  //   queryClient.invalidateQueries({
+  //     queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
+  //   });
+  // }, []);
 
   return (
     <>
@@ -55,7 +48,10 @@ export const Messages = ({
           selectedBtnItem={selectedItem}
         />
         {selectedItem === "All" && (
-          <AllTab data={allUserChats && allUserChats} />
+          <AllTab
+            data={allUserChats && allUserChats.length > 0 ? allUserChats : []}
+            loading={isFetching}
+          />
         )}
         {selectedItem === "Unread" && <UnreadTab />}
         {/* {selectedItem === "Spam" && <SpamTab />} Spam */}

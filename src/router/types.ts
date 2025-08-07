@@ -56,7 +56,9 @@ export interface RootStackParamList extends ParamListBase {
   Notification: undefined;
   MyCart: undefined;
   Checkout: undefined;
-  Chat: undefined;
+  Chat: {
+    service_uuid: string;
+  };
   UpdateProfile: undefined;
 }
 

@@ -7,3 +7,4 @@ export * from "./recentlyViwedStore";
 export * from "./userReferralStore";
 export * from "./userReferralRewardHistoryStore";
 export * from "./allUserChatsStore";
+export * from "./userServieMessagesStore";

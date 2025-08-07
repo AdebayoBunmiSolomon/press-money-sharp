@@ -357,7 +357,7 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
           <DateTimePicker
             value={selectedDate || new Date()}
             mode='date'
-            display='default'
+            display='compact'
             onChange={onChange}
           />
         )}

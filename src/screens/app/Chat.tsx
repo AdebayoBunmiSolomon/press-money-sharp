@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Screen } from "../Screen";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
@@ -8,11 +8,21 @@ import { appScreenNames } from "@src/navigation";
 import { Header } from "@src/components/app/home";
 import { CustomButton, CustomInput } from "@src/components/shared";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { useGetUserServiceMessages } from "@src/api/hooks/queries/app";
+import { useAuthStore } from "@src/api/store/auth";
 
 export const Chat = ({
   navigation,
+  route,
 }: RootStackScreenProps<appScreenNames.CHAT>) => {
+  const { service_uuid } = route?.params;
+  const { userData } = useAuthStore();
+  const { userServiceMessages, isFetching } = useGetUserServiceMessages(
+    service_uuid,
+    userData?.token
+  );
   const [chat, setChat] = useState<string>("");
+
   return (
     <Screen style={styles.screen} bgColor={colors.white}>
       <Header
@@ -57,8 +67,8 @@ export const Chat = ({
           }
           onPress={() => {}}
           btnStyle={{
-            paddingVertical: moderateScale(12),
-            width: "14%",
+            paddingVertical: moderateScale(11),
+            width: "15%",
           }}
         />
       </View>
@@ -79,13 +89,13 @@ const styles = StyleSheet.create({
   actionContainer: {
     alignItems: "center",
     flexDirection: "row",
-    gap: moderateScale(10),
+    gap: moderateScale(5),
     position: "absolute",
     bottom: moderateScale(0),
     paddingBottom: moderateScale(30),
     backgroundColor: colors.white,
     paddingTop: moderateScale(10),
-    paddingHorizontal: moderateScale(20),
+    paddingHorizontal: moderateScale(10),
     width: "100%",
   },
   input: {

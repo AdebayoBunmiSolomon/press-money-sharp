@@ -21,7 +21,7 @@ import {
   MessageAction,
   WhatsAppAction,
 } from "@src/components/app/actions";
-import { useGetSettings, useViewService } from "@src/api/hooks/queries/app";
+import { useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
@@ -33,7 +33,7 @@ import {
 } from "@src/api/hooks/mutation/app";
 import { useLikedServicesIdCache } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
-import { useUserWishListStore } from "@src/api/store/app";
+import { useSettingsStore, useUserWishListStore } from "@src/api/store/app";
 import { useCartCache } from "@src/cache/cartCache";
 
 export const CarDetails = ({
@@ -54,7 +54,7 @@ export const CarDetails = ({
   const [currIndex, setCurrIndex] = useState<number>(0);
   const { userWishList } = useUserWishListStore();
   const { addToCart } = useCartCache();
-  const { settingsData } = useGetSettings();
+  const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
     queryClient.invalidateQueries({

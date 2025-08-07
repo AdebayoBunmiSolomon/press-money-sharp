@@ -175,4 +175,34 @@ export type apiGetUserReferralRewardHistoryTypes = {
 
 export type apiGetUserReferralRewardHistoryResponse = {};
 
-export type apiGetAllUserChatsResponse = {};
+export type apiGetAllUserChatsResponse = {
+  attachment: string | null | any;
+  created_at: string;
+  id: number;
+  message: string;
+  our_service_id: number;
+  read_at: string | null | any;
+  receiver_id: number;
+  sender_id: number;
+  service: {
+    brand: string;
+    category: string;
+    created_at: string;
+    deleted_at: string | null | any;
+    description: string;
+    fee: number;
+    has_online_payment: boolean;
+    id: number;
+    image_urls: string[];
+    location: string;
+    model: string;
+    status: string;
+    type: string;
+    updated_at: string;
+    uuid: string;
+  };
+  updated_at: string;
+  uuid: string;
+};
+
+export type apiGetUserServiceMessagesResponse = {};

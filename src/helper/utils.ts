@@ -149,7 +149,7 @@ export const getDateStringVal = (dateVal: string) => {
     return "Invalid date";
   }
 
-  const date = new Date(dateVal + "T00:00:00");
+  const date = new Date(dateVal); // do not append anything!
 
   const year = date.getFullYear();
   const monthName = date.toLocaleString("default", { month: "long" });

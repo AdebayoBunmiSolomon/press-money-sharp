@@ -8,6 +8,7 @@ import {
   getUserRecentlyViewed,
   getUserReferral,
   getUserReferralRewardHistory,
+  getUserServiceMessages,
   getUserWishList,
   viewService,
 } from "@src/api/services/app";
@@ -17,6 +18,7 @@ import {
   useCategoriesStore,
   useRecentlyViewedStore,
   useSettingsStore,
+  useUserServiceMessagesStore,
   useUserNotificationsStore,
   useUserReferralRewardHistoryStore,
   useUserReferralStore,
@@ -26,6 +28,7 @@ import {
   apiGetAllServicesResponse,
   apiGetAllUserChatsResponse,
   apiGetSettingsResponse,
+  apiGetUserServiceMessagesResponse,
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
   apiGetUserReferralResponse,
@@ -418,12 +421,12 @@ export const useGetUserReferralRewardHistory = (token: string) => {
   };
 };
 
-export const useGetAllUserChats = (user_uuid: string, token: string) => {
+export const useGetAllUserChats = (token: string) => {
   const { setAllUserChats } = useAllUserChatsStore();
   const { data, isFetching, isError } = useQuery<apiGetAllUserChatsResponse[]>({
-    queryKey: [appQueryKeys.GET_ALL_USER_CHATS, user_uuid, token],
+    queryKey: [appQueryKeys.GET_ALL_USER_CHATS, token],
     queryFn: async () => {
-      const response = await getAllUserChats(user_uuid, token);
+      const response = await getAllUserChats(token);
       if (
         response?.data?.success === true ||
         response?.data?.success !== true
@@ -431,8 +434,7 @@ export const useGetAllUserChats = (user_uuid: string, token: string) => {
         const allUserChatsResponse: apiGetAllUserChatsResponse[] =
           response?.data?.data || [];
         setAllUserChats(allUserChatsResponse);
-        console.log(allUserChatsResponse);
-        return response?.data; // ✅ Return the real data
+        return response?.data?.data; // ✅ Return the real data
       }
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
@@ -455,6 +457,53 @@ export const useGetAllUserChats = (user_uuid: string, token: string) => {
 
   return {
     allUserChats: data,
+    isFetching,
+    isError,
+  };
+};
+
+export const useGetUserServiceMessages = (
+  service_uuid: string,
+  token: string
+) => {
+  const { setUserServiceMessages } = useUserServiceMessagesStore();
+  const { data, isFetching, isError } = useQuery<
+    apiGetUserServiceMessagesResponse[]
+  >({
+    queryKey: [appQueryKeys.GET_USER_SERVICE_MESSAGES, service_uuid],
+    queryFn: async () => {
+      const response = await getUserServiceMessages(service_uuid, token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const userServiceMessagesResponse: apiGetUserServiceMessagesResponse[] =
+          response?.data?.data || [];
+        setUserServiceMessages(userServiceMessagesResponse);
+        console.log(response?.data);
+        return response?.data?.data; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!service_uuid,
+    retry: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    refetchInterval: 60000,
+  });
+
+  return {
+    userServiceMessages: data,
     isFetching,
     isError,
   };

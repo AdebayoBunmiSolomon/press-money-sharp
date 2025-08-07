@@ -1,6 +1,6 @@
 import React from "react";
 import { Screen } from "../Screen";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
 import {
@@ -17,10 +17,34 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { Header } from "@src/components/app/home";
 import { CustomText } from "@src/components/shared";
 import { ScrollContainer } from "../ScrollContainer";
+import { useSettingsStore } from "@src/api/store/app";
+import { showFlashMsg } from "@src/helper/ui-utils";
+import { settingsType } from "@src/types/types";
 
 export const ContactUs = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONTACT_US>) => {
+  const { settings } = useSettingsStore();
+
+  const openSocialMediaLink = (socialMediaType: settingsType) => {
+    const url = String(
+      settings && settings.find((i) => i.type === socialMediaType)?.value
+    );
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          showFlashMsg({
+            title: "Error",
+            description: `Error opening ${url}`,
+            msgType: "ERROR",
+          });
+        }
+      })
+      .catch((err) => console.error("An error occurred", err));
+  };
+
   return (
     <Screen safeArea style={styles.screen}>
       <ScrollContainer style={styles.scrollContainer}>
@@ -125,28 +149,36 @@ export const ContactUs = ({
             Follow our Social Media
           </CustomText>
           <View style={styles.socialMediaBtnContainer}>
-            <TouchableOpacity style={styles.socialMediaBtn}>
+            <TouchableOpacity
+              style={styles.socialMediaBtn}
+              onPress={() => openSocialMediaLink("Instagram")}>
               <FontAwesome
                 name='facebook'
                 size={moderateScale(17)}
                 color={"#1877F2"}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialMediaBtn}>
+            <TouchableOpacity
+              style={styles.socialMediaBtn}
+              onPress={() => openSocialMediaLink("Instagram")}>
               <FontAwesome
                 name='whatsapp'
                 size={moderateScale(17)}
                 color={"#25D366"}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialMediaBtn}>
+            <TouchableOpacity
+              style={styles.socialMediaBtn}
+              onPress={() => openSocialMediaLink("Instagram")}>
               <FontAwesome6
                 name='x-twitter'
                 size={moderateScale(17)}
                 color={colors.lightBlack}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialMediaBtn}>
+            <TouchableOpacity
+              style={styles.socialMediaBtn}
+              onPress={() => openSocialMediaLink("Instagram")}>
               <Entypo
                 name='instagram'
                 size={moderateScale(17)}
