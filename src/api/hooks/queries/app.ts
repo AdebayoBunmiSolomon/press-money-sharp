@@ -476,6 +476,7 @@ export const useGetUserServiceMessages = (
       if (response && response?.data) {
         const userServiceMessage: apiGetUserServiceMessagesResponse[] =
           response?.data || [];
+        console.log(response?.data);
         setUserServiceMessages(userServiceMessage);
         return response?.data;
       }
@@ -494,6 +495,7 @@ export const useGetUserServiceMessages = (
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchInterval: 60000,
   });
 
   return {

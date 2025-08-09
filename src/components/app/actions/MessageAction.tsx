@@ -9,6 +9,10 @@ import { Modal, StyleSheet, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { useSendMessage } from "@src/api/hooks/mutation/app";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@src/router/types";
+import { appScreenNames } from "@src/navigation";
 
 interface IMessageActionProps {
   visible: boolean;
@@ -21,6 +25,8 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   onClose,
   service_uuid,
 }) => {
+  const navigation: NativeStackNavigationProp<RootStackParamList> =
+    useNavigation();
   const { SendMessage, isPending } = useSendMessage();
   const {
     control,
@@ -34,8 +40,11 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
 
   useEffect(() => {
     if (!!isPending) {
-      // onClose();
       reset();
+      navigation.navigate(appScreenNames.CHAT, {
+        service_uuid: service_uuid,
+      });
+      onClose();
     }
   }, [isPending]);
 

@@ -182,8 +182,8 @@ export type apiGetAllUserChatsResponse = {
   message: string;
   our_service_id: number;
   read_at: string | null | any;
-  receiver_id: number;
-  sender_id: number;
+  receiver_id: string;
+  sender_id: string;
   service: {
     brand: string;
     category: string;
@@ -212,8 +212,8 @@ export type apiGetUserServiceMessagesResponse = {
   message: string;
   our_service_id: number;
   read_at: string | null | any;
-  receiver_id: number;
-  sender_id: number;
+  receiver_id: string;
+  sender_id: string;
   service: {
     brand: string;
     category: string;
@@ -233,4 +233,10 @@ export type apiGetUserServiceMessagesResponse = {
   };
   updated_at: string;
   uuid: string;
+};
+
+export type apiSendChatMessage = {
+  message: string;
+  file: any;
+  service: string;
 };

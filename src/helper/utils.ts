@@ -144,7 +144,7 @@ export const truncateText = (text: string, length?: number) => {
   }
 };
 
-export const getDateStringVal = (dateVal: string) => {
+export const getDateStringVal = (dateVal: string, showDateTime?: boolean) => {
   if (!dateVal || isNaN(new Date(dateVal).getTime())) {
     return "Invalid date";
   }
@@ -169,5 +169,36 @@ export const getDateStringVal = (dateVal: string) => {
     }
   };
 
-  return `${getOrdinal(day)} ${monthName}, ${year}`;
+  // Function to format time in 12-hour format
+  const formatTime = (date: Date): string => {
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    // Convert to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+
+    // Add leading zero to minutes if needed
+    const minutesStr = minutes < 10 ? "0" + minutes : minutes.toString();
+
+    return `${hours}:${minutesStr} ${ampm}`;
+  };
+
+  if (showDateTime) {
+    const timeString = formatTime(date);
+    return `${getOrdinal(day)} ${monthName}, ${year}    ${timeString}`;
+  } else {
+    return `${getOrdinal(day)} ${monthName}, ${year}`;
+  }
 };
+
+// Usage examples:
+// getDateStringVal("2025-08-08T15:40:16.000000Z", true)
+// Output: "8th August, 2025    3:40 PM"
+
+// getDateStringVal("2025-08-08T07:15:16.000000Z", true)
+// Output: "8th August, 2025    7:15 AM"
+
+// getDateStringVal("2025-08-08T15:40:16.000000Z", false)
+// Output: "8th August, 2025"

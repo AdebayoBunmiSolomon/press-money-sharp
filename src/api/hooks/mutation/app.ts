@@ -6,6 +6,7 @@ import {
   deleteProductFromRecentlyViewed,
   deleteProductFromWishList,
   scheduleConsultation,
+  sendChatMessage,
   sendMessage,
 } from "@src/api/services/app";
 import { useAuthStore } from "@src/api/store/auth";
@@ -14,6 +15,7 @@ import {
   apiAddProductToWishList,
   apiDeleteFromRecentlyViewed,
   apiDeleteProductFromWishlist,
+  apiSendChatMessage,
   apiSendMessage,
 } from "@src/api/types/app";
 import { apiScheduleConsultation } from "@src/api/types/auth";
@@ -305,5 +307,53 @@ export const useDeleteRecentlyViewed = () => {
     isError,
     isPending,
     DeleteFromRecentlyViewed,
+  };
+};
+
+export const useSendChatMessage = () => {
+  const { userData } = useAuthStore();
+  const {
+    data: response,
+    isError,
+    isPending,
+    mutate: SendChatMessage,
+  } = useMutation({
+    mutationFn: (payload: apiSendChatMessage) =>
+      sendChatMessage(
+        {
+          message: payload?.message,
+          service: payload?.service, //service_uuid
+          file: null,
+        },
+        userData?.token
+      ),
+    onSuccess: (response, variables) => {
+      const { service } = variables;
+      const service_uuid = service;
+      if (response?.data?.success) {
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_USER_SERVICE_MESSAGES, service_uuid],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_USER_NOTIFICATIONS, userData?.uuid],
+        });
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    response,
+    isError,
+    isPending,
+    SendChatMessage,
   };
 };

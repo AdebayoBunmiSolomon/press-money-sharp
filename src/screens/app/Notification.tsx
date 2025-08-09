@@ -1,6 +1,6 @@
 import { appScreenNames } from "@src/navigation";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Screen } from "../Screen";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { colors } from "@src/resources/color/color";
@@ -35,12 +35,6 @@ export const Notification = ({
     userData?.uuid,
     userData?.token
   );
-
-  useEffect(() => {
-    console.log(
-      userNotifications && userNotifications[0]?.notifiable?.created_at
-    );
-  }, []);
 
   return (
     <>

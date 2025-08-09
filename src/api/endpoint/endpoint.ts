@@ -25,5 +25,6 @@ export const endpoint = {
     getUserReferralRewardHistory: "/referral-rewards/user",
     getAllUserChats: `/admin/chats/user`,
     getUserServiceMessages: "/admin/my-chats", //pass the service uuid -> /admin/my-chats/{uuid}
+    sendChatMessage: "/admin/chats",
   },
 };
