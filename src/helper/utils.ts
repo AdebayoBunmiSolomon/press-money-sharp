@@ -1,5 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import * as Network from "expo-network";
+import moment from "moment";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -187,18 +188,28 @@ export const getDateStringVal = (dateVal: string, showDateTime?: boolean) => {
 
   if (showDateTime) {
     const timeString = formatTime(date);
-    return `${getOrdinal(day)} ${monthName}, ${year}    ${timeString}`;
+    return `${timeString}`;
   } else {
     return `${getOrdinal(day)} ${monthName}, ${year}`;
   }
 };
 
-// Usage examples:
-// getDateStringVal("2025-08-08T15:40:16.000000Z", true)
-// Output: "8th August, 2025    3:40 PM"
+/**
+ * ✅ NEW: Helper to group messages by date
+ *  */
+export const groupMessagesByDate = (messages: any) => {
+  const grouped: any = {};
 
-// getDateStringVal("2025-08-08T07:15:16.000000Z", true)
-// Output: "8th August, 2025    7:15 AM"
+  messages.forEach((msg: any) => {
+    const dateKey = moment(msg.created_at).format("YYYY-MM-DD");
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = [];
+    }
+    grouped[dateKey].push(msg);
+  });
 
-// getDateStringVal("2025-08-08T15:40:16.000000Z", false)
-// Output: "8th August, 2025"
+  return Object.keys(grouped).map((date) => ({
+    date,
+    data: grouped[date],
+  }));
+};

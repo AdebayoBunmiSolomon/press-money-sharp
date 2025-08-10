@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Text,
 } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
@@ -22,6 +23,22 @@ import { ReceiverBubble, SenderBubble } from "@src/components/app/chats";
 import { useIsFocused } from "@react-navigation/native";
 import { useSendChatMessage } from "@src/api/hooks/mutation/app";
 import { useUserServiceMessagesStore } from "@src/api/store/app";
+import {
+  useGroupedMessages,
+  useDateFormatter,
+  FlatListItem,
+} from "@src/hooks/services";
+
+// Date Header Component
+const DateHeader: React.FC<{ date: string }> = React.memo(({ date }) => {
+  const { formatMessageDate } = useDateFormatter();
+
+  return (
+    <View style={styles.dateHeader}>
+      <Text style={styles.dateHeaderText}>{formatMessageDate(date)}</Text>
+    </View>
+  );
+});
 
 export const Chat = ({
   navigation,
@@ -36,10 +53,11 @@ export const Chat = ({
     setUserServiceMessages: setUserServiceMessagesStore,
   } = useUserServiceMessagesStore();
   const { SendChatMessage, response } = useSendChatMessage();
-  // const [chat, setChat] = useState<apiGetUserServiceMessagesResponse[]>(userServiceMessagesStore);
   const [message, setMessage] = useState<string>("");
 
-  // Add ref for FlatList to enable scrolling
+  // 🎯 Use the custom hook - much cleaner!
+  const groupedData = useGroupedMessages(userServiceMessagesStore);
+
   const flatListRef = useRef<FlatList>(null);
 
   //on mount, load chat messages first
@@ -51,22 +69,79 @@ export const Chat = ({
     }
   }, [isFocused]);
 
-  // //after mount, load chats
-  // useEffect(() => {
-  //   if (!isFetching && userServiceMessages) {
-  //     setChat(userServiceMessages);
-  //   }
-  // }, [isFetching, userServiceMessages]);
-
-  // Auto-scroll to bottom when chat array changes (new messages added)
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (userServiceMessagesStore.length > 0 && flatListRef.current) {
-      // Small delay to ensure the FlatList has rendered the new item
-      setTimeout(() => {
+    if (groupedData.length > 0 && flatListRef.current) {
+      const timer = setTimeout(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
+
+      return () => clearTimeout(timer);
     }
-  }, [userServiceMessagesStore]);
+  }, [groupedData]);
+
+  // Optimized render function
+  const renderItem = React.useCallback(
+    ({ item }: { item: FlatListItem }) => {
+      if (item.type === "header") {
+        return <DateHeader date={item.date!} />;
+      }
+
+      const isSender = item.message?.sender_id === userData?.uuid;
+      return isSender ? (
+        <SenderBubble data={item.message} />
+      ) : (
+        <ReceiverBubble data={item.message} />
+      );
+    },
+    [userData?.uuid]
+  );
+
+  const keyExtractor = React.useCallback((item: FlatListItem) => item.id, []);
+
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      SendChatMessage({
+        message: message,
+        service: service_uuid,
+        file: null,
+      });
+
+      const newMessage = {
+        attachment: response?.data?.data?.attachment,
+        created_at: new Date().toISOString(),
+        id: Date.now(),
+        message: message,
+        our_service_id: response?.data?.data?.our_service_id,
+        read_at: response?.data?.data?.created_at,
+        receiver_id: response?.data?.data?.receiver_id,
+        sender_id: userData?.uuid,
+        service: {
+          brand: response?.data?.data?.service?.brand,
+          category: response?.data?.data?.service?.category,
+          created_at: response?.data?.data?.service?.created_at,
+          deleted_at: response?.data?.data?.service?.created_at,
+          description: response?.data?.data?.service?.description,
+          fee: response?.data?.data?.service?.fee,
+          has_online_payment: response?.data?.data?.service?.has_online_payment,
+          id: response?.data?.data?.service?.id,
+          image_urls: response?.data?.data?.service?.image_urls,
+          location: response?.data?.data?.service?.location,
+          model: response?.data?.data?.service?.model,
+          status: response?.data?.data?.service?.status,
+          type: response?.data?.data?.service?.type,
+          updated_at: response?.data?.data?.service?.updated_at,
+          uuid: response?.data?.data?.service?.uuid,
+        },
+        updated_at: response?.data?.data?.updated_at,
+        uuid: `temp-${Date.now()}`,
+      };
+
+      const updatedChat = [...userServiceMessagesStore, newMessage];
+      setUserServiceMessagesStore(updatedChat);
+    }
+    setMessage("");
+  };
 
   return (
     <Screen style={styles.screen} bgColor={colors.white}>
@@ -85,67 +160,34 @@ export const Chat = ({
         }
       />
       <View style={styles.chatContainer}>
-        {/* {isFetching ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <Loader size='large' color={colors.red} />
-          </View>
-        ) : ( */}
         <FlatList
-          ref={flatListRef} // Add ref to FlatList
-          data={userServiceMessagesStore && userServiceMessagesStore}
+          ref={flatListRef}
+          data={groupedData}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
           ListFooterComponent={
             Platform.OS === "ios" ? null : (
-              <View
-                style={{
-                  paddingVertical: DVH(10),
-                }}
-              />
+              <View style={{ paddingVertical: DVH(10) }} />
             )
           }
           contentContainerStyle={{
             flexGrow: 1,
             paddingHorizontal: moderateScale(7),
           }}
-          keyExtractor={(__, index) => index.toString()}
-          renderItem={({ item }) => {
-            const isSender = item?.sender_id === userData?.uuid ? true : false;
-            return isSender ? (
-              <SenderBubble data={item} />
-            ) : (
-              <ReceiverBubble data={item} />
-            );
-          }}
           horizontal={false}
           showsVerticalScrollIndicator={false}
-          maxToRenderPerBatch={2}
-          initialNumToRender={2}
-          windowSize={2}
-          // Optional: Maintain scroll position at bottom
-          maintainVisibleContentPosition={{
-            minIndexForVisible: 0,
-            autoscrollToTopThreshold: 10,
-          }}
-          // Add onLayout to scroll when FlatList is first rendered
-          onLayout={() => {
-            if (useUserServiceMessagesStore.length > 0) {
-              setTimeout(() => {
-                flatListRef.current?.scrollToEnd({ animated: false });
-              }, 100);
-            }
-          }}
+          // Performance optimizations
+          maxToRenderPerBatch={10}
+          initialNumToRender={15}
+          windowSize={10}
+          removeClippedSubviews={Platform.OS === "android"}
+          updateCellsBatchingPeriod={50}
+          decelerationRate='normal'
+          scrollEventThrottle={16}
         />
-        {/* )} */}
       </View>
       <View style={styles.actionContainer}>
-        <View
-          style={{
-            width: "85%",
-          }}>
+        <View style={{ width: "70%" }}>
           <CustomInput
             value={message}
             onChangeText={(enteredValue) => {
@@ -163,59 +205,38 @@ export const Chat = ({
           buttonType='Solid'
           red
           rightIcon={
-            <Ionicons
-              name='send'
-              size={moderateScale(20)}
+            <AntDesign
+              name='paperclip'
+              size={moderateScale(25)}
               color={colors.white}
             />
           }
-          onPress={() => {
-            if (message) {
-              SendChatMessage({
-                message: message,
-                service: service_uuid,
-                file: null,
-              });
-              const updatedChat = [
-                ...userServiceMessagesStore,
-                {
-                  attachment: response?.data?.data?.attachment,
-                  created_at: response?.data?.data?.created_at,
-                  id: response?.data?.data?.id,
-                  message: message,
-                  our_service_id: response?.data?.data?.our_service_id,
-                  read_at: response?.data?.data?.created_at,
-                  receiver_id: response?.data?.data?.receiver_id,
-                  sender_id: response?.data?.data?.sender_id,
-                  service: {
-                    brand: response?.data?.data?.service?.brand,
-                    category: response?.data?.data?.service?.category,
-                    created_at: response?.data?.data?.service?.created_at,
-                    deleted_at: response?.data?.data?.service?.created_at,
-                    description: response?.data?.data?.service?.description,
-                    fee: response?.data?.data?.service?.fee,
-                    has_online_payment:
-                      response?.data?.data?.service?.has_online_payment,
-                    id: response?.data?.data?.service?.id,
-                    image_urls: response?.data?.data?.service?.image_urls,
-                    location: response?.data?.data?.service?.location,
-                    model: response?.data?.data?.service?.model,
-                    status: response?.data?.data?.service?.status,
-                    type: response?.data?.data?.service?.type,
-                    updated_at: response?.data?.data?.service?.updated_at,
-                    uuid: response?.data?.data?.service?.uuid,
-                  },
-                  updated_at: response?.data?.data?.updated_at,
-                  uuid: response?.data?.data?.uuid,
-                },
-              ];
-              setUserServiceMessagesStore(updatedChat); // This will trigger the auto-scroll useEffect
-            }
-            setMessage("");
-          }}
+          onPress={() => {}}
           btnStyle={{
             paddingVertical: moderateScale(11),
-            width: "15%",
+            width: "14%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: moderateScale(100),
+          }}
+        />
+        <CustomButton
+          buttonType='Solid'
+          red
+          rightIcon={
+            <Ionicons
+              name='send'
+              size={moderateScale(15)}
+              color={colors.white}
+            />
+          }
+          onPress={handleSendMessage}
+          btnStyle={{
+            paddingVertical: moderateScale(11),
+            width: "14%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: moderateScale(100),
           }}
         />
       </View>
@@ -255,5 +276,18 @@ const styles = StyleSheet.create({
   chatContainer: {
     width: "100%",
     height: "77%",
+  },
+  dateHeader: {
+    alignSelf: "center",
+    backgroundColor: "#E0E0E0",
+    paddingHorizontal: moderateScale(10),
+    paddingVertical: moderateScale(5),
+    borderRadius: moderateScale(10),
+    marginVertical: moderateScale(10),
+  },
+  dateHeaderText: {
+    color: "#333",
+    fontWeight: "bold",
+    fontSize: moderateScale(12),
   },
 });
