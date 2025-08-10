@@ -138,7 +138,7 @@ export const extractTextFromHtml = (htmlText: string): string => {
  */
 
 export const truncateText = (text: string, length?: number) => {
-  if (text.length > Number(length)) {
+  if (text && text.length > Number(length)) {
     return text.substring(0, length).trim() + "...";
   } else {
     return text.substring(0, 10).trim() + "...";

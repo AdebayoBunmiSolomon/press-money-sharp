@@ -19,7 +19,11 @@ import { useGetUserServiceMessages } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
-import { ReceiverBubble, SenderBubble } from "@src/components/app/chats";
+import {
+  FileUploadModal,
+  ReceiverBubble,
+  SenderBubble,
+} from "@src/components/app/chats";
 import { useIsFocused } from "@react-navigation/native";
 import { useSendChatMessage } from "@src/api/hooks/mutation/app";
 import { useUserServiceMessagesStore } from "@src/api/store/app";
@@ -44,6 +48,7 @@ export const Chat = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CHAT>) => {
+  const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { service_uuid } = route?.params;
   const { userData } = useAuthStore();
@@ -144,103 +149,109 @@ export const Chat = ({
   };
 
   return (
-    <Screen style={styles.screen} bgColor={colors.white}>
-      <Header
-        title={"Chats"}
-        headerStyle={styles.header}
-        color={colors.white}
-        leftIcon={
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign
-              name='arrowleft'
-              size={moderateScale(20)}
-              color={colors.white}
-            />
-          </TouchableOpacity>
-        }
-      />
-      <View style={styles.chatContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={groupedData}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          ListFooterComponent={
-            Platform.OS === "ios" ? null : (
-              <View style={{ paddingVertical: DVH(10) }} />
-            )
+    <>
+      <Screen style={styles.screen} bgColor={colors.white}>
+        <Header
+          title={"Chats"}
+          headerStyle={styles.header}
+          color={colors.white}
+          leftIcon={
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign
+                name='arrowleft'
+                size={moderateScale(20)}
+                color={colors.white}
+              />
+            </TouchableOpacity>
           }
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: moderateScale(7),
-          }}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          // Performance optimizations
-          maxToRenderPerBatch={10}
-          initialNumToRender={15}
-          windowSize={10}
-          removeClippedSubviews={Platform.OS === "android"}
-          updateCellsBatchingPeriod={50}
-          decelerationRate='normal'
-          scrollEventThrottle={16}
         />
-      </View>
-      <View style={styles.actionContainer}>
-        <View style={{ width: "70%" }}>
-          <CustomInput
-            value={message}
-            onChangeText={(enteredValue) => {
-              setMessage(enteredValue);
+        <View style={styles.chatContainer}>
+          <FlatList
+            ref={flatListRef}
+            data={groupedData}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ListFooterComponent={
+              Platform.OS === "ios" ? null : (
+                <View style={{ paddingVertical: DVH(10) }} />
+              )
+            }
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingHorizontal: moderateScale(7),
             }}
-            type='custom'
-            placeholder='Type a message'
-            placeHolderTextColor={"#BDBDBD"}
-            keyboardType='default'
-            showErrorText
-            style={styles.input}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            // Performance optimizations
+            maxToRenderPerBatch={10}
+            initialNumToRender={15}
+            windowSize={10}
+            removeClippedSubviews={Platform.OS === "android"}
+            updateCellsBatchingPeriod={50}
+            decelerationRate='normal'
+            scrollEventThrottle={16}
           />
         </View>
-        <CustomButton
-          buttonType='Solid'
-          red
-          rightIcon={
-            <AntDesign
-              name='paperclip'
-              size={moderateScale(25)}
-              color={colors.white}
+        <View style={styles.actionContainer}>
+          <View style={{ width: "80%" }}>
+            <CustomInput
+              value={message}
+              onChangeText={(enteredValue) => {
+                setMessage(enteredValue);
+              }}
+              type='custom'
+              placeholder='Type a message'
+              placeHolderTextColor={"#BDBDBD"}
+              keyboardType='default'
+              showErrorText
+              style={styles.input}
             />
-          }
-          onPress={() => {}}
-          btnStyle={{
-            paddingVertical: moderateScale(11),
-            width: "14%",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: moderateScale(100),
-          }}
-        />
-        <CustomButton
-          buttonType='Solid'
-          red
-          rightIcon={
-            <Ionicons
-              name='send'
-              size={moderateScale(15)}
-              color={colors.white}
-            />
-          }
-          onPress={handleSendMessage}
-          btnStyle={{
-            paddingVertical: moderateScale(11),
-            width: "14%",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: moderateScale(100),
-          }}
-        />
-      </View>
-    </Screen>
+          </View>
+          <CustomButton
+            buttonType='Solid'
+            white
+            rightIcon={
+              <AntDesign
+                name='paperclip'
+                size={moderateScale(25)}
+                color={colors.black}
+              />
+            }
+            onPress={() => setFileUploadVisible(!fileUploadVisible)}
+            btnStyle={{
+              paddingVertical: moderateScale(11),
+              width: "9%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: moderateScale(100),
+            }}
+          />
+          <CustomButton
+            buttonType='Solid'
+            white
+            rightIcon={
+              <Ionicons
+                name='send'
+                size={moderateScale(25)}
+                color={colors.black}
+              />
+            }
+            onPress={handleSendMessage}
+            btnStyle={{
+              paddingVertical: moderateScale(11),
+              width: "9%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: moderateScale(100),
+            }}
+          />
+        </View>
+      </Screen>
+      <FileUploadModal
+        visible={fileUploadVisible}
+        onClose={() => setFileUploadVisible(!fileUploadVisible)}
+      />
+    </>
   );
 };
 

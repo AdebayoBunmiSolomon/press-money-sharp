@@ -74,6 +74,7 @@ export const AllTab: React.FC<IAllTabProps> = ({ data, loading }) => {
                     </CustomText>
                     <CustomText type='regular' size={12} red>
                       {truncateText(item?.message, 25)}
+                      {item?.message}
                     </CustomText>
                   </View>
                 </View>
