@@ -8,6 +8,7 @@ import {
   scheduleConsultation,
   sendChatMessage,
   sendMessage,
+  updateProfileImg,
 } from "@src/api/services/app";
 import { useAuthStore } from "@src/api/store/auth";
 import {
@@ -17,6 +18,7 @@ import {
   apiDeleteProductFromWishlist,
   apiSendChatMessage,
   apiSendMessage,
+  apiUpdateUserProfileImg,
 } from "@src/api/types/app";
 import { apiScheduleConsultation } from "@src/api/types/auth";
 import { formatApiErrorMessage, queryClient } from "@src/helper/utils";
@@ -355,5 +357,76 @@ export const useSendChatMessage = () => {
     isError,
     isPending,
     SendChatMessage,
+  };
+};
+
+export const useUpdateUserProfileImg = () => {
+  const { userData, setIsAuthenticated, setUserData, isAuthenticated } =
+    useAuthStore();
+  const {
+    data: response,
+    isError,
+    isPending,
+    mutate: UpdateUserProfileImg,
+  } = useMutation({
+    mutationFn: (payload: apiUpdateUserProfileImg) =>
+      updateProfileImg(
+        {
+          profile_img: payload.profile_img,
+        },
+        userData?.token,
+        userData?.uuid
+      ),
+    onSuccess: (response) => {
+      if (response?.data?.success) {
+        APIRequest.RESPONSE_HANDLER({
+          type: "flash",
+          status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+          success: response?.data?.success, //true | false
+          code: response?.data?.error?.code || "Success",
+          message: response?.data?.success
+            ? "Profile Image Updated Successfully"
+            : formatApiErrorMessage(response?.data?.error),
+        });
+        setUserData({
+          uuid: "",
+          first_name: "",
+          last_name: "",
+          referred_by: null,
+          referral_code: "",
+          gender: "",
+          profile_img: "",
+          email: "",
+          phone: "",
+          address: null,
+          dob: "",
+          email_verified_at: "",
+          login_at: "",
+          is_admin: false,
+          status: "",
+          created_at: "",
+          updated_at: "",
+          deleted_at: null,
+          token: "",
+        });
+        setIsAuthenticated(!isAuthenticated);
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    response,
+    isError,
+    isPending,
+    UpdateUserProfileImg,
   };
 };

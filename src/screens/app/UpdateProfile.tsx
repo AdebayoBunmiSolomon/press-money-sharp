@@ -17,6 +17,9 @@ import { Image } from "expo-image";
 import { ImagePickerResult, useMedia } from "@src/hooks/services";
 import { FileUploadModal } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
+import { useUpdateUserProfileImg } from "@src/api/hooks/mutation/app";
+import { showFlashMsg } from "@src/helper/ui-utils";
+import { fixImageUrl } from "@src/helper/utils";
 
 export const UpdateProfile = ({
   navigation,
@@ -24,18 +27,32 @@ export const UpdateProfile = ({
   const { userData } = useAuthStore();
   const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
   const { pickFromCamera, pickFromGallery } = useMedia();
+  const { UpdateUserProfileImg, isPending } = useUpdateUserProfileImg();
   const [imgResult, setImgResult] = useState<ImagePickerResult | null>(null);
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<updateProfileFormTypes>({
     mode: "onChange",
     resolver: yupResolver(updateProfileValidationSchema),
   });
 
-  const onSubmit = () => {};
+  console.log("User data", userData);
+
+  const onSubmit = () => {
+    if (imgResult?.uri) {
+      UpdateUserProfileImg({
+        profile_img: imgResult,
+      });
+    } else {
+      showFlashMsg({
+        title: "Error",
+        description: "Image not selected",
+        msgType: "ERROR",
+      });
+    }
+  };
 
   return (
     <>
@@ -64,18 +81,13 @@ export const UpdateProfile = ({
         />
         <ScrollContainer style={styles.scrollContainer}>
           <TouchableOpacity
-            style={[
-              styles.imgBtn,
-              {
-                borderColor: errors?.profile_img?.message
-                  ? colors.red
-                  : colors.white,
-              },
-            ]}
+            style={[styles.imgBtn]}
             onPress={() => setFileUploadVisible(!fileUploadVisible)}>
-            {imgResult?.uri ? (
+            {userData?.profile_img !== "" || imgResult?.uri !== "" ? (
               <Image
-                source={{ uri: imgResult?.uri || userData?.profile_img }}
+                source={{
+                  uri: fixImageUrl(userData?.profile_img) || imgResult?.uri,
+                }}
                 style={styles.profileImg}
                 contentFit='cover'
               />
@@ -155,9 +167,11 @@ export const UpdateProfile = ({
             buttonType='Solid'
             textSize={16}
             textType='medium'
-            onPress={handleSubmit(onSubmit)}
+            onPress={() => {
+              onSubmit();
+            }}
             btnStyle={styles.loginBtn}
-            isLoading={false}
+            isLoading={isPending}
             loaderColor={colors.white}
           />
         </ScrollContainer>
@@ -170,7 +184,6 @@ export const UpdateProfile = ({
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);
-            setValue("profile_img", imgRes?.uri);
           }
         }}
         onClickGallery={async () => {
@@ -178,7 +191,6 @@ export const UpdateProfile = ({
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);
-            setValue("profile_img", imgRes?.uri);
           }
         }}
       />
@@ -207,6 +219,7 @@ const styles = StyleSheet.create({
     height: Platform.OS === "ios" ? DVH(11.5) : DVH(11.5),
     borderRadius: moderateScale(100),
     borderWidth: DVW(0.3),
+    borderColor: colors.white,
     overflow: "hidden",
     alignSelf: "center",
   },

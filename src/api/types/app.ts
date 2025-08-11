@@ -240,3 +240,7 @@ export type apiSendChatMessage = {
   file: any;
   service: string;
 };
+
+export type apiUpdateUserProfileImg = {
+  profile_img: any;
+};

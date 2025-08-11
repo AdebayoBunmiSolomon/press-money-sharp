@@ -7,9 +7,8 @@ import {
   apiAddProductToWishList,
   apiSendChatMessage,
   apiSendMessage,
+  apiUpdateUserProfileImg,
 } from "../types/app";
-import { BASE_URL } from "@env";
-import { Platform } from "react-native";
 
 export const getCategory = async () => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
@@ -450,8 +449,6 @@ export const sendChatMessage = async (
 
   try {
     if (payload.file) {
-      // console.log("Uploading file:", payload.file);
-
       const ext = payload.file.name?.split(".").pop()?.toLowerCase() || "jpg";
       const mimeType = ext === "png" ? "image/png" : "image/jpeg";
 
@@ -464,27 +461,14 @@ export const sendChatMessage = async (
         type: mimeType,
       } as any);
 
-      const res = await fetch(`${BASE_URL}${endpoint.APP.sendChatMessage}`, {
+      const { status, data } = await APIRequest.FETCH({
+        endpoint: endpoint.APP.sendChatMessage,
         method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token.trim()}`,
-          // Remove "Content-Type" here – fetch will set it correctly with boundary
-        },
+        body: formData, // FormData here
+        token: token, // Adds Authorization automatically
       });
-
-      // For debugging: Log response status and text if not OK
-      if (!res.ok) {
-        const text = await res.text();
-        // console.log("Response status:", res.status, "Response text:", text);
-        throw new Error(`Server error: ${res.status} - ${text}`);
-      }
-
-      const json = await res.json();
-      // console.log("Response JSON:", json);
-      return { status: res.status, data: json };
+      return { status, data };
     }
-
     const { data, status } = await APIRequest.POST(
       `${endpoint.APP.sendChatMessage}`,
       payload,
@@ -497,6 +481,42 @@ export const sendChatMessage = async (
     return { data, status };
   } catch (err: any) {
     console.log("SendChat-message service error:", err);
+    return { error: err.message || "An error occurred" };
+  }
+};
+
+export const updateProfileImg = async (
+  payload: apiUpdateUserProfileImg,
+  token: string,
+  user_uuid: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    if (payload?.profile_img) {
+      const ext =
+        payload.profile_img.name?.split(".").pop()?.toLowerCase() || "jpg";
+      const mimeType = ext === "png" ? "image/png" : "image/jpeg";
+
+      const formData = new FormData();
+      formData.append("profile_img", {
+        uri: payload.profile_img.uri,
+        name: payload.profile_img.name || `user_${Date.now()}.${ext}`,
+        type: mimeType,
+      } as any);
+
+      const { status, data } = await APIRequest.FETCH({
+        endpoint: `${endpoint.APP.updateUserProfile}/${user_uuid}`,
+        method: "POST",
+        body: formData, // FormData here
+        token: token, // Adds Authorization automatically
+      });
+      return { status, data };
+    }
+  } catch (err: any) {
+    console.log("UpdateUser-Profile service error:", err);
     return { error: err.message || "An error occurred" };
   }
 };

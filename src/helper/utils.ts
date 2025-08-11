@@ -212,3 +212,19 @@ export const groupMessagesByDate = (messages: any) => {
     data: grouped[date],
   }));
 };
+
+/**
+ * Helps to fix broken url returned from the server
+ * @param url takes the value of the wrong URL
+ * @returns the right URL as in https:// instead of /storage://....
+ */
+export const fixImageUrl = (url: string) => {
+  if (!url) return "";
+
+  const storagePrefix = "/storage/";
+  if (url.startsWith(storagePrefix)) {
+    return url.replace(storagePrefix, "");
+  }
+
+  return url; // already correct
+};

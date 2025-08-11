@@ -55,7 +55,10 @@ export const Chat = ({
   const isFocused = useIsFocused();
   const { service_uuid } = route?.params;
   const { userData } = useAuthStore();
-  const {} = useGetUserServiceMessages(service_uuid, userData?.token);
+  const { isFetching } = useGetUserServiceMessages(
+    service_uuid,
+    userData?.token
+  );
   const {
     userServiceMessages: userServiceMessagesStore,
     setUserServiceMessages: setUserServiceMessagesStore,
@@ -248,9 +251,6 @@ export const Chat = ({
               scrollEventThrottle={16}
             />
           </View>
-          {/* <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "position"}
-          style={styles.container}> */}
           <View style={styles.actionContainer}>
             <View style={{ width: "80%" }}>
               <CustomInput
@@ -305,7 +305,6 @@ export const Chat = ({
               }}
             />
           </View>
-          {/* </KeyboardAvoidingView> */}
         </Screen>
       </KeyboardAvoidingView>
       <FileUploadModal

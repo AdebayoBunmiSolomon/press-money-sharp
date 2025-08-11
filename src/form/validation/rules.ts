@@ -64,6 +64,6 @@ export const consultationFormValidationSchema = yup.object().shape({
 export const updateProfileValidationSchema = yup.object().shape({
   address: yup.string().required("address is required"),
   dob: yup.string().required("DOB is required"),
-  profile_img: yup.string().required("profile image is required"),
+  // profile_img: yup.string().required("profile image is required"),
   referred_by: yup.string().required("referred by is required"),
 });

@@ -41,6 +41,6 @@ export type consultationFormTypes = {
 export type updateProfileFormTypes = {
   address: string;
   dob: string;
-  profile_img: string;
+  // profile_img: string;
   referred_by: string;
 };

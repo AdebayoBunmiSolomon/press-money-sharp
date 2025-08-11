@@ -3,6 +3,7 @@ import { GET } from "./GET";
 import { PUT } from "./PUT";
 import { DELETE } from "./DELETE";
 import { RESPONSE_HANDLER } from "./RESPONSE-HANDLER";
+import { FETCH } from "./FETCH";
 
 export const APIRequest = {
   POST,
@@ -10,4 +11,5 @@ export const APIRequest = {
   PUT,
   DELETE,
   RESPONSE_HANDLER,
+  FETCH,
 };

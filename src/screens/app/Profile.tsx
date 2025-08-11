@@ -14,13 +14,13 @@ import { Image } from "expo-image";
 import { useSharedValue } from "react-native-reanimated";
 import { ToggleSwitch } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
+import { fixImageUrl } from "@src/helper/utils";
 
 export const Profile = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.PROFILE>) => {
   const isOn = useSharedValue(false);
   const { userData } = useAuthStore();
-  console.log(userData);
 
   const handlePress = () => {
     isOn.value = !isOn.value;
@@ -64,7 +64,11 @@ export const Profile = ({
         <View style={styles.usernameImgContainer}>
           <View style={styles.userImgContainer}>
             <Image
-              source={require("@src/assets/png/category/car-hire.png")}
+              source={
+                userData?.profile_img !== ""
+                  ? { uri: fixImageUrl(userData?.profile_img) }
+                  : require("@src/assets/png/category/car-hire.png")
+              }
               contentFit='cover'
               style={styles.userImg}
             />
@@ -79,7 +83,7 @@ export const Profile = ({
           </View>
         </View>
         <View>
-          {userData?.address === null && (
+          {userData?.profile_img !== "" && (
             <TouchableOpacity
               style={styles.updateBtnCard}
               onPress={() =>
