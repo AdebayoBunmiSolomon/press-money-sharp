@@ -17,13 +17,36 @@ export const SenderBubble: React.FC<ISenderBubbleProps> = ({ data }) => {
   return (
     <>
       {data?.attachment ? (
-        <View style={styles.imgContainer}>
-          <Image
-            style={styles.img}
-            source={{ uri: data?.attachment }}
-            cachePolicy={"disk"}
-            contentFit='fill'
-          />
+        <View
+          style={{
+            backgroundColor: colors.red,
+            alignSelf: "flex-end",
+            paddingHorizontal: moderateScale(10),
+            paddingVertical: moderateScale(10),
+            width: "80%",
+            borderRadius: moderateScale(10),
+            overflow: "hidden",
+            marginBottom: moderateScale(10),
+          }}>
+          <View style={styles.imgContainer}>
+            <Image
+              style={styles.img}
+              source={{ uri: data?.attachment }}
+              cachePolicy={"disk"}
+              contentFit='fill'
+            />
+          </View>
+          {data.message !== "image" && (
+            <CustomText
+              type='regular'
+              size={14}
+              style={{
+                color: colors.white,
+              }}>
+              {data?.message}
+            </CustomText>
+          )}
+
           <View
             style={{
               alignItems: "flex-end",
@@ -120,15 +143,12 @@ const styles = StyleSheet.create({
     maxWidth: "80%", // ✅ auto-resize
     minWidth: moderateScale(50), // ✅ optional, prevent very tiny bubble
   },
+  imgMainContainer: {},
   imgContainer: {
-    backgroundColor: colors.red,
-    alignSelf: "flex-end",
-    padding: moderateScale(10),
-    width: "80%",
+    width: "100%",
     height: DVH(25),
-    borderRadius: moderateScale(10),
     overflow: "hidden",
-    marginBottom: moderateScale(10),
+    borderRadius: moderateScale(10),
   },
   img: {
     width: "100%",

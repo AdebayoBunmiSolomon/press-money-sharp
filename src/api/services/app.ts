@@ -450,7 +450,7 @@ export const sendChatMessage = async (
 
   try {
     if (payload.file) {
-      console.log("Uploading file:", payload.file);
+      // console.log("Uploading file:", payload.file);
 
       const ext = payload.file.name?.split(".").pop()?.toLowerCase() || "jpg";
       const mimeType = ext === "png" ? "image/png" : "image/jpeg";
@@ -476,12 +476,12 @@ export const sendChatMessage = async (
       // For debugging: Log response status and text if not OK
       if (!res.ok) {
         const text = await res.text();
-        console.log("Response status:", res.status, "Response text:", text);
+        // console.log("Response status:", res.status, "Response text:", text);
         throw new Error(`Server error: ${res.status} - ${text}`);
       }
 
       const json = await res.json();
-      console.log("Response JSON:", json);
+      // console.log("Response JSON:", json);
       return { status: res.status, data: json };
     }
 

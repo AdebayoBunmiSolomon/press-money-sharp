@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  KeyboardAvoidingView,
 } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
@@ -34,6 +35,7 @@ import {
   useMedia,
   ImagePickerResult,
 } from "@src/hooks/services";
+import { ImageViewer } from "@src/components/app/chats/ImageViwer";
 
 // Date Header Component
 const DateHeader: React.FC<{ date: string }> = React.memo(({ date }) => {
@@ -51,6 +53,7 @@ export const Chat = ({
   route,
 }: RootStackScreenProps<appScreenNames.CHAT>) => {
   const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
+  const [showImgViewer, setShowImgViewer] = useState<boolean>(false);
   const { pickFromCamera, pickFromGallery } = useMedia();
   const isFocused = useIsFocused();
   const { service_uuid } = route?.params;
@@ -62,14 +65,7 @@ export const Chat = ({
   } = useUserServiceMessagesStore();
   const { SendChatMessage, response } = useSendChatMessage();
   const [message, setMessage] = useState<string>("");
-  const [imgResult, setImgResult] = useState<ImagePickerResult>({
-    uri: "",
-    type: "",
-    name: "",
-    size: undefined,
-  });
-
-  console.log(userData?.token);
+  const [imgResult, setImgResult] = useState<ImagePickerResult | null>(null);
 
   // 🎯 Use the custom hook - much cleaner!
   const groupedData = useGroupedMessages(userServiceMessagesStore);
@@ -96,6 +92,13 @@ export const Chat = ({
     }
   }, [groupedData]);
 
+  //side effect that showsImg viewer to show image when there is an imgResult
+  useEffect(() => {
+    if (imgResult?.uri) {
+      setShowImgViewer(true);
+    }
+  }, [imgResult?.uri]);
+
   // Optimized render function
   const renderItem = React.useCallback(
     ({ item }: { item: FlatListItem }) => {
@@ -116,7 +119,47 @@ export const Chat = ({
   const keyExtractor = React.useCallback((item: FlatListItem) => item.id, []);
 
   const handleSendMessage = () => {
-    if (message.trim()) {
+    if (imgResult?.uri && message) {
+      SendChatMessage({
+        message: message,
+        service: service_uuid,
+        file: imgResult,
+      });
+      const newMessage = {
+        attachment: response?.data?.data?.attachment,
+        created_at: new Date().toISOString(),
+        id: Date.now(),
+        message: message,
+        our_service_id: response?.data?.data?.our_service_id,
+        read_at: response?.data?.data?.created_at,
+        receiver_id: response?.data?.data?.receiver_id,
+        sender_id: userData?.uuid,
+        service: {
+          brand: response?.data?.data?.service?.brand,
+          category: response?.data?.data?.service?.category,
+          created_at: response?.data?.data?.service?.created_at,
+          deleted_at: response?.data?.data?.service?.created_at,
+          description: response?.data?.data?.service?.description,
+          fee: response?.data?.data?.service?.fee,
+          has_online_payment: response?.data?.data?.service?.has_online_payment,
+          id: response?.data?.data?.service?.id,
+          image_urls: response?.data?.data?.service?.image_urls,
+          location: response?.data?.data?.service?.location,
+          model: response?.data?.data?.service?.model,
+          status: response?.data?.data?.service?.status,
+          type: response?.data?.data?.service?.type,
+          updated_at: response?.data?.data?.service?.updated_at,
+          uuid: response?.data?.data?.service?.uuid,
+        },
+        updated_at: response?.data?.data?.updated_at,
+        uuid: `temp-${Date.now()}`,
+      };
+      const updatedChat = [...userServiceMessagesStore, newMessage];
+      setUserServiceMessagesStore(updatedChat);
+      setImgResult(null);
+      setShowImgViewer(false);
+      setMessage("");
+    } else if (message?.trim()) {
       SendChatMessage({
         message: message,
         service: service_uuid,
@@ -124,7 +167,7 @@ export const Chat = ({
       });
 
       const newMessage = {
-        attachment: response?.data?.data?.attachment,
+        attachment: response?.data?.data?.attachment || imgResult?.uri,
         created_at: new Date().toISOString(),
         id: Date.now(),
         message: message,
@@ -156,151 +199,118 @@ export const Chat = ({
       const updatedChat = [...userServiceMessagesStore, newMessage];
       setUserServiceMessagesStore(updatedChat);
       setMessage("");
-    } else if (imgResult?.uri) {
-      SendChatMessage({
-        message: "image",
-        service: service_uuid,
-        file: imgResult,
-      });
-      const newMessage = {
-        attachment: response?.data?.data?.attachment || imgResult?.uri,
-        created_at: new Date().toISOString(),
-        id: Date.now(),
-        message: message,
-        our_service_id: response?.data?.data?.our_service_id,
-        read_at: response?.data?.data?.created_at,
-        receiver_id: response?.data?.data?.receiver_id,
-        sender_id: userData?.uuid,
-        service: {
-          brand: response?.data?.data?.service?.brand,
-          category: response?.data?.data?.service?.category,
-          created_at: response?.data?.data?.service?.created_at,
-          deleted_at: response?.data?.data?.service?.created_at,
-          description: response?.data?.data?.service?.description,
-          fee: response?.data?.data?.service?.fee,
-          has_online_payment: response?.data?.data?.service?.has_online_payment,
-          id: response?.data?.data?.service?.id,
-          image_urls: response?.data?.data?.service?.image_urls,
-          location: response?.data?.data?.service?.location,
-          model: response?.data?.data?.service?.model,
-          status: response?.data?.data?.service?.status,
-          type: response?.data?.data?.service?.type,
-          updated_at: response?.data?.data?.service?.updated_at,
-          uuid: response?.data?.data?.service?.uuid,
-        },
-        updated_at: response?.data?.data?.updated_at,
-        uuid: `temp-${Date.now()}`,
-      };
-      const updatedChat = [...userServiceMessagesStore, newMessage];
-      setUserServiceMessagesStore(updatedChat);
-      setImgResult({
-        uri: "",
-        type: "",
-        name: "",
-        size: undefined,
-      });
     }
   };
 
   return (
     <>
-      <Screen style={styles.screen} bgColor={colors.white}>
-        <Header
-          title={"Chats"}
-          headerStyle={styles.header}
-          color={colors.white}
-          leftIcon={
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign
-                name='arrowleft'
-                size={moderateScale(20)}
-                color={colors.white}
-              />
-            </TouchableOpacity>
-          }
-        />
-        <View style={styles.chatContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={groupedData}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            ListFooterComponent={
-              Platform.OS === "ios" ? null : (
-                <View style={{ paddingVertical: DVH(10) }} />
-              )
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? moderateScale(100) : 0} // adjust based on header height
+      >
+        <Screen style={styles.screen} bgColor={colors.white}>
+          <Header
+            title={"Chats"}
+            headerStyle={styles.header}
+            color={colors.white}
+            leftIcon={
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <AntDesign
+                  name='arrowleft'
+                  size={moderateScale(20)}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
             }
-            contentContainerStyle={{
-              flexGrow: 1,
-              paddingHorizontal: moderateScale(7),
-            }}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            // Performance optimizations
-            maxToRenderPerBatch={10}
-            initialNumToRender={15}
-            windowSize={10}
-            removeClippedSubviews={Platform.OS === "android"}
-            updateCellsBatchingPeriod={50}
-            decelerationRate='normal'
-            scrollEventThrottle={16}
           />
-        </View>
-        <View style={styles.actionContainer}>
-          <View style={{ width: "80%" }}>
-            <CustomInput
-              value={message}
-              onChangeText={(enteredValue) => {
-                setMessage(enteredValue);
+          <View style={styles.chatContainer}>
+            <FlatList
+              ref={flatListRef}
+              data={groupedData}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              ListFooterComponent={
+                Platform.OS === "ios" ? null : (
+                  <View style={{ paddingVertical: DVH(3) }} />
+                )
+              }
+              contentContainerStyle={{
+                flexGrow: 1,
+                paddingHorizontal: moderateScale(7),
               }}
-              type='custom'
-              placeholder='Type a message'
-              placeHolderTextColor={"#BDBDBD"}
-              keyboardType='default'
-              showErrorText
-              style={styles.input}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              // Performance optimizations
+              maxToRenderPerBatch={10}
+              initialNumToRender={15}
+              windowSize={10}
+              removeClippedSubviews={Platform.OS === "android"}
+              updateCellsBatchingPeriod={50}
+              decelerationRate='normal'
+              scrollEventThrottle={16}
             />
           </View>
-          <CustomButton
-            buttonType='Solid'
-            white
-            rightIcon={
-              <AntDesign
-                name='paperclip'
-                size={moderateScale(25)}
-                color={colors.black}
+          {/* <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "position"}
+          style={styles.container}> */}
+          <View style={styles.actionContainer}>
+            <View style={{ width: "80%" }}>
+              <CustomInput
+                value={message}
+                onChangeText={(enteredValue) => {
+                  setMessage(enteredValue);
+                }}
+                type='custom'
+                placeholder='Type a message'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
               />
-            }
-            onPress={() => setFileUploadVisible(!fileUploadVisible)}
-            btnStyle={{
-              paddingVertical: moderateScale(11),
-              width: "9%",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: moderateScale(100),
-            }}
-          />
-          <CustomButton
-            buttonType='Solid'
-            white
-            rightIcon={
-              <Ionicons
-                name='send'
-                size={moderateScale(25)}
-                color={colors.black}
-              />
-            }
-            onPress={handleSendMessage}
-            btnStyle={{
-              paddingVertical: moderateScale(11),
-              width: "9%",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: moderateScale(100),
-            }}
-          />
-        </View>
-      </Screen>
+            </View>
+            <CustomButton
+              buttonType='Solid'
+              white
+              rightIcon={
+                <AntDesign
+                  name='paperclip'
+                  size={moderateScale(25)}
+                  color={colors.black}
+                />
+              }
+              onPress={() => setFileUploadVisible(!fileUploadVisible)}
+              btnStyle={{
+                paddingVertical: moderateScale(11),
+                width: "9%",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: moderateScale(100),
+              }}
+            />
+            <CustomButton
+              buttonType='Solid'
+              white
+              rightIcon={
+                <Ionicons
+                  name='send'
+                  size={moderateScale(25)}
+                  color={colors.black}
+                />
+              }
+              onPress={handleSendMessage}
+              btnStyle={{
+                paddingVertical: moderateScale(11),
+                width: "9%",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: moderateScale(100),
+              }}
+            />
+          </View>
+          {/* </KeyboardAvoidingView> */}
+        </Screen>
+      </KeyboardAvoidingView>
       <FileUploadModal
         visible={fileUploadVisible}
         onClose={() => setFileUploadVisible(!fileUploadVisible)}
@@ -309,7 +319,6 @@ export const Chat = ({
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);
-            // console.log(imgRes);
           }
         }}
         onClickGallery={async () => {
@@ -317,6 +326,25 @@ export const Chat = ({
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);
+          }
+        }}
+      />
+      <ImageViewer
+        visible={showImgViewer}
+        onClose={() => {
+          setShowImgViewer(false);
+          setImgResult(null);
+          setMessage("");
+        }}
+        imgUri={imgResult?.uri ?? ""}
+        onChangeMsgText={(enteredValue) => setMessage(enteredValue)}
+        messageText={message}
+        handleSendMessage={() => {
+          if (!message) {
+            setMessage("image");
+            handleSendMessage();
+          } else {
+            handleSendMessage();
           }
         }}
       />
@@ -333,6 +361,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     paddingVertical: moderateScale(70),
     paddingHorizontal: moderateScale(5),
+  },
+  container: {
+    flex: 1,
   },
   actionContainer: {
     alignItems: "center",

@@ -2,13 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 // import { AppStack } from "./app-stack";
 import { AuthStack } from "./auth-stack";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View,
-  Text,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { AppStack } from "./app-stack";
 
 interface IRouterProps {
