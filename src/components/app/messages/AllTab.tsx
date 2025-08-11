@@ -8,9 +8,9 @@ import { Image } from "expo-image";
 import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
 import { apiGetAllUserChatsResponse } from "@src/api/types/app";
+import { getDateStringVal, truncateText } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import { colors } from "@src/resources/color/color";
-import { getDateStringVal, truncateText } from "@src/helper/utils";
 
 interface IAllTabProps {
   data: apiGetAllUserChatsResponse[];
@@ -22,95 +22,96 @@ export const AllTab: React.FC<IAllTabProps> = ({ data, loading }) => {
     useNavigation();
   return (
     <View>
-      {
-        // loading ? (
-        //   <View
-        //     style={{
-        //       width: "100%",
-        //       height: "80%",
-        //       justifyContent: "center",
-        //       alignItems: "center",
-        //     }}>
-        //     <Loader size='large' color={colors.red} />
-        //   </View>
-        // ) :
-        data && data.length > 0 ? (
-          <FlatList
-            data={data}
-            contentContainerStyle={{
-              gap: moderateScale(8),
-              paddingBottom: DVH(25),
-              paddingHorizontal: moderateScale(10),
-            }}
-            keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={styles.card}
-                key={index}
-                activeOpacity={0.6}
-                onPress={() =>
-                  navigation.navigate(appScreenNames.CHAT, {
-                    service_uuid: item?.service?.uuid,
-                  })
-                }>
+      {loading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "80%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Loader size='large' color={colors.red} />
+        </View>
+      ) : data && data.length > 0 ? (
+        <FlatList
+          data={data}
+          contentContainerStyle={{
+            gap: moderateScale(8),
+            paddingBottom: DVH(25),
+            paddingHorizontal: moderateScale(10),
+          }}
+          keyExtractor={(__, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              style={styles.card}
+              key={index}
+              activeOpacity={0.6}
+              onPress={() =>
+                navigation.navigate(appScreenNames.CHAT, {
+                  service_uuid: item?.service?.uuid,
+                })
+              }>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: moderateScale(20),
+                }}>
+                <View style={styles.imgContainer}>
+                  <Image
+                    style={styles.img}
+                    contentFit='fill'
+                    source={item?.service?.image_urls[0]}
+                  />
+                </View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    gap: moderateScale(20),
+                    gap: moderateScale(10),
                   }}>
-                  <View style={styles.imgContainer}>
-                    <Image
-                      style={styles.img}
-                      contentFit='fill'
-                      source={item?.service?.image_urls[0]}
-                    />
-                  </View>
-                  <View
+                  <CustomText type='semi-bold' size={12} lightBlack>
+                    {`${item?.service?.brand} ${item?.service?.model}`}
+                  </CustomText>
+                  <CustomText
+                    type='regular'
+                    size={12}
                     style={{
-                      gap: moderateScale(10),
+                      color: "#696161",
                     }}>
-                    <CustomText type='semi-bold' size={12} lightBlack>
-                      {`${item?.service?.brand} ${item?.service?.model}`}
-                    </CustomText>
-                    <CustomText type='regular' size={12} red>
-                      {truncateText(item?.message, 25)}
-                      {item?.message}
-                    </CustomText>
-                  </View>
-                </View>
-                <View>
-                  <CustomText type='regular' size={9} lightBlack>
-                    {getDateStringVal(item?.created_at)}
+                    {truncateText(item?.message, 25)}
                   </CustomText>
                 </View>
-              </TouchableOpacity>
-            )}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            windowSize={2}
-          />
-        ) : (
-          <View
-            style={{
-              width: "100%",
-              height: "80%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <CustomText type='medium' size={14} lightGray>
-              No Messages Found
-            </CustomText>
-          </View>
-        )
-      }
+              </View>
+              <View>
+                <CustomText type='regular' size={9} lightBlack>
+                  {getDateStringVal(item?.created_at)}
+                </CustomText>
+              </View>
+            </TouchableOpacity>
+          )}
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          maxToRenderPerBatch={2}
+          initialNumToRender={2}
+          windowSize={2}
+        />
+      ) : (
+        <View
+          style={{
+            width: "100%",
+            height: "80%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <CustomText type='medium' size={14} lightGray>
+            No Messages Found
+          </CustomText>
+        </View>
+      )}
     </View>
   );
 };
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#b0b0b061",
+    backgroundColor: "#b0b0b034",
     width: "100%",
     paddingVertical: moderateScale(10),
     paddingHorizontal: moderateScale(10),

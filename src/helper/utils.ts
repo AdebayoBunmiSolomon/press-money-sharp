@@ -137,12 +137,11 @@ export const extractTextFromHtml = (htmlText: string): string => {
  * @returns
  */
 
-export const truncateText = (text: string, length?: number) => {
-  if (text && text.length > Number(length)) {
-    return text.substring(0, length).trim() + "...";
-  } else {
-    return text.substring(0, 10).trim() + "...";
-  }
+export const truncateText = (text: string, length = 10): string => {
+  if (!text) return "...";
+
+  const limit = Math.max(0, length);
+  return text.length > limit ? `${text.substring(0, limit).trim()}...` : text;
 };
 
 export const getDateStringVal = (dateVal: string, showDateTime?: boolean) => {

@@ -20,11 +20,7 @@ import { useGetUserServiceMessages } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
-import {
-  FileUploadModal,
-  ReceiverBubble,
-  SenderBubble,
-} from "@src/components/app/chats";
+import { ReceiverBubble, SenderBubble } from "@src/components/app/chats";
 import { useIsFocused } from "@react-navigation/native";
 import { useSendChatMessage } from "@src/api/hooks/mutation/app";
 import { useUserServiceMessagesStore } from "@src/api/store/app";
@@ -36,6 +32,7 @@ import {
   ImagePickerResult,
 } from "@src/hooks/services";
 import { ImageViewer } from "@src/components/app/chats/ImageViwer";
+import { FileUploadModal } from "@src/common";
 
 // Date Header Component
 const DateHeader: React.FC<{ date: string }> = React.memo(({ date }) => {
