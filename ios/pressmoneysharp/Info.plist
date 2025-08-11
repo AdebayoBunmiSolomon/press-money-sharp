@@ -55,6 +55,14 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Allow AutoMotor to access your camera</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Allow AutoMotor to access your microphone</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs access to save photos to your library.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app accesses your photos to let you share them with your friends.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

@@ -31,6 +31,8 @@ import {
   useGroupedMessages,
   useDateFormatter,
   FlatListItem,
+  useMedia,
+  ImagePickerResult,
 } from "@src/hooks/services";
 
 // Date Header Component
@@ -49,6 +51,7 @@ export const Chat = ({
   route,
 }: RootStackScreenProps<appScreenNames.CHAT>) => {
   const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
+  const { pickFromCamera, pickFromGallery } = useMedia();
   const isFocused = useIsFocused();
   const { service_uuid } = route?.params;
   const { userData } = useAuthStore();
@@ -59,6 +62,14 @@ export const Chat = ({
   } = useUserServiceMessagesStore();
   const { SendChatMessage, response } = useSendChatMessage();
   const [message, setMessage] = useState<string>("");
+  const [imgResult, setImgResult] = useState<ImagePickerResult>({
+    uri: "",
+    type: "",
+    name: "",
+    size: undefined,
+  });
+
+  console.log(userData?.token);
 
   // 🎯 Use the custom hook - much cleaner!
   const groupedData = useGroupedMessages(userServiceMessagesStore);
@@ -144,8 +155,51 @@ export const Chat = ({
 
       const updatedChat = [...userServiceMessagesStore, newMessage];
       setUserServiceMessagesStore(updatedChat);
+      setMessage("");
+    } else if (imgResult?.uri) {
+      SendChatMessage({
+        message: "image",
+        service: service_uuid,
+        file: imgResult,
+      });
+      const newMessage = {
+        attachment: response?.data?.data?.attachment || imgResult?.uri,
+        created_at: new Date().toISOString(),
+        id: Date.now(),
+        message: message,
+        our_service_id: response?.data?.data?.our_service_id,
+        read_at: response?.data?.data?.created_at,
+        receiver_id: response?.data?.data?.receiver_id,
+        sender_id: userData?.uuid,
+        service: {
+          brand: response?.data?.data?.service?.brand,
+          category: response?.data?.data?.service?.category,
+          created_at: response?.data?.data?.service?.created_at,
+          deleted_at: response?.data?.data?.service?.created_at,
+          description: response?.data?.data?.service?.description,
+          fee: response?.data?.data?.service?.fee,
+          has_online_payment: response?.data?.data?.service?.has_online_payment,
+          id: response?.data?.data?.service?.id,
+          image_urls: response?.data?.data?.service?.image_urls,
+          location: response?.data?.data?.service?.location,
+          model: response?.data?.data?.service?.model,
+          status: response?.data?.data?.service?.status,
+          type: response?.data?.data?.service?.type,
+          updated_at: response?.data?.data?.service?.updated_at,
+          uuid: response?.data?.data?.service?.uuid,
+        },
+        updated_at: response?.data?.data?.updated_at,
+        uuid: `temp-${Date.now()}`,
+      };
+      const updatedChat = [...userServiceMessagesStore, newMessage];
+      setUserServiceMessagesStore(updatedChat);
+      setImgResult({
+        uri: "",
+        type: "",
+        name: "",
+        size: undefined,
+      });
     }
-    setMessage("");
   };
 
   return (
@@ -250,6 +304,21 @@ export const Chat = ({
       <FileUploadModal
         visible={fileUploadVisible}
         onClose={() => setFileUploadVisible(!fileUploadVisible)}
+        onClickCamera={async () => {
+          const imgRes = await pickFromCamera();
+          if (imgRes) {
+            setFileUploadVisible(!fileUploadVisible);
+            setImgResult(imgRes);
+            // console.log(imgRes);
+          }
+        }}
+        onClickGallery={async () => {
+          const imgRes = await pickFromGallery();
+          if (imgRes) {
+            setFileUploadVisible(!fileUploadVisible);
+            setImgResult(imgRes);
+          }
+        }}
       />
     </>
   );

@@ -5,11 +5,11 @@ import { apiScheduleConsultation } from "../types/auth";
 import {
   apiAddProductToRecentlyViewed,
   apiAddProductToWishList,
-  apiGetUserReferralRewardHistoryTypes,
   apiSendChatMessage,
   apiSendMessage,
 } from "../types/app";
-import { settingsType } from "@src/types/types";
+import { BASE_URL } from "@env";
+import { Platform } from "react-native";
 
 export const getCategory = async () => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
@@ -383,6 +383,62 @@ export const getUserServiceMessages = async (
   }
 };
 
+//working for android, not working for ios...
+// export const sendChatMessage = async (
+//   payload: apiSendChatMessage,
+//   token: string
+// ) => {
+//   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+//   if (!isNetworkConnectedAndReachable) {
+//     throw new Error("No internet connection. Please try again later.");
+//   }
+
+//   try {
+//     if (payload.file) {
+//       console.log("Uploading file:", payload.file);
+
+//       const ext = payload.file.name?.split(".").pop()?.toLowerCase() || "jpg";
+//       const mimeType = ext === "png" ? "image/png" : "image/jpeg";
+
+//       const formData = new FormData();
+//       formData.append("message", payload.message?.trim() || " ");
+//       formData.append("service", payload.service);
+//       formData.append("file", {
+//         uri: payload.file.uri,
+//         name: payload.file.name || `chat_${Date.now()}.${ext}`,
+//         type: mimeType,
+//       } as any);
+
+//       const res = await fetch(`${BASE_URL}${endpoint.APP.sendChatMessage}`, {
+//         method: "POST",
+//         body: formData,
+//         headers: {
+//           Authorization: `Bearer ${token.trim()}`,
+//           "Content-Type": "multipart/form-data", // explicitly set
+//         },
+//       });
+
+//       const json = await res.json();
+//       console.log("Response JSON:", json);
+//       return { status: res.status, data: json };
+//     }
+
+//     const { data, status } = await APIRequest.POST(
+//       `${endpoint.APP.sendChatMessage}`,
+//       payload,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token.trim()}`,
+//         },
+//       }
+//     );
+//     return { data, status };
+//   } catch (err: any) {
+//     console.log("SendChat-message service error:", err);
+//     return { error: err.message || "An error occurred" };
+//   }
+// };
+
 export const sendChatMessage = async (
   payload: apiSendChatMessage,
   token: string
@@ -391,7 +447,44 @@ export const sendChatMessage = async (
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
   }
+
   try {
+    if (payload.file) {
+      console.log("Uploading file:", payload.file);
+
+      const ext = payload.file.name?.split(".").pop()?.toLowerCase() || "jpg";
+      const mimeType = ext === "png" ? "image/png" : "image/jpeg";
+
+      const formData = new FormData();
+      formData.append("message", payload.message?.trim() || " ");
+      formData.append("service", payload.service);
+      formData.append("file", {
+        uri: payload.file.uri,
+        name: payload.file.name || `chat_${Date.now()}.${ext}`,
+        type: mimeType,
+      } as any);
+
+      const res = await fetch(`${BASE_URL}${endpoint.APP.sendChatMessage}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+          // Remove "Content-Type" here – fetch will set it correctly with boundary
+        },
+      });
+
+      // For debugging: Log response status and text if not OK
+      if (!res.ok) {
+        const text = await res.text();
+        console.log("Response status:", res.status, "Response text:", text);
+        throw new Error(`Server error: ${res.status} - ${text}`);
+      }
+
+      const json = await res.json();
+      console.log("Response JSON:", json);
+      return { status: res.status, data: json };
+    }
+
     const { data, status } = await APIRequest.POST(
       `${endpoint.APP.sendChatMessage}`,
       payload,
@@ -401,9 +494,9 @@ export const sendChatMessage = async (
         },
       }
     );
-    return { data, status }; // Return response instead of throwing an error
+    return { data, status };
   } catch (err: any) {
     console.log("SendChat-message service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    return { error: err.message || "An error occurred" };
   }
 };

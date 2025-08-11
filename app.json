@@ -18,7 +18,10 @@
       "bundleIdentifier": "com.adebunmy.press-money-sharp",
       "jsEngine": "hermes",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["whatsapp"]
+        "LSApplicationQueriesSchemes": ["whatsapp"],
+        "NSCameraUsageDescription": "This app needs access to your camera to take photos.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select images.",
+        "NSPhotoLibraryAddUsageDescription": "This app needs access to save photos to your library."
       }
     },
     "android": {
@@ -29,7 +32,10 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
       ],
       "package": "com.adebunmy.press_money_sharp"
     },
@@ -47,6 +53,14 @@
             "useExoplayerHls": false,
             "useExoplayerDash": false
           }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "Allow AutoMotor to access your camera",
+          "microphonePermission": "Allow AutoMotor to access your microphone"
         }
       ]
     ],

@@ -14,11 +14,15 @@ import { colors } from "@src/resources/color/color";
 interface IFileUploadModalProps {
   visible: boolean;
   onClose: () => void;
+  onClickGallery: () => void;
+  onClickCamera: () => void;
 }
 
 export const FileUploadModal: React.FC<IFileUploadModalProps> = ({
   visible,
   onClose,
+  onClickCamera,
+  onClickGallery,
 }) => {
   return (
     <View>
@@ -50,7 +54,7 @@ export const FileUploadModal: React.FC<IFileUploadModalProps> = ({
                 textRed
                 textType='medium'
                 buttonType='Outline'
-                onPress={() => onClose()}
+                onPress={() => onClickGallery()}
                 btnStyle={styles.actionBtn}
                 leftIcon={
                   <MaterialIcons
@@ -66,7 +70,7 @@ export const FileUploadModal: React.FC<IFileUploadModalProps> = ({
                 textWhite
                 textType='medium'
                 buttonType='Solid'
-                onPress={() => {}}
+                onPress={() => onClickCamera()}
                 btnStyle={styles.actionBtn}
                 leftIcon={
                   <AntDesign

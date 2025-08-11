@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     height: DVH(25),
     borderRadius: moderateScale(10),
     overflow: "hidden",
+    marginBottom: moderateScale(10),
   },
   img: {
     width: "100%",

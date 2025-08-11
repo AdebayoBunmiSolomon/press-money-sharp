@@ -323,7 +323,7 @@ export const useSendChatMessage = () => {
         {
           message: payload?.message,
           service: payload?.service, //service_uuid
-          file: null,
+          file: payload?.file,
         },
         userData?.token
       ),
