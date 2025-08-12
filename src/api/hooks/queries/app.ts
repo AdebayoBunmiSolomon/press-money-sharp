@@ -452,7 +452,6 @@ export const useGetAllUserChats = (token: string) => {
     retry: true,
     refetchOnReconnect: true,
     refetchOnMount: true,
-    refetchInterval: 60000,
   });
 
   return {
@@ -467,7 +466,7 @@ export const useGetUserServiceMessages = (
   token: string
 ) => {
   const { setUserServiceMessages } = useUserServiceMessagesStore();
-  const { data, isFetching, isError } = useQuery<
+  const { data, isFetching, isError, isSuccess } = useQuery<
     apiGetUserServiceMessagesResponse[]
   >({
     queryKey: [appQueryKeys.GET_USER_SERVICE_MESSAGES, service_uuid],
@@ -494,13 +493,13 @@ export const useGetUserServiceMessages = (
     enabled: !!service_uuid,
     retry: true,
     refetchOnReconnect: true,
-    refetchOnMount: true,
-    refetchInterval: 60000,
+    refetchInterval: 30000,
   });
 
   return {
     userServiceMessages: data, // Ensure data is always defined
     isFetching,
     isError,
+    isSuccess,
   };
 };

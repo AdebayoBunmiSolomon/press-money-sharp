@@ -339,6 +339,9 @@ export const useSendChatMessage = () => {
         queryClient.invalidateQueries({
           queryKey: [appQueryKeys.GET_USER_NOTIFICATIONS, userData?.uuid],
         });
+        queryClient.invalidateQueries({
+          queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
+        });
       }
     },
     onError: (error) => {

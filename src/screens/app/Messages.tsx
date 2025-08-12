@@ -51,6 +51,11 @@ export const Messages = ({
           <AllTab
             data={allUserChats && allUserChats.length > 0 ? allUserChats : []}
             loading={isFetching}
+            onPullDownRefresh={() =>
+              queryClient.invalidateQueries({
+                queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
+              })
+            }
           />
         )}
         {selectedItem === "Unread" && <UnreadTab />}

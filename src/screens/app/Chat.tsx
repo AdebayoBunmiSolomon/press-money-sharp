@@ -8,6 +8,7 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
+  ActivityIndicator, // NEW: For refreshing indicator
 } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
@@ -34,7 +35,7 @@ import {
 import { ImageViewer } from "@src/components/app/chats/ImageViwer";
 import { FileUploadModal } from "@src/common";
 
-// Date Header Component
+// Date Header Component (unchanged)
 const DateHeader: React.FC<{ date: string }> = React.memo(({ date }) => {
   const { formatMessageDate } = useDateFormatter();
 
@@ -55,10 +56,13 @@ export const Chat = ({
   const isFocused = useIsFocused();
   const { service_uuid } = route?.params;
   const { userData } = useAuthStore();
-  const { isFetching } = useGetUserServiceMessages(
+
+  // FIXED: Destructure the hook returns to get isFetching
+  const { userServiceMessages, isFetching } = useGetUserServiceMessages(
     service_uuid,
     userData?.token
   );
+
   const {
     userServiceMessages: userServiceMessagesStore,
     setUserServiceMessages: setUserServiceMessagesStore,
@@ -71,6 +75,7 @@ export const Chat = ({
   const groupedData = useGroupedMessages(userServiceMessagesStore);
 
   const flatListRef = useRef<FlatList>(null);
+  const prevGroupedLengthRef = useRef<number>(0); // NEW: Track previous length for conditional scroll
 
   //on mount, load chat messages first
   useEffect(() => {
@@ -81,15 +86,17 @@ export const Chat = ({
     }
   }, [isFocused]);
 
-  // Auto-scroll to bottom when messages change
+  // FIXED: Auto-scroll only if new messages are added (length increases)
   useEffect(() => {
-    if (groupedData.length > 0 && flatListRef.current) {
+    const currentLength = groupedData.length;
+    if (currentLength > prevGroupedLengthRef.current && flatListRef.current) {
       const timer = setTimeout(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
 
       return () => clearTimeout(timer);
     }
+    prevGroupedLengthRef.current = currentLength;
   }, [groupedData]);
 
   //side effect that showsImg viewer to show image when there is an imgResult
@@ -99,7 +106,7 @@ export const Chat = ({
     }
   }, [imgResult?.uri]);
 
-  // Optimized render function
+  // Optimized render function (unchanged)
   const renderItem = React.useCallback(
     ({ item }: { item: FlatListItem }) => {
       if (item.type === "header") {
@@ -225,6 +232,14 @@ export const Chat = ({
             }
           />
           <View style={styles.chatContainer}>
+            {/* NEW: Show refreshing indicator during background refetches */}
+            {isFetching && (
+              <ActivityIndicator
+                size='small'
+                color={colors.red}
+                style={styles.refreshIndicator}
+              />
+            )}
             <FlatList
               ref={flatListRef}
               data={groupedData}
@@ -241,7 +256,6 @@ export const Chat = ({
               }}
               horizontal={false}
               showsVerticalScrollIndicator={false}
-              // Performance optimizations
               maxToRenderPerBatch={10}
               initialNumToRender={15}
               windowSize={10}
@@ -396,5 +410,12 @@ const styles = StyleSheet.create({
     color: "#333",
     fontWeight: "bold",
     fontSize: moderateScale(12),
+  },
+  refreshIndicator: {
+    // NEW: Style for the indicator
+    position: "absolute",
+    top: moderateScale(10),
+    alignSelf: "center",
+    zIndex: 1,
   },
 });
