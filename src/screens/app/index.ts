@@ -18,3 +18,4 @@ export * from "./MyCart";
 export * from "./Checkout";
 export * from "./Chat";
 export * from "./UpdateProfile";
+export * from "./TermsAndConditions";

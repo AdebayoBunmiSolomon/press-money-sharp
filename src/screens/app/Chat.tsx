@@ -58,7 +58,7 @@ export const Chat = ({
   const { userData } = useAuthStore();
 
   // FIXED: Destructure the hook returns to get isFetching
-  const { userServiceMessages, isFetching } = useGetUserServiceMessages(
+  const { isFetching } = useGetUserServiceMessages(
     service_uuid,
     userData?.token
   );
@@ -134,7 +134,7 @@ export const Chat = ({
       });
       const newMessage = {
         attachment: response?.data?.data?.attachment,
-        created_at: new Date().toISOString(),
+        created_at: response?.data?.data?.created_at,
         id: Date.now(),
         message: message,
         our_service_id: response?.data?.data?.our_service_id,
@@ -175,7 +175,7 @@ export const Chat = ({
 
       const newMessage = {
         attachment: response?.data?.data?.attachment || imgResult?.uri,
-        created_at: new Date().toISOString(),
+        created_at: response?.data?.data?.created_at,
         id: Date.now(),
         message: message,
         our_service_id: response?.data?.data?.our_service_id,
@@ -412,7 +412,6 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(12),
   },
   refreshIndicator: {
-    // NEW: Style for the indicator
     position: "absolute",
     top: moderateScale(10),
     alignSelf: "center",

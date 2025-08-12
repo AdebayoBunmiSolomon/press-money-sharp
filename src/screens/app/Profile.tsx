@@ -37,8 +37,8 @@ export const Profile = ({
         navigation.navigate(appScreenNames.RECENTLY_VIEWED);
         break;
       case profileList[2].subMenu[0]?.list:
-        navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
-          screen: appScreenNames.DEALERS_DEAL,
+        navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
+          screen: appScreenNames.TERMS_AND_CONDITIONS,
         });
         break;
       case profileList[2].subMenu[3]?.list:
@@ -62,17 +62,19 @@ export const Profile = ({
       <StatusBar style='dark' />
       <Screen style={styles.screenContainer}>
         <View style={styles.usernameImgContainer}>
-          <View style={styles.userImgContainer}>
+          <TouchableOpacity
+            style={styles.userImgContainer}
+            onPress={() => navigation.navigate(appScreenNames.UPDATE_PROFILE)}>
             <Image
               source={
-                userData?.profile_img !== ""
+                userData?.profile_img
                   ? { uri: fixImageUrl(userData?.profile_img) }
                   : require("@src/assets/png/category/car-hire.png")
               }
               contentFit='cover'
               style={styles.userImg}
             />
-          </View>
+          </TouchableOpacity>
           <View style={styles.usernameContainer}>
             <CustomText type='regular' size={15} lightGray>
               Welcome,
@@ -82,8 +84,8 @@ export const Profile = ({
             </CustomText>
           </View>
         </View>
-        <View>
-          {userData?.profile_img !== "" && (
+        {userData?.profile_img ? null : (
+          <View>
             <TouchableOpacity
               style={styles.updateBtnCard}
               onPress={() =>
@@ -93,8 +95,8 @@ export const Profile = ({
                 update profile
               </CustomText>
             </TouchableOpacity>
-          )}
-        </View>
+          </View>
+        )}
 
         <ScrollContainer>
           {profileList &&

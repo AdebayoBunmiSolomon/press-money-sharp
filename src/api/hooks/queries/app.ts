@@ -4,6 +4,7 @@ import {
   getAllUserChats,
   getCategory,
   getSettings,
+  getTermsAndConditions,
   getUserNotifications,
   getUserRecentlyViewed,
   getUserReferral,
@@ -23,6 +24,7 @@ import {
   useUserReferralRewardHistoryStore,
   useUserReferralStore,
   useUserWishListStore,
+  useTermsAndConditionsStore,
 } from "@src/api/store/app";
 import {
   apiGetAllServicesResponse,
@@ -36,6 +38,7 @@ import {
   apiGetUserReferralRewardHistoryTypes,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
+  apiGetTermsAndConditionsStoreResponse,
 } from "@src/api/types/app";
 import { formatApiErrorMessage } from "@src/helper/utils";
 import { settingsType } from "@src/types/types";
@@ -498,6 +501,44 @@ export const useGetUserServiceMessages = (
 
   return {
     userServiceMessages: data, // Ensure data is always defined
+    isFetching,
+    isError,
+    isSuccess,
+  };
+};
+
+export const useGetTermsAndConditions = () => {
+  const { setTermsAndConditions } = useTermsAndConditionsStore();
+  const { data, isFetching, isError, isSuccess } = useQuery<
+    apiGetTermsAndConditionsStoreResponse[]
+  >({
+    queryKey: [appQueryKeys.GET_TERMS_AND_CONDITIONS],
+    queryFn: async () => {
+      const response = await getTermsAndConditions();
+      if (response && response?.data?.success) {
+        const termsAndConditionsResp: apiGetTermsAndConditionsStoreResponse[] =
+          response?.data?.data || [];
+        setTermsAndConditions(termsAndConditionsResp);
+        return response?.data?.data;
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+      return [];
+    },
+    retry: true,
+    refetchOnReconnect: true,
+    refetchInterval: 30000,
+  });
+
+  return {
+    termsAndConditions: data, // Ensure data is always defined
     isFetching,
     isError,
     isSuccess,

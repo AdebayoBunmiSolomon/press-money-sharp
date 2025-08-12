@@ -90,7 +90,7 @@ export const SenderBubble: React.FC<ISenderBubbleProps> = ({ data }) => {
             style={{
               color: colors.white,
             }}>
-            {data?.message}
+            {data?.message !== "image" ? data?.message : "Image loading..."}
           </CustomText>
           <View
             style={{

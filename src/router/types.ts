@@ -60,6 +60,7 @@ export interface RootStackParamList extends ParamListBase {
     service_uuid: string;
   };
   UpdateProfile: undefined;
+  TermsAndConditions: undefined;
 }
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =

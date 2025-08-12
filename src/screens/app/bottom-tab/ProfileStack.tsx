@@ -29,6 +29,10 @@ export const ProfileStack = () => {
         name={appScreenNames.UPDATE_PROFILE}
         component={ProfileScreen.UpdateProfile}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.TERMS_AND_CONDITIONS}
+        component={ProfileScreen.TermsAndConditions}
+      />
     </ScreenStack.Navigator>
   );
 };

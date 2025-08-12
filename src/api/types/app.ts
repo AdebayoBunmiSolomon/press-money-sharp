@@ -244,3 +244,5 @@ export type apiSendChatMessage = {
 export type apiUpdateUserProfileImg = {
   profile_img: any;
 };
+
+export type apiGetTermsAndConditionsStoreResponse = {};

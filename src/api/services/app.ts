@@ -520,3 +520,21 @@ export const updateProfileImg = async (
     return { error: err.message || "An error occurred" };
   }
 };
+
+export const getTermsAndConditions = async () => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      endpoint.APP.getTermsAndConditions,
+      {},
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    console.log("Get-Terms&Conditions service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};

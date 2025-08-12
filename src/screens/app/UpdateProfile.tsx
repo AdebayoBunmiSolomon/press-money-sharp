@@ -18,7 +18,7 @@ import { ImagePickerResult, useMedia } from "@src/hooks/services";
 import { FileUploadModal } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
 import { useUpdateUserProfileImg } from "@src/api/hooks/mutation/app";
-import { showFlashMsg } from "@src/helper/ui-utils";
+import { ModalMessageProvider, showFlashMsg } from "@src/helper/ui-utils";
 import { fixImageUrl } from "@src/helper/utils";
 
 export const UpdateProfile = ({
@@ -83,10 +83,10 @@ export const UpdateProfile = ({
           <TouchableOpacity
             style={[styles.imgBtn]}
             onPress={() => setFileUploadVisible(!fileUploadVisible)}>
-            {userData?.profile_img !== "" || imgResult?.uri !== "" ? (
+            {userData?.profile_img || imgResult?.uri ? (
               <Image
                 source={{
-                  uri: fixImageUrl(userData?.profile_img) || imgResult?.uri,
+                  uri: imgResult?.uri || fixImageUrl(userData?.profile_img),
                 }}
                 style={styles.profileImg}
                 contentFit='cover'
@@ -101,6 +101,31 @@ export const UpdateProfile = ({
               </View>
             )}
           </TouchableOpacity>
+          <CustomButton
+            title='Change Image'
+            red
+            textWhite
+            buttonType='Solid'
+            textSize={12}
+            textType='medium'
+            onPress={() => {
+              onSubmit();
+            }}
+            btnStyle={styles.changeImgBtn}
+            isLoading={isPending}
+            loaderColor={colors.white}
+          />
+          <View>
+            <CustomText
+              type='regular'
+              size={12}
+              lightBlack
+              style={{
+                textAlign: "center",
+              }}>
+              click image to update profile
+            </CustomText>
+          </View>
           <Controller
             control={control}
             render={({ field }) => (
@@ -115,6 +140,7 @@ export const UpdateProfile = ({
                 keyboardType='email-address'
                 showErrorText
                 style={styles.input}
+                disabled={true}
               />
             )}
             name='address'
@@ -135,6 +161,7 @@ export const UpdateProfile = ({
                 keyboardType='default'
                 showErrorText
                 style={styles.input}
+                disabled={true}
               />
             )}
             name='dob'
@@ -155,6 +182,7 @@ export const UpdateProfile = ({
                 keyboardType='default'
                 showErrorText
                 style={styles.input}
+                disabled={true}
               />
             )}
             name='referred_by'
@@ -168,7 +196,13 @@ export const UpdateProfile = ({
             textSize={16}
             textType='medium'
             onPress={() => {
-              onSubmit();
+              ModalMessageProvider.showModalMsg({
+                title: "Information",
+                description:
+                  "Profile update not active yet for this is still under development. you can only update image now.",
+                msgType: "SUCCESS",
+                animationType: "slide",
+              });
             }}
             btnStyle={styles.loginBtn}
             isLoading={isPending}
@@ -241,5 +275,10 @@ const styles = StyleSheet.create({
   },
   loginBtn: {
     paddingVertical: moderateScale(17),
+  },
+  changeImgBtn: {
+    paddingVertical: moderateScale(7),
+    width: "35%",
+    alignSelf: "center",
   },
 });
