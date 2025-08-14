@@ -1,6 +1,6 @@
 import { authScreenNames } from "@src/navigation";
 import { AuthScreenProps } from "@src/router/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { Screen } from "../Screen";
 import { StyleSheet, View } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
@@ -27,6 +27,8 @@ export const SignUp = ({
   const { SignUp, isPending } = useSignUp();
   const {
     clearErrors,
+    getValues,
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
@@ -35,6 +37,13 @@ export const SignUp = ({
     resolver: yupResolver(signUpValidationSchema),
   });
 
+  useEffect(() => {
+    const { referral_code } = getValues();
+    if (!referral_code) {
+      setValue("referral_code", "");
+    }
+  }, [getValues]);
+
   const onSubmit = (data: signUpFormTypes) => {
     if (data) {
       SignUp({
@@ -42,7 +51,7 @@ export const SignUp = ({
         last_name: data?.gender,
         email: data?.email,
         password: data?.password,
-        referral_code: "",
+        referral_code: data?.referral_code,
         gender: data?.gender,
         phone: removePlusSign(data?.phone),
       });
@@ -202,6 +211,25 @@ export const SignUp = ({
               />
             )}
             name='confirm_password'
+            defaultValue=''
+          />
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Referral Code(Optional)'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.referral_code?.message}
+                type='custom'
+                placeholder='Your referral code'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='referral_code'
             defaultValue=''
           />
           <View

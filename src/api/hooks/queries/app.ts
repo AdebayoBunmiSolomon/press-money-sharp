@@ -496,7 +496,7 @@ export const useGetUserServiceMessages = (
     enabled: !!service_uuid,
     retry: true,
     refetchOnReconnect: true,
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
 
   return {

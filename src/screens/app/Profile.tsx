@@ -1,9 +1,9 @@
-import { CustomText } from "@src/components/shared";
+import { CustomButton, CustomText } from "@src/components/shared";
 import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React from "react";
+import React, { useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
@@ -15,11 +15,13 @@ import { useSharedValue } from "react-native-reanimated";
 import { ToggleSwitch } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
 import { fixImageUrl } from "@src/helper/utils";
+import { useLogOutUser } from "@src/api/hooks/mutation/auth";
 
 export const Profile = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.PROFILE>) => {
   const isOn = useSharedValue(false);
+  const { logOutUser, loggingOut } = useLogOutUser();
   const { userData } = useAuthStore();
 
   const handlePress = () => {
@@ -31,24 +33,25 @@ export const Profile = ({
       case profileList[0].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.WISH_LIST_STACK, {
           screen: appScreenNames.WISH_LIST,
-        });
+        }); //wishlist
         break;
       case profileList[0].subMenu[1]?.list:
-        navigation.navigate(appScreenNames.RECENTLY_VIEWED);
+        navigation.navigate(appScreenNames.RECENTLY_VIEWED); //recently viewed
+        break;
+      case profileList[0].subMenu[2]?.list:
+        navigation.navigate(appScreenNames.REFERRALS); //referrals
+        break;
+      case profileList[0].subMenu[3]?.list:
+        navigation.navigate(appScreenNames.REFERRALS); //coupons
         break;
       case profileList[2].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
           screen: appScreenNames.TERMS_AND_CONDITIONS,
         });
         break;
-      case profileList[2].subMenu[3]?.list:
-        navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
-          screen: appScreenNames.CONTACT_US,
-        });
-        break;
       case profileList[2].subMenu[2]?.list:
         navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {
-          screen: appScreenNames.REFERRALS,
+          screen: appScreenNames.CONTACT_US,
         });
         break;
       default:
@@ -146,6 +149,18 @@ export const Profile = ({
                 ))}
               </View>
             ))}
+          <CustomButton
+            title='Log Out'
+            red
+            textWhite
+            buttonType='Solid'
+            textSize={16}
+            textType='medium'
+            onPress={async () => await logOutUser()}
+            btnStyle={styles.logoutBtn}
+            isLoading={loggingOut}
+            loaderColor={colors.white}
+          />
           <View
             style={{
               paddingVertical: DVH(10),
@@ -212,5 +227,10 @@ const styles = StyleSheet.create({
     paddingVertical: moderateScale(2),
     paddingHorizontal: moderateScale(5),
     backgroundColor: "#FFA500",
+  },
+  logoutBtn: {
+    paddingVertical: moderateScale(17),
+    width: "30%",
+    alignSelf: "center",
   },
 });

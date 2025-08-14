@@ -70,11 +70,6 @@ export const ReceiverBubble: React.FC<IReceiverBubbleProps> = ({ data }) => {
                   }}>
                   {time}
                 </CustomText>
-                <Ionicons
-                  name='checkmark-done'
-                  color={colors.black}
-                  size={moderateScale(14)}
-                />
               </View>
             )}
           </View>
@@ -115,11 +110,6 @@ export const ReceiverBubble: React.FC<IReceiverBubbleProps> = ({ data }) => {
                   }}>
                   {time}
                 </CustomText>
-                <Ionicons
-                  name='checkmark-done'
-                  color={colors.black}
-                  size={moderateScale(14)}
-                />
               </View>
             )}
           </View>

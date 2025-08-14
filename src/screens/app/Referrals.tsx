@@ -23,10 +23,7 @@ import { Image } from "expo-image";
 import { ReferralModal } from "@src/components/app/referrals";
 import { useAuthStore } from "@src/api/store/auth";
 import * as Clipboard from "expo-clipboard";
-import {
-  useGetUserReferral,
-  useGetUserReferralRewardHistory,
-} from "@src/api/hooks/queries/app";
+import { useGetUserReferral } from "@src/api/hooks/queries/app";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { showFlashMsg } from "@src/helper/ui-utils";
@@ -38,15 +35,15 @@ type earningSystemType = {
 
 const earningSystem: earningSystemType[] = [
   {
-    title: "Share invitation link/code with friends",
+    title: "Share referral code with friends",
     image: require("@src/assets/png/share.png"),
   },
   {
-    title: "Friends buy more than 2products during the validity period",
+    title: "Keep using the app to get access to unlimited rewards",
     image: require("@src/assets/png/mark.png"),
   },
   {
-    title: "You’ll receive in your wallet",
+    title: "You’ll stand a chance to get a reward",
     image: require("@src/assets/png/reward.png"),
   },
 ];
@@ -55,9 +52,6 @@ export const Referrals = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.REFERRALS>) => {
   const { userData } = useAuthStore();
-  const { userReferralRewardHistory } = useGetUserReferralRewardHistory(
-    userData?.token
-  );
   const { userReferral } = useGetUserReferral(userData?.token);
   const [showReferralHistory, setShowReferralHistory] =
     useState<boolean>(false);
@@ -76,12 +70,6 @@ export const Referrals = ({
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: [appQueryKeys.GET_USER_REFERRAL, userData?.token],
-    });
-    queryClient.invalidateQueries({
-      queryKey: [
-        appQueryKeys.GET_USER_REFERRAL_REWARD_HISTORY,
-        userData?.token,
-      ],
     });
   }, []);
 
@@ -117,7 +105,7 @@ export const Referrals = ({
                 verticalAlign: "middle",
                 paddingLeft: moderateScale(15),
               }}>
-              {`Invite friends to\nPressMoneySharp and\nearn rewards`}
+              {`Invite friends to\nAutoMotor and\nearn rewards`}
             </CustomText>
             <View style={styles.ctaImgContainer}>
               <Image
@@ -225,11 +213,13 @@ export const Referrals = ({
             </View>
             <View style={styles.earnContainer}>
               <CustomButton
-                title='View referral history'
+                title={`Referral history`}
                 lightGray
                 textLightBlack
                 buttonType='Solid'
-                onPress={() => setShowReferralHistory(!showReferralHistory)}
+                onPress={() => {
+                  // setShowReferralHistory(!showReferralHistory)
+                }}
                 textType='medium'
                 textSize={13}
                 btnStyle={[
@@ -240,11 +230,20 @@ export const Referrals = ({
                   },
                 ]}
                 rightIcon={
-                  <MaterialIcons
-                    name='keyboard-arrow-right'
-                    color={colors.lightBlack}
-                    size={moderateScale(25)}
-                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}>
+                    <CustomText type='medium' size={12} lightBlack>
+                      {`(${userReferral && userReferral?.referrals?.length})`}
+                    </CustomText>
+                    <MaterialIcons
+                      name='keyboard-arrow-right'
+                      color={colors.lightBlack}
+                      size={moderateScale(25)}
+                    />
+                  </View>
                 }
               />
             </View>
@@ -254,7 +253,7 @@ export const Referrals = ({
       <ReferralModal
         visible={showReferralHistory}
         onClose={() => setShowReferralHistory(!showReferralHistory)}
-        data={userReferral ? userReferral : {}}
+        data={userReferral ? userReferral.referrals : []}
       />
     </>
   );

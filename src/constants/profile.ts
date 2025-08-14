@@ -13,10 +13,18 @@ export const profileList: lisTypes = [
         list: "Recently Viewed",
         toggle: false,
       },
+      {
+        list: "Referrals",
+        toggle: false,
+      },
+      {
+        list: "Coupon",
+        toggle: false,
+      },
     ],
   },
   {
-    title: "Notifications",
+    title: "Preferences",
     subMenu: [
       {
         list: "Push Notification",
@@ -26,10 +34,10 @@ export const profileList: lisTypes = [
         list: "Email Notification",
         toggle: true,
       },
-      {
-        list: "Chat",
-        toggle: true,
-      },
+      // {
+      //   list: "Chat",
+      //   toggle: true,
+      // },
     ],
   },
   {
@@ -49,18 +57,18 @@ export const profileList: lisTypes = [
         }`,
         toggle: true,
       },
-      {
-        list: "Referrals",
-        toggle: false,
-      },
+      // {
+      //   list: "Referrals",
+      //   toggle: false,
+      // },
       {
         list: "Contact Us",
         toggle: false,
       },
-      {
-        list: "Coupon",
-        toggle: false,
-      },
+      // {
+      //   list: "Coupon",
+      //   toggle: false,
+      // },
     ],
   },
 ];

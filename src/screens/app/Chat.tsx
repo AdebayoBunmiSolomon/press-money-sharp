@@ -236,7 +236,7 @@ export const Chat = ({
             {isFetching && (
               <ActivityIndicator
                 size='small'
-                color={colors.red}
+                color={colors.lightGray}
                 style={styles.refreshIndicator}
               />
             )}

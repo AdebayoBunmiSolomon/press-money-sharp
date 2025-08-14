@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AuthStackParamList } from "@src/router/types";
 import { authScreenNames } from "@src/navigation";
 import { formatApiErrorMessage } from "@src/helper/utils";
+import { useState } from "react";
 
 export const useLogin = () => {
   const { setIsAuthenticated, setUserData } = useAuthStore();
@@ -304,5 +305,43 @@ export const useUpdatePassword = () => {
     isError,
     isPending,
     UpdatePass,
+  };
+};
+
+export const useLogOutUser = () => {
+  const [loggingOut, setLoggingOut] = useState<boolean>(false);
+  const { setIsAuthenticated, setUserData } = useAuthStore();
+
+  const logOutUser = async () => {
+    setLoggingOut(true);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    setIsAuthenticated(false);
+    setUserData({
+      uuid: "",
+      first_name: "",
+      last_name: "",
+      referred_by: "",
+      referral_code: "",
+      gender: "",
+      profile_img: "",
+      email: "",
+      phone: "",
+      address: "",
+      dob: "",
+      email_verified_at: "",
+      login_at: "",
+      is_admin: false,
+      status: "",
+      created_at: "",
+      updated_at: "",
+      deleted_at: null,
+      token: "",
+    });
+    setLoggingOut(false);
+  };
+
+  return {
+    logOutUser,
+    loggingOut,
   };
 };

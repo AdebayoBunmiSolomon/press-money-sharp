@@ -1,4 +1,5 @@
 export const countriesDialCode = [
+  { name: "Nigeria", code: "NG", flag: "🇳🇬", dialCode: "+234" },
   { name: "Afghanistan", code: "AF", flag: "🇦🇫", dialCode: "+93" },
   { name: "Albania", code: "AL", flag: "🇦🇱", dialCode: "+355" },
   { name: "Algeria", code: "DZ", flag: "🇩🇿", dialCode: "+213" },
@@ -49,7 +50,6 @@ export const countriesDialCode = [
   { name: "Germany", code: "DE", flag: "🇩🇪", dialCode: "+49" },
   { name: "Ghana", code: "GH", flag: "🇬🇭", dialCode: "+233" },
   { name: "Greece", code: "GR", flag: "🇬🇷", dialCode: "+30" },
-  { name: "Nigeria", code: "NG", flag: "🇳🇬", dialCode: "+234" },
   { name: "United Kingdom", code: "GB", flag: "🇬🇧", dialCode: "+44" },
   { name: "United States", code: "US", flag: "🇺🇸", dialCode: "+1" },
 ];

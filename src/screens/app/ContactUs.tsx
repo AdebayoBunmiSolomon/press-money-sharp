@@ -11,6 +11,7 @@ import {
   FontAwesome6,
   Ionicons,
   MaterialCommunityIcons,
+  MaterialIcons,
 } from "@expo/vector-icons";
 import { RootStackScreenProps } from "@src/router/types";
 import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
@@ -26,9 +27,14 @@ export const ContactUs = ({
 }: RootStackScreenProps<appScreenNames.CONTACT_US>) => {
   const { settings } = useSettingsStore();
 
+  console.log(settings);
+
   const openSocialMediaLink = (socialMediaType: settingsType) => {
     const url = String(
-      settings && settings.find((i) => i.type === socialMediaType)?.value
+      settings &&
+        settings.find(
+          (i) => i.type.toLowerCase() === socialMediaType.toLowerCase()
+        )?.value
     );
     Linking.canOpenURL(url)
       .then((supported) => {
@@ -149,7 +155,7 @@ export const ContactUs = ({
             Follow our Social Media
           </CustomText>
           <View style={styles.socialMediaBtnContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.socialMediaBtn}
               onPress={() => openSocialMediaLink("Instagram")}>
               <FontAwesome
@@ -157,21 +163,30 @@ export const ContactUs = ({
                 size={moderateScale(17)}
                 color={"#1877F2"}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openSocialMediaLink("Instagram")}>
+              onPress={() => openSocialMediaLink("Whatsapp")}>
               <FontAwesome
                 name='whatsapp'
                 size={moderateScale(17)}
                 color={"#25D366"}
               />
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              style={styles.socialMediaBtn}
+              onPress={() => openSocialMediaLink("")}>
+              <FontAwesome6
+                name='x-twitter'
+                size={moderateScale(17)}
+                color={colors.lightBlack}
+              />
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.socialMediaBtn}
               onPress={() => openSocialMediaLink("Instagram")}>
-              <FontAwesome6
-                name='x-twitter'
+              <Entypo
+                name='instagram'
                 size={moderateScale(17)}
                 color={colors.lightBlack}
               />
@@ -179,9 +194,9 @@ export const ContactUs = ({
             <TouchableOpacity
               style={styles.socialMediaBtn}
               onPress={() => openSocialMediaLink("Instagram")}>
-              <Entypo
-                name='instagram'
-                size={moderateScale(17)}
+              <MaterialIcons
+                name='tiktok'
+                size={moderateScale(22)}
                 color={colors.lightBlack}
               />
             </TouchableOpacity>

@@ -44,7 +44,8 @@ export const Notification = ({
           headerStyle={styles.header}
           color={colors.white}
           leftIcon={
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(appScreenNames.MESSAGES)}>
               <AntDesign
                 name='arrowleft'
                 size={moderateScale(20)}

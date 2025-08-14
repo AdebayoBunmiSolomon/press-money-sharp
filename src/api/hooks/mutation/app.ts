@@ -28,6 +28,7 @@ import { useMutation } from "@tanstack/react-query";
 import { appQueryKeys } from "../queries/query-key";
 import { useLikedServiceId } from "../likedService";
 import { useRecentlyViewedServiceId } from "../recentlyServiceViewed";
+import { useLogOutUser } from "./auth";
 
 export const useScheduleConsultation = () => {
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -364,8 +365,8 @@ export const useSendChatMessage = () => {
 };
 
 export const useUpdateUserProfileImg = () => {
-  const { userData, setIsAuthenticated, setUserData, isAuthenticated } =
-    useAuthStore();
+  const { logOutUser } = useLogOutUser();
+  const { userData } = useAuthStore();
   const {
     data: response,
     isError,
@@ -391,28 +392,7 @@ export const useUpdateUserProfileImg = () => {
             ? "Profile Image Updated Successfully"
             : formatApiErrorMessage(response?.data?.error),
         });
-        setUserData({
-          uuid: "",
-          first_name: "",
-          last_name: "",
-          referred_by: null,
-          referral_code: "",
-          gender: "",
-          profile_img: "",
-          email: "",
-          phone: "",
-          address: null,
-          dob: "",
-          email_verified_at: "",
-          login_at: "",
-          is_admin: false,
-          status: "",
-          created_at: "",
-          updated_at: "",
-          deleted_at: null,
-          token: "",
-        });
-        setIsAuthenticated(!isAuthenticated);
+        logOutUser();
       }
     },
     onError: (error) => {

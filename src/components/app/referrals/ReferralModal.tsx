@@ -12,15 +12,13 @@ import {
 } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
-import { referralHistory } from "@src/constants/referral";
-import { formatAmountWithCommas } from "@src/helper/utils";
-import { apiGetUserReferralResponse } from "@src/api/types/app";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { referralType } from "@src/api/types/app";
 
 interface IReferralModalProps {
   visible: boolean;
   onClose: () => void;
-  data: apiGetUserReferralResponse;
+  data: referralType[];
 }
 
 export const ReferralModal: React.FC<IReferralModalProps> = ({
@@ -52,23 +50,12 @@ export const ReferralModal: React.FC<IReferralModalProps> = ({
               contentContainerStyle={{
                 gap: moderateScale(5),
               }}>
-              {referralHistory &&
-                referralHistory.map((item, index) => (
+              {data &&
+                data.map((item, index) => (
                   <View key={index} style={styles.listContainer}>
                     <View style={styles.itemListContainer}>
                       <CustomText type='regular' size={15} lightBlack>
-                        Total Earned
-                      </CustomText>
-                      <CustomText type='regular' size={15} lightBlack>
-                        {formatAmountWithCommas(item?.totalEarned)}
-                      </CustomText>
-                    </View>
-                    <View style={styles.itemListContainer}>
-                      <CustomText type='regular' size={15} lightBlack>
-                        Invites
-                      </CustomText>
-                      <CustomText type='regular' size={15} lightBlack>
-                        {formatAmountWithCommas(item?.invites)}
+                        {`${item?.first_name} ${item?.last_name}`}
                       </CustomText>
                     </View>
                   </View>
@@ -85,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "center",
     paddingTop:
       Platform.OS === "ios" ? moderateScale(20) : StatusBar.currentHeight,
@@ -110,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F7F7F7",
     paddingTop: moderateScale(10),
-    paddingBottom: moderateScale(30),
+    paddingBottom: moderateScale(10),
     paddingHorizontal: moderateScale(10),
     borderRadius: moderateScale(10),
   },

@@ -11,6 +11,7 @@ export type signUpFormTypes = {
   password: string;
   confirm_password: string;
   phone: string;
+  referral_code: string;
 };
 
 export type passwordResetFormTypes = {

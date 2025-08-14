@@ -44,6 +44,7 @@ export type settingsType =
   | "Phone"
   | "Instagram"
   | "Payment"
-  | "Address";
+  | "Address"
+  | "Tiktok";
 
 export type imgType = {};
