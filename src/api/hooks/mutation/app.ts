@@ -81,6 +81,7 @@ export const useSendMessage = () => {
     data,
     isError,
     isPending,
+    isSuccess,
     mutate: SendMessage,
   } = useMutation({
     mutationFn: (payload: apiSendMessage) =>
@@ -111,6 +112,7 @@ export const useSendMessage = () => {
     data,
     isError,
     isPending,
+    isSuccess,
     SendMessage,
   };
 };

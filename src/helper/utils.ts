@@ -221,10 +221,22 @@ export const groupMessagesByDate = (messages: any) => {
 export const fixImageUrl = (url: string) => {
   if (!url) return "";
 
-  const storagePrefix = "/storage/";
-  if (url.startsWith(storagePrefix)) {
-    return url.replace(storagePrefix, "");
+  // Remove /storage/ prefix if present
+  if (url.startsWith("/storage/")) {
+    return url.replace("/storage/", "");
   }
 
-  return url; // already correct
+  // Find the last occurrence of https:// or http://
+  const lastHttpsIndex = url.lastIndexOf("https://");
+  const lastHttpIndex = url.lastIndexOf("http://");
+
+  // Use whichever is found later in the string
+  const lastIndex = Math.max(lastHttpsIndex, lastHttpIndex);
+
+  if (lastIndex > 0) {
+    return url.substring(lastIndex);
+  }
+
+  // Already clean
+  return url;
 };

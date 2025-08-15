@@ -110,7 +110,7 @@ export const Wishlist = ({
                         service_uuid: String(data?.uuid),
                       })
                     }
-                    image={data?.image_url}
+                    image={data?.image_url[0]}
                     onLikeProd={() => {
                       if (!isLiked) {
                         AddProductToWishList({

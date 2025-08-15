@@ -71,7 +71,7 @@ export const Profile = ({
             <Image
               source={
                 userData?.profile_img
-                  ? { uri: fixImageUrl(userData?.profile_img) }
+                  ? { uri: userData?.profile_img }
                   : require("@src/assets/png/category/car-hire.png")
               }
               contentFit='cover'

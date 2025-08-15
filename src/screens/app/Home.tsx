@@ -24,6 +24,8 @@ import {
   useRecentlyViewedServicesIdCache,
 } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
+import { queryClient } from "@src/helper/utils";
+import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 
 export const Home = ({
   navigation,
@@ -101,7 +103,14 @@ export const Home = ({
           searchInput
           style={styles.input}
         />
-        <ScrollContainer style={styles.scrollContainer}>
+        <ScrollContainer
+          style={styles.scrollContainer}
+          refreshing={isFetchingAllService}
+          onPullRefresh={() =>
+            queryClient.invalidateQueries({
+              queryKey: [appQueryKeys.GET_ALL_SERVICES], // ✅ Matches the queryKey now
+            })
+          }>
           <View style={styles.cta}>
             <View style={styles.leftInnerCta}>
               <CustomText type='semi-bold' size={20} white>
@@ -141,7 +150,7 @@ export const Home = ({
             </CustomText>
             {isFetchingAllService ? (
               <Loader size='large' color={colors.danger} />
-            ) : (
+            ) : allServices && allServices.length > 0 ? (
               <ProductCard
                 title={String(
                   allServices &&
@@ -160,6 +169,19 @@ export const Home = ({
                   })
                 }
               />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  height: DVH(12),
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                <CustomText type='regular' size={16} lightGray>
+                  No services found yet{" "}
+                </CustomText>
+              </View>
             )}
           </View>
           <View

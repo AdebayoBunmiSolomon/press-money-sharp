@@ -22,7 +22,11 @@ import {
   WhatsAppAction,
 } from "@src/components/app/actions";
 import { useViewService } from "@src/api/hooks/queries/app";
-import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
+import {
+  fixImageUrl,
+  formatAmountWithCommas,
+  queryClient,
+} from "@src/helper/utils";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
@@ -142,7 +146,7 @@ export const CarDetails = ({
                     return (
                       <ImageBackground
                         key={index}
-                        source={{ uri: item }}
+                        source={{ uri: String(item) }}
                         contentFit='cover'
                         style={styles.img}>
                         <TouchableOpacity
@@ -485,8 +489,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(15),
   },
   heartBtn: {
-    padding: moderateScale(10),
     backgroundColor: colors.white,
+    width: Platform.OS === "ios" ? DVW(11) : DVW(10),
+    height: DVH(5),
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
     borderRadius: moderateScale(100),
   },
   percentText: {

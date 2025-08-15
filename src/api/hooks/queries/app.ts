@@ -112,6 +112,7 @@ export const useGetAllServices = () => {
     },
     retry: true,
     refetchOnReconnect: true,
+    refetchInterval: 60000,
   });
 
   return {

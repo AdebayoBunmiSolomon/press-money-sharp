@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { FontAwesome, EvilIcons } from "@expo/vector-icons";
-import { formatAmountWithCommas } from "@src/helper/utils";
+import { fixImageUrl, formatAmountWithCommas } from "@src/helper/utils";
 import { Loader } from "../Loader";
 
 interface IProductCardProps {
@@ -44,7 +44,10 @@ export const ProductCard: React.FC<IProductCardProps> = ({
         onPress={onClickCard}
         activeOpacity={0.6}>
         <View style={styles.imgContainer}>
-          <ImageBackground source={image} contentFit='cover' style={styles.img}>
+          <ImageBackground
+            source={{ uri: String(image) }}
+            contentFit='cover'
+            style={styles.img}>
             <TouchableOpacity style={styles.heartBtn} onPress={onLikeProd}>
               {loading ? (
                 <View style={{ flex: 1 }}>

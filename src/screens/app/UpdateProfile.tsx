@@ -86,7 +86,7 @@ export const UpdateProfile = ({
             {userData?.profile_img || imgResult?.uri ? (
               <Image
                 source={{
-                  uri: imgResult?.uri || fixImageUrl(userData?.profile_img),
+                  uri: imgResult?.uri || userData?.profile_img,
                 }}
                 style={styles.profileImg}
                 contentFit='cover'

@@ -13,6 +13,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "@src/router/types";
 import { appScreenNames } from "@src/navigation";
+import { queryClient } from "@src/helper/utils";
+import { appQueryKeys } from "@src/api/hooks/queries/query-key";
+import { useAuthStore } from "@src/api/store/auth";
 
 interface IMessageActionProps {
   visible: boolean;
@@ -25,9 +28,10 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   onClose,
   service_uuid,
 }) => {
+  const { userData } = useAuthStore();
   const navigation: NativeStackNavigationProp<RootStackParamList> =
     useNavigation();
-  const { SendMessage, isPending } = useSendMessage();
+  const { SendMessage, isPending, isSuccess } = useSendMessage();
   const {
     control,
     reset,
@@ -39,14 +43,17 @@ export const MessageAction: React.FC<IMessageActionProps> = ({
   });
 
   useEffect(() => {
-    if (!!isPending) {
+    if (isSuccess) {
       reset();
+      onClose();
       navigation.navigate(appScreenNames.CHAT, {
         service_uuid: service_uuid,
       });
-      onClose();
+      queryClient.invalidateQueries({
+        queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
+      });
     }
-  }, [isPending]);
+  }, [isSuccess]);
 
   const onSubmit = (data: messageActionFormTypes) => {
     SendMessage({
