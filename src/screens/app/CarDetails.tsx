@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Screen } from "../Screen";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { RootStackScreenProps } from "@src/router/types";
 import { appScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
@@ -81,21 +87,20 @@ export const CarDetails = ({
     }
   }, [isFetching, serviceInfo]);
 
-  useEffect(() => {
-    console.log("settings value", actionModal?.value);
-  }, [actionModal.value]);
-
   const extractKeyValuePairs = (data: string) => {
     try {
-      const parsed = JSON.parse(data!); // parsed is an object like { body: "long", ... }
-      setReturnedData(parsed); // ✅ not Object.entries — just store the object directly
+      const parsed = JSON.parse(data!); // parsed is { test: "testing", type: "typing" }
+      console.log("Parsed", parsed);
+      setReturnedData(parsed); // store directly
     } catch (e) {
-      setReturnedData({}); // fallback
+      setReturnedData({});
     }
   };
 
   useEffect(() => {
-    extractKeyValuePairs(serviceInfo?.description!);
+    if (serviceInfo?.description) {
+      extractKeyValuePairs(serviceInfo.description);
+    }
   }, [isFetching]);
 
   return (
@@ -258,14 +263,17 @@ export const CarDetails = ({
                 </View>
                 {/* 2 */}
                 <View style={styles.subInfoContainer}>
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      {returnedData?.body}
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Body
-                    </CustomText>
-                  </View>
+                  {returnedData &&
+                    Object.entries(returnedData).map(([key, value]) => (
+                      <View key={key} style={{ marginBottom: 8 }}>
+                        <CustomText size={16} lightBlack type='medium'>
+                          {String(value)}
+                        </CustomText>
+                        <CustomText size={13} lightGray type='medium'>
+                          {key} {/* shows the actual key name */}
+                        </CustomText>
+                      </View>
+                    ))}
                   <View style={styles.subInfoItemContainer}>
                     <CustomText size={16} lightBlack type='medium'>
                       2008

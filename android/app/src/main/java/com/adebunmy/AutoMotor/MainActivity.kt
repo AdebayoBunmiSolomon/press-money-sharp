@@ -1,4 +1,4 @@
-package com.adebunmy.press_money_sharp
+package com.adebunmy.AutoMotor
 
 import android.os.Build
 import android.os.Bundle

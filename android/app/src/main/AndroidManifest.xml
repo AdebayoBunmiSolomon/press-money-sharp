@@ -33,8 +33,8 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="pressmoneysharp"/>
-        <data android:scheme="exp+pressmoneysharp"/>
+        <data android:scheme="AutoMotor"/>
+        <data android:scheme="exp+automotor"/>
       </intent-filter>
     </activity>
   </application>

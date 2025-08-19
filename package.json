@@ -14,7 +14,8 @@
     "build:preview:ios": "eas build --profile preview --platform ios",
     "build:dev:ios": "eas build --profile development --platform ios",
     "build:prod:android": "eas build --profile production --platform android",
-    "build:prod:ios": "eas build --profile production --platform ios"
+    "build:prod:ios": "eas build --profile production --platform ios",
+    "prepare": "husky"
   },
   "dependencies": {
     "@birdwingo/react-native-swipe-modal": "^1.2.5",
@@ -56,7 +57,16 @@
     "@babel/core": "^7.25.2",
     "@types/lodash": "^4.17.20",
     "@types/react": "~19.0.10",
+    "eslint": "^9.33.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "typescript": "~5.8.3"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "expo": {
     "doctor": {

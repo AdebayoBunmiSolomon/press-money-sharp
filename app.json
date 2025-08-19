@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "press_money_sharp",
-    "scheme": "pressmoneysharp",
-    "slug": "press_money_sharp",
+    "name": "AutoMotor",
+    "scheme": "AutoMotor",
+    "slug": "AutoMotor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/splash-icon.png",
@@ -16,10 +16,11 @@
     "ios": {
       "icon": "./assets/ios-app-icon.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.adebunmy.press-money-sharp",
       "jsEngine": "hermes",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["whatsapp"],
+        "LSApplicationQueriesSchemes": [
+          "whatsapp"
+        ],
         "NSCameraUsageDescription": "This app needs access to your camera to take photos.",
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select images.",
         "NSPhotoLibraryAddUsageDescription": "This app needs access to save photos to your library."
@@ -34,11 +35,12 @@
       "permissions": [
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.adebunmy.press_money_sharp"
+      "package": "com.adebunmy.AutoMotor"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -67,7 +69,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "c3ac716d-34ce-4b36-992f-937a5c13a114"
+        "projectId": "74956431-ec42-4e37-8e92-04b05006139b"
       }
     }
   }
