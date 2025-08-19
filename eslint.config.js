@@ -7,7 +7,6 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.{js,ts,tsx}"], // 👈 explicitly match all source files
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -15,7 +14,7 @@ export default [
       },
     },
     rules: {
-      "no-console": "error", // ❌ blocks console.log, console.error, etc.
+      "no-console": "error",
       "no-unused-vars": "warn",
     },
   },
