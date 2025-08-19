@@ -35,13 +35,11 @@ import {
   apiGetUserRecentlyViewedResponse,
   apiGetUserReferralResponse,
   apiGetUserReferralRewardHistoryResponse,
-  apiGetUserReferralRewardHistoryTypes,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
   apiGetTermsAndConditionsStoreResponse,
 } from "@src/api/types/app";
 import { formatApiErrorMessage } from "@src/helper/utils";
-import { settingsType } from "@src/types/types";
 import { useQuery } from "@tanstack/react-query";
 import { appQueryKeys } from "./query-key";
 
@@ -55,7 +53,7 @@ export const useGetCategory = () => {
 
       if (response?.data?.success) {
         const categories = response?.data?.data || [];
-        console.log("Categories", categories);
+        // console.log("Categories", categories);
         setCategories(categories); // ✅ Now setting correctly
         return categories; // ✅ Return the real data
       }
@@ -479,7 +477,7 @@ export const useGetUserServiceMessages = (
       if (response && response?.data) {
         const userServiceMessage: apiGetUserServiceMessagesResponse[] =
           response?.data || [];
-        console.log(response?.data);
+        // console.log(response?.data);
         setUserServiceMessages(userServiceMessage);
         return response?.data;
       }

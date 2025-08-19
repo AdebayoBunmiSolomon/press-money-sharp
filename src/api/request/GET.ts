@@ -17,7 +17,7 @@ export const GET = async (
     // console.error("Error fetching data:", error);
 
     if (axios.isCancel(error)) {
-      console.log("Request was canceled due to timeout");
+      // console.log("Request was canceled due to timeout");
     }
     return {
       status: error.response?.status ?? 0, // ✅ `0` for network errors

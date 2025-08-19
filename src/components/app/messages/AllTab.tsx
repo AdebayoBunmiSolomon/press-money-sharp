@@ -8,11 +8,9 @@ import { Image } from "expo-image";
 import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
 import { apiGetAllUserChatsResponse } from "@src/api/types/app";
-import { getDateStringVal, queryClient, truncateText } from "@src/helper/utils";
+import { getDateStringVal, truncateText } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import { colors } from "@src/resources/color/color";
-import { appQueryKeys } from "@src/api/hooks/queries/query-key";
-import { useAuthStore } from "@src/api/store/auth";
 
 interface IAllTabProps {
   data: apiGetAllUserChatsResponse[];

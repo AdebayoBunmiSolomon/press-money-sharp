@@ -16,7 +16,7 @@ export const DELETE = async (
     // console.error("Error deleting data:", error);
 
     if (axios.isCancel(error)) {
-      console.log("Request was canceled due to timeout");
+      // console.log("Request was canceled due to timeout");
     }
 
     return {

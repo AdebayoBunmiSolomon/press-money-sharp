@@ -43,7 +43,7 @@ export const useLogin = () => {
           : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
-        console.log("user-data", response?.data);
+        // console.log("user-data", response?.data);
         setIsAuthenticated(true);
         setUserData({
           uuid: response?.data?.data?.uuid,
