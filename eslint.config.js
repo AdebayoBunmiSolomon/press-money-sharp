@@ -1,9 +1,9 @@
 // eslint.config.js
-import js from "@eslint/js";
-import globals from "globals";
-import tseslint from "typescript-eslint";
+const js = require("@eslint/js");
+const globals = require("globals");
+const tseslint = require("typescript-eslint");
 
-export default [
+module.exports = [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -16,12 +16,7 @@ export default [
     rules: {
       "no-console": "error",
       "no-unused-vars": "warn",
-    },
-  },
-  {
-    files: ["src/api/request/*.ts"],
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "off", // 👈 move it here so it's global
     },
   },
 ];

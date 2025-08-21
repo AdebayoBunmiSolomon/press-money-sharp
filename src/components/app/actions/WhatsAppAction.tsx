@@ -2,7 +2,7 @@ import { CustomButton, CustomText } from "@src/components/shared";
 import { showFlashMsg } from "@src/helper/ui-utils";
 import { moderateScale } from "@src/resources/responsiveness";
 import React from "react";
-import { Linking, Modal, StyleSheet, View } from "react-native";
+import { Linking, Modal, Platform, StyleSheet, View } from "react-native";
 
 interface IWhatsAppActionProps {
   visible: boolean;
@@ -16,25 +16,29 @@ export const WhatsAppAction: React.FC<IWhatsAppActionProps> = ({
   value,
 }) => {
   const openWhatsApp = () => {
-    const phoneNumber = value.replace(/[^0-9]/g, "");
+    let phoneNumber = value.trim();
     const message = "Hello, I'm a customer from AutoMotor";
-    const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
-      message
-    )}`;
 
-    Linking.canOpenURL(url)
-      .then((supported) => {
-        if (supported) {
-          Linking.openURL(url);
-        } else {
-          showFlashMsg({
-            title: "Error",
-            description: "Whats-app is not installed on your phone.",
-            msgType: "ERROR",
-          });
-        }
-      })
-      .catch((err) => console.error("An error occurred", err));
+    // Ensure phone is in international format
+    if (!phoneNumber.startsWith("+")) {
+      phoneNumber = `+${phoneNumber.replace(/[^0-9]/g, "")}`;
+    }
+
+    // Use correct URL per platform
+    const url =
+      Platform.OS === "android"
+        ? `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
+            message
+          )}`
+        : `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+    Linking.openURL(url).catch(() => {
+      showFlashMsg({
+        title: "Error",
+        description: "WhatsApp is not installed on your phone.",
+        msgType: "ERROR",
+      });
+    });
   };
 
   return (

@@ -75,7 +75,10 @@ export const AllTab: React.FC<IAllTabProps> = ({
                     gap: moderateScale(10),
                   }}>
                   <CustomText type='semi-bold' size={12} lightBlack>
-                    {`${item?.service?.brand} ${item?.service?.model}`}
+                    {truncateText(
+                      `${item?.service?.brand} ${item?.service?.model}`,
+                      15
+                    )}
                   </CustomText>
                   <CustomText
                     type='regular'
@@ -83,7 +86,7 @@ export const AllTab: React.FC<IAllTabProps> = ({
                     style={{
                       color: "#696161",
                     }}>
-                    {truncateText(item?.message, 25)}
+                    {truncateText(item?.message, 15)}
                   </CustomText>
                 </View>
               </View>

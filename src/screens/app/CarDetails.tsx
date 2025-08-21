@@ -28,11 +28,7 @@ import {
   WhatsAppAction,
 } from "@src/components/app/actions";
 import { useViewService } from "@src/api/hooks/queries/app";
-import {
-  fixImageUrl,
-  formatAmountWithCommas,
-  queryClient,
-} from "@src/helper/utils";
+import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
 import { Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
@@ -50,7 +46,7 @@ export const CarDetails = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CAR_DETAILS>) => {
-  const { service_uuid } = route?.params;
+  const { service_uuid } = route?.params ?? {};
   const { userData } = useAuthStore();
   const { serviceInfo, isFetching } = useViewService(service_uuid);
   const { AddProductToRecentlyViewed } = useAddProductToRecentlyViewed();
@@ -90,9 +86,10 @@ export const CarDetails = ({
   const extractKeyValuePairs = (data: string) => {
     try {
       const parsed = JSON.parse(data!); // parsed is { test: "testing", type: "typing" }
-      console.log("Parsed", parsed);
+      // console.log("Parsed", parsed);
       setReturnedData(parsed); // store directly
-    } catch (e) {
+    } catch (e: any) {
+      Alert.alert(e);
       setReturnedData({});
     }
   };
@@ -231,7 +228,13 @@ export const CarDetails = ({
                     size={moderateScale(16)}
                     color={colors.black}
                   />
-                  <CustomText type='regular' size={13} black>
+                  <CustomText
+                    type='regular'
+                    size={13}
+                    black
+                    style={{
+                      marginBottom: moderateScale(-3),
+                    }}>
                     {serviceInfo?.location ? serviceInfo?.location : "Anywhere"}
                   </CustomText>
                 </View>
@@ -262,7 +265,7 @@ export const CarDetails = ({
                   </View>
                 </View>
                 {/* 2 */}
-                <View style={styles.subInfoContainer}>
+                {/* <View style={styles.subInfoContainer}>
                   {returnedData &&
                     Object.entries(returnedData).map(([key, value]) => (
                       <View key={key} style={{ marginBottom: 8 }}>
@@ -270,7 +273,7 @@ export const CarDetails = ({
                           {String(value)}
                         </CustomText>
                         <CustomText size={13} lightGray type='medium'>
-                          {key} {/* shows the actual key name */}
+                          {key}
                         </CustomText>
                       </View>
                     ))}
@@ -282,7 +285,7 @@ export const CarDetails = ({
                       Year of Manufacture
                     </CustomText>
                   </View>
-                </View>
+                </View> */}
                 {/* 3 */}
                 <View style={styles.subInfoContainer}>
                   <View style={styles.subInfoItemContainer}>
@@ -291,14 +294,6 @@ export const CarDetails = ({
                     </CustomText>
                     <CustomText size={13} lightGray type='medium'>
                       Type
-                    </CustomText>
-                  </View>
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      {returnedData?.condition}
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Condition
                     </CustomText>
                   </View>
                 </View>
@@ -310,23 +305,19 @@ export const CarDetails = ({
                         alignItems: "center",
                         gap: moderateScale(5),
                       }}>
-                      {returnedData?.gear &&
-                        returnedData?.gear?.map((i: string, index: number) => (
+                      {returnedData &&
+                        returnedData.map((item: any, index: number) => (
                           <CustomText
+                            key={index}
                             size={16}
                             lightBlack
-                            type='medium'
-                            key={index}>
-                            {`${i} ${
-                              index !== returnedData?.gear?.length - 1
-                                ? ","
-                                : ""
-                            }`}
+                            type='medium'>
+                            {`${item.title.trim()}: ${item.value}`}
                           </CustomText>
                         ))}
                     </View>
                     <CustomText size={13} lightGray type='medium'>
-                      Gear
+                      Condition
                     </CustomText>
                   </View>
                 </View>
@@ -507,7 +498,7 @@ const styles = StyleSheet.create({
   },
   percentText: {
     backgroundColor: "#FFE5E6",
-    padding: moderateScale(10),
+    padding: moderateScale(3),
     borderRadius: moderateScale(50),
   },
   percentPriceContainer: {
@@ -517,7 +508,7 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     gap: moderateScale(5),
   },
   pricePercentLocationContainer: {
