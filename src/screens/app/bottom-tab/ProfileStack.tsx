@@ -33,6 +33,10 @@ export const ProfileStack = () => {
         name={appScreenNames.TERMS_AND_CONDITIONS}
         component={ProfileScreen.TermsAndConditions}
       />
+      <ScreenStack.Screen
+        name={appScreenNames.COUPON}
+        component={ProfileScreen.Coupon}
+      />
     </ScreenStack.Navigator>
   );
 };

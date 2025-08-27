@@ -39,4 +39,5 @@ export enum appScreenNames {
   CHAT = "Chat",
   UPDATE_PROFILE = "UpdateProfile",
   TERMS_AND_CONDITIONS = "TermsAndConditions",
+  COUPON = "Coupon",
 }

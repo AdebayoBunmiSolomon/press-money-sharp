@@ -19,3 +19,4 @@ export * from "./Checkout";
 export * from "./Chat";
 export * from "./UpdateProfile";
 export * from "./TermsAndConditions";
+export * from "./Coupon";

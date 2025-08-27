@@ -14,7 +14,7 @@ import { useGetTermsAndConditions } from "@src/api/hooks/queries/app";
 export const TermsAndConditions = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.TERMS_AND_CONDITIONS>) => {
-  const { isFetching, termsAndConditions } = useGetTermsAndConditions();
+  const { termsAndConditions } = useGetTermsAndConditions();
   return (
     <Screen style={styles.screenContainer} safeArea>
       <Header

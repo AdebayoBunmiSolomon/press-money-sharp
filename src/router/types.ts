@@ -63,6 +63,7 @@ export interface RootStackParamList extends ParamListBase {
   };
   UpdateProfile: undefined;
   TermsAndConditions: undefined;
+  Coupon: undefined;
 }
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =

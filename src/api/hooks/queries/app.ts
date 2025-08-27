@@ -212,15 +212,15 @@ export const useGetUserNotifications = (user_uuid: string, token: string) => {
       ) {
         const userNotificationsResp: apiGetUserNotificationsResponse[] =
           response?.data?.data || [];
-        APIRequest.RESPONSE_HANDLER({
-          type: "flash",
-          status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-          success: response?.data?.success, //true | false
-          code: response?.data?.error?.code || "Success",
-          message: response?.data?.success
-            ? "Notifications fetched successfully"
-            : formatApiErrorMessage(response?.data?.error),
-        });
+        // APIRequest.RESPONSE_HANDLER({
+        //   type: "flash",
+        //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        //   success: response?.data?.success, //true | false
+        //   code: response?.data?.error?.code || "Success",
+        //   message: response?.data?.success
+        //     ? "Notifications fetched successfully"
+        //     : formatApiErrorMessage(response?.data?.error),
+        // });
         setUserNotifications(userNotificationsResp);
         return userNotificationsResp; // ✅ Return the real data
       }
@@ -534,7 +534,7 @@ export const useGetTermsAndConditions = () => {
     },
     retry: true,
     refetchOnReconnect: true,
-    refetchInterval: 30000,
+    // refetchInterval: 30000,
   });
 
   return {

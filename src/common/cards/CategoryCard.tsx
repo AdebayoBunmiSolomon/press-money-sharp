@@ -11,17 +11,20 @@ interface ICategoryCardProps {
   onPressItem: () => void;
 }
 
+const categoryImages = [
+  require("@src/assets/png/category/car-consultation.png"),
+  require("@src/assets/png/category/car-sales.png"),
+];
+
 export const CategoryCard: React.FC<ICategoryCardProps> = ({
   item,
   onPressItem,
 }) => {
+  const randomImage =
+    categoryImages[Math.floor(Math.random() * categoryImages.length)];
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
-      <Image
-        source={require("@src/assets/png/category/car-sales.png")}
-        contentFit='fill'
-        style={styles.img}
-      />
+      <Image source={randomImage} contentFit='fill' style={styles.img} />
       <View style={styles.cardTitleContainer}>
         <CustomText type='medium' size={12} black>
           {`Car ${item}`}

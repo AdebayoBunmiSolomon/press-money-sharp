@@ -11,6 +11,8 @@ import {
 import { Feather, Fontisto } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { CustomText } from "@src/components/shared";
+import { useUserNotificationsStore } from "@src/api/store/app";
+import { hasUnreadNotifications } from "@src/helper/utils";
 
 interface IHeaderProps {
   showAppIcon?: boolean;
@@ -41,6 +43,10 @@ export const Header: React.FC<IHeaderProps> = ({
   onPressSearchIcon,
   extraComponent,
 }) => {
+  const { userNotifications } = useUserNotificationsStore();
+  const unreadNotificationExists = hasUnreadNotifications(
+    userNotifications ? userNotifications : []
+  );
   return (
     <View
       style={[
@@ -90,13 +96,36 @@ export const Header: React.FC<IHeaderProps> = ({
           <View />
         )}
         {showBellIcon ? (
-          <TouchableOpacity onPress={onPressBellIcon}>
-            <Fontisto
-              name='bell'
-              size={moderateScale(20)}
-              color={color || colors.black}
-            />
-          </TouchableOpacity>
+          unreadNotificationExists ? (
+            <TouchableOpacity
+              onPress={onPressBellIcon}
+              style={{ position: "relative" }}>
+              <Fontisto
+                name='bell'
+                size={moderateScale(20)}
+                color={color || colors.black}
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  top: -4,
+                  right: -4,
+                  width: moderateScale(8),
+                  height: moderateScale(8),
+                  borderRadius: moderateScale(4),
+                  backgroundColor: colors.red,
+                }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={onPressBellIcon}>
+              <Fontisto
+                name='bell'
+                size={moderateScale(20)}
+                color={color || colors.black}
+              />
+            </TouchableOpacity>
+          )
         ) : null}
         {showMenuIcon ? (
           <TouchableOpacity onPress={onPressMenuIcon}>

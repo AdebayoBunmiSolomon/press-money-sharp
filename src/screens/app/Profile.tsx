@@ -16,6 +16,7 @@ import { useAuthStore } from "@src/api/store/auth";
 import { useLogOutUser } from "@src/api/hooks/mutation/auth";
 import { useEmailNotificationPreferenceCache } from "@src/cache";
 import { useSaveUserPreferences } from "@src/api/hooks/mutation/app";
+import { ModalMessageProvider } from "@src/helper/ui-utils";
 
 export const Profile = ({
   navigation,
@@ -48,7 +49,13 @@ export const Profile = ({
         navigation.navigate(appScreenNames.REFERRALS); //referrals
         break;
       case profileList[0].subMenu[3]?.list:
-        navigation.navigate(appScreenNames.REFERRALS); //coupons
+        ModalMessageProvider.showModalMsg({
+          msgType: "SUCCESS",
+          title: "Information",
+          description: "No coupon available",
+          animationType: "slide",
+        });
+        // navigation.navigate(appScreenNames.COUPON); //coupons
         break;
       case profileList[2].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.PROFILE_STACK, {

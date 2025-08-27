@@ -26,7 +26,7 @@ import * as Clipboard from "expo-clipboard";
 import { useGetUserReferral } from "@src/api/hooks/queries/app";
 import { queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
-import { showFlashMsg } from "@src/helper/ui-utils";
+import { ModalMessageProvider, showFlashMsg } from "@src/helper/ui-utils";
 
 type earningSystemType = {
   image: ImageSourcePropType;
@@ -152,7 +152,12 @@ export const Referrals = ({
                 textWhite
                 buttonType='Solid'
                 onPress={() => {
-                  // if(userReferral?.user?.)
+                  ModalMessageProvider.showModalMsg({
+                    msgType: "SUCCESS",
+                    title: "Information",
+                    description: "No reward available",
+                    animationType: "slide",
+                  });
                 }}
                 textType='medium'
                 textSize={13}
@@ -218,7 +223,7 @@ export const Referrals = ({
                 textLightBlack
                 buttonType='Solid'
                 onPress={() => {
-                  // setShowReferralHistory(!showReferralHistory)
+                  // setShowReferralHistory(!showReferralHistory);
                 }}
                 textType='medium'
                 textSize={13}

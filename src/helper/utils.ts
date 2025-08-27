@@ -3,6 +3,7 @@ import * as Network from "expo-network";
 import moment from "moment";
 import { Linking, Platform } from "react-native";
 import { showFlashMsg } from "./ui-utils";
+import { apiGetUserNotificationsResponse } from "@src/api/types/app";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -296,4 +297,10 @@ export const formatMonthDay = (
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${month}${separator}${day}`;
+};
+
+export const hasUnreadNotifications = (
+  notifications: apiGetUserNotificationsResponse[]
+): boolean => {
+  return notifications.some((notif) => notif.read_at === null);
 };
