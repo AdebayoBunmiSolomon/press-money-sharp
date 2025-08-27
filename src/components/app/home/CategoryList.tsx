@@ -13,6 +13,10 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { CategoryCard } from "@src/common/cards";
 import Animated from "react-native-reanimated";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@src/router/types";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 
 interface ICategoryListProps {
   isLoading: boolean;
@@ -23,6 +27,8 @@ export const CategoryList: React.FC<ICategoryListProps> = ({
   isLoading,
   data,
 }) => {
+  const navigation: NativeStackNavigationProp<RootStackParamList> =
+    useNavigation();
   const listRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
@@ -98,7 +104,18 @@ export const CategoryList: React.FC<ICategoryListProps> = ({
           }}
           keyExtractor={(__, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <CategoryCard item={item} key={index} />
+            <CategoryCard
+              item={item}
+              key={index}
+              onPressItem={() =>
+                navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
+                  screen: appScreenNames.CATEGORIES,
+                  params: {
+                    category_type: item,
+                  },
+                })
+              }
+            />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}

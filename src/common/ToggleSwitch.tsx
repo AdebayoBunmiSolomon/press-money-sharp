@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  SafeAreaView,
-  View,
-  StyleSheet,
-  Button,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+import { Pressable, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -17,62 +9,69 @@ import Animated, {
 } from "react-native-reanimated";
 
 interface IToggleSwitchProps {
-  /** boolean shared value */
-  value: any;
-  onPress?: () => void;
+  /** boolean value */
+  value: boolean;
+  onValueChange: (_newValue: boolean) => void;
   style?: StyleProp<ViewStyle>;
   duration?: number;
-  trackColors: { on: string; off: string };
+  trackColors?: { on: string; off: string };
 }
 
 export const ToggleSwitch: React.FC<IToggleSwitchProps> = ({
   value,
-  onPress,
+  onValueChange,
   style,
   duration = 400,
   trackColors = { on: "#82cab2", off: "#fa7f7c" },
 }) => {
   const height = useSharedValue(0);
   const width = useSharedValue(0);
+  const animatedValue = useSharedValue(value ? 1 : 0);
+
+  // Update animated value when prop changes
+  React.useEffect(() => {
+    animatedValue.value = withTiming(value ? 1 : 0, { duration });
+  }, [value]);
 
   const trackAnimatedStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
-      value.value,
+      animatedValue.value,
       [0, 1],
       [trackColors.off, trackColors.on]
     );
-    const colorValue = withTiming(color, { duration });
 
     return {
-      backgroundColor: colorValue,
+      backgroundColor: color,
       borderRadius: height.value / 2,
     };
   });
 
   const thumbAnimatedStyle = useAnimatedStyle(() => {
     const moveValue = interpolate(
-      Number(value.value),
+      animatedValue.value,
       [0, 1],
       [0, width.value - height.value]
     );
-    const translateValue = withTiming(moveValue, { duration });
 
     return {
-      transform: [{ translateX: translateValue }],
+      transform: [{ translateX: moveValue }],
       borderRadius: height.value / 2,
     };
   });
 
+  const handlePress = () => {
+    onValueChange(!value);
+  };
+
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={handlePress}>
       <Animated.View
         onLayout={(e) => {
           height.value = e.nativeEvent.layout.height;
           width.value = e.nativeEvent.layout.width;
         }}
         style={[switchStyles.track, style, trackAnimatedStyle]}>
-        <Animated.View
-          style={[switchStyles.thumb, thumbAnimatedStyle]}></Animated.View>
+        <Animated.View style={[switchStyles.thumb, thumbAnimatedStyle]} />
       </Animated.View>
     </Pressable>
   );
@@ -81,8 +80,8 @@ export const ToggleSwitch: React.FC<IToggleSwitchProps> = ({
 const switchStyles = StyleSheet.create({
   track: {
     alignItems: "flex-start",
-    width: 100,
-    height: 40,
+    width: 50,
+    height: 25,
     padding: 5,
   },
   thumb: {

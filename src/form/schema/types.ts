@@ -11,7 +11,7 @@ export type signUpFormTypes = {
   password: string;
   confirm_password: string;
   phone: string;
-  referral_code: string;
+  referral_code: string | undefined;
 };
 
 export type passwordResetFormTypes = {
@@ -40,8 +40,10 @@ export type consultationFormTypes = {
 };
 
 export type updateProfileFormTypes = {
+  first_name: string;
+  last_name: string;
   address: string;
+  phone: string;
   dob: string;
-  // profile_img: string;
-  referred_by: string;
+  gender: string;
 };

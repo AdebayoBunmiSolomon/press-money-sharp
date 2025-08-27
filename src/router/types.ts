@@ -39,7 +39,9 @@ export type BottomTabBarScreenProps<
 //native and app screen navigation
 export interface RootStackParamList extends ParamListBase {
   Home: undefined;
-  Categories: undefined;
+  Categories?: {
+    category_type: string; // hire, sales, or consultation
+  };
   Wishlist: undefined;
   Profile: undefined;
   Messages: undefined;

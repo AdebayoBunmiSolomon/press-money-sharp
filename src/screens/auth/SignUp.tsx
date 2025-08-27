@@ -51,7 +51,7 @@ export const SignUp = ({
         last_name: data?.gender,
         email: data?.email,
         password: data?.password,
-        referral_code: data?.referral_code,
+        referral_code: String(data?.referral_code),
         gender: data?.gender,
         phone: removePlusSign(data?.phone),
       });
@@ -154,6 +154,9 @@ export const SignUp = ({
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
+                dropDownBtnStyle={{
+                  paddingTop: moderateScale(10),
+                }}
               />
             )}
             name='gender'

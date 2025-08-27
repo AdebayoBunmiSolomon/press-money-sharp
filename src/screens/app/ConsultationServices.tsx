@@ -147,6 +147,9 @@ export const ConsultationServices = ({
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
+                dropDownBtnStyle={{
+                  paddingTop: moderateScale(10),
+                }}
               />
             )}
             name='type'
@@ -170,6 +173,9 @@ export const ConsultationServices = ({
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
+                dropDownBtnStyle={{
+                  paddingTop: moderateScale(10),
+                }}
               />
             )}
             name='priority'
@@ -212,7 +218,7 @@ export const ConsultationServices = ({
         </View>
         <View
           style={{
-            paddingVertical: DVH(20),
+            paddingVertical: DVH(5),
           }}
         />
       </ScrollContainer>

@@ -6,6 +6,7 @@ import {
   getSettings,
   getTermsAndConditions,
   getUserNotifications,
+  getUserPreferences,
   getUserRecentlyViewed,
   getUserReferral,
   getUserReferralRewardHistory,
@@ -25,6 +26,7 @@ import {
   useUserReferralStore,
   useUserWishListStore,
   useTermsAndConditionsStore,
+  useUserPreferencesStore,
 } from "@src/api/store/app";
 import {
   apiGetAllServicesResponse,
@@ -34,10 +36,11 @@ import {
   apiGetUserNotificationsResponse,
   apiGetUserRecentlyViewedResponse,
   apiGetUserReferralResponse,
-  apiGetUserReferralRewardHistoryResponse,
+  // apiGetUserReferralRewardHistoryResponse,
   apiGetUserWishListResponse,
   apiViewServicesResponse,
   apiGetTermsAndConditionsStoreResponse,
+  apiGetUserPreferencesResponse,
 } from "@src/api/types/app";
 import { formatApiErrorMessage } from "@src/helper/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -385,36 +388,34 @@ export const useGetUserReferral = (token: string) => {
 
 export const useGetUserReferralRewardHistory = (token: string) => {
   const { setUserReferralRewardHistory } = useUserReferralRewardHistoryStore();
-  const { data, isFetching, isError } =
-    useQuery<apiGetUserReferralRewardHistoryResponse>({
-      queryKey: [appQueryKeys.GET_USER_REFERRAL_REWARD_HISTORY, token],
-      queryFn: async () => {
-        const response = await getUserReferralRewardHistory(token);
-        if (
-          response?.data?.success === true ||
-          response?.data?.success !== true
-        ) {
-          const userReferralRewardHistoryResp: apiGetUserReferralRewardHistoryResponse =
-            response?.data?.data;
-          setUserReferralRewardHistory(userReferralRewardHistoryResp);
-          return userReferralRewardHistoryResp; // ✅ Return the real data
-        }
-        APIRequest.RESPONSE_HANDLER({
-          type: "modal",
-          status: 500,
-          success: false,
-          code: "NETWORK ERROR",
-          message:
-            response?.error?.message ||
-            "Network error. Please check your connection.",
-        });
+  const { data, isFetching, isError } = useQuery<any>({
+    queryKey: [appQueryKeys.GET_USER_REFERRAL_REWARD_HISTORY, token],
+    queryFn: async () => {
+      const response = await getUserReferralRewardHistory(token);
+      if (
+        response?.data?.success === true ||
+        response?.data?.success !== true
+      ) {
+        const userReferralRewardHistoryResp: any = response?.data?.data;
+        setUserReferralRewardHistory(userReferralRewardHistoryResp);
+        return userReferralRewardHistoryResp; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
 
-        return []; // fallback
-      },
-      enabled: !!token,
-      retry: true,
-      refetchOnReconnect: true,
-    });
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+  });
 
   return {
     userReferralRewardHistory: data,
@@ -453,7 +454,7 @@ export const useGetAllUserChats = (token: string) => {
     enabled: !!token,
     retry: true,
     refetchOnReconnect: true,
-    refetchOnMount: true,
+    refetchInterval: 5000,
   });
 
   return {
@@ -541,5 +542,43 @@ export const useGetTermsAndConditions = () => {
     isFetching,
     isError,
     isSuccess,
+  };
+};
+
+export const useGetUserPreferences = (token: string) => {
+  const { setUserPreferences } = useUserPreferencesStore();
+  const { data, isFetching, isError } = useQuery<
+    apiGetUserPreferencesResponse[]
+  >({
+    queryKey: [appQueryKeys.GET_USER_PREFERENCES, token],
+    queryFn: async () => {
+      const response = await getUserPreferences(token);
+      if (response && response?.data?.success === true) {
+        const userPreferencesResp: apiGetUserPreferencesResponse[] =
+          response?.data?.data || [];
+        setUserPreferences(userPreferencesResp);
+        return userPreferencesResp; // ✅ Return the real data
+      }
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          response?.error?.message ||
+          "Network error. Please check your connection.",
+      });
+
+      return []; // fallback
+    },
+    enabled: !!token,
+    retry: true,
+    refetchOnReconnect: true,
+  });
+
+  return {
+    userPreferencesData: data,
+    isFetching,
+    isError,
   };
 };

@@ -1,4 +1,4 @@
-import { appScreenNames } from "@src/navigation";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { RootStackScreenProps } from "@src/router/types";
 import React, { useState } from "react";
 import { Screen } from "../Screen";
@@ -45,7 +45,9 @@ export const Notification = ({
           color={colors.white}
           leftIcon={
             <TouchableOpacity
-              onPress={() => navigation.navigate(appScreenNames.MESSAGES)}>
+              onPress={() =>
+                navigation.navigate(bottomTabScreenNames.HOME_STACK)
+              }>
               <AntDesign
                 name='arrowleft'
                 size={moderateScale(20)}

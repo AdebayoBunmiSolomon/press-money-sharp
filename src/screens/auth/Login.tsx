@@ -14,6 +14,7 @@ import { loginOptions } from "@src/constants/login";
 import { Image } from "expo-image";
 import { ScrollContainer } from "../ScrollContainer";
 import { useLogin } from "@src/api/hooks/mutation/auth";
+import { ModalMessageProvider } from "@src/helper/ui-utils";
 
 export const Login = ({
   navigation,
@@ -44,7 +45,7 @@ export const Login = ({
           Hello!
         </CustomText>
         <CustomText type='regular' size={18} white>
-          Welcome to PressMoneySharp
+          Welcome to AutoMotor
         </CustomText>
       </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
@@ -122,7 +123,17 @@ export const Login = ({
           <View style={styles.optionIconContainer}>
             {loginOptions &&
               loginOptions.map((item, index) => (
-                <TouchableOpacity style={styles.optionsIconBtn} key={index}>
+                <TouchableOpacity
+                  style={styles.optionsIconBtn}
+                  key={index}
+                  onPress={() => {
+                    ModalMessageProvider.showModalMsg({
+                      msgType: "SUCCESS",
+                      title: "Information",
+                      description: "Features not yet available",
+                      animationType: "slide",
+                    });
+                  }}>
                   <Image
                     source={item?.icon}
                     contentFit='contain'

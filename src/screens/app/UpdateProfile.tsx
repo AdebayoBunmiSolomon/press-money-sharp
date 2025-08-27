@@ -1,13 +1,18 @@
 import { appScreenNames } from "@src/navigation";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Screen } from "../Screen";
 import { Header } from "@src/components/app/home";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
-import { CustomButton, CustomInput, CustomText } from "@src/components/shared";
+import {
+  CustomButton,
+  CustomInput,
+  CustomPhoneInput,
+  CustomText,
+} from "@src/components/shared";
 import { Controller, useForm } from "react-hook-form";
 import { updateProfileFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,9 +22,12 @@ import { Image } from "expo-image";
 import { ImagePickerResult, useMedia } from "@src/hooks/services";
 import { FileUploadModal } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
-import { useUpdateUserProfileImg } from "@src/api/hooks/mutation/app";
-import { ModalMessageProvider, showFlashMsg } from "@src/helper/ui-utils";
-import { fixImageUrl } from "@src/helper/utils";
+import {
+  useUpdateUserProfileForm,
+  useUpdateUserProfileImg,
+} from "@src/api/hooks/mutation/app";
+import { showFlashMsg } from "@src/helper/ui-utils";
+import { formatMonthDay, removePlusSign } from "@src/helper/utils";
 
 export const UpdateProfile = ({
   navigation,
@@ -28,19 +36,29 @@ export const UpdateProfile = ({
   const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
   const { pickFromCamera, pickFromGallery } = useMedia();
   const { UpdateUserProfileImg, isPending } = useUpdateUserProfileImg();
+  const { UpdateUserProfileForm, isPending: isUpdatingProfileForm } =
+    useUpdateUserProfileForm();
   const [imgResult, setImgResult] = useState<ImagePickerResult | null>(null);
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<updateProfileFormTypes>({
     mode: "onChange",
     resolver: yupResolver(updateProfileValidationSchema),
   });
 
-  console.log("User data", userData);
+  useEffect(() => {
+    setValue("first_name", userData?.first_name);
+    setValue("last_name", userData?.last_name);
+    setValue("address", userData?.address);
+    setValue("phone", userData?.phone);
+    setValue("gender", userData?.gender);
+    setValue("dob", userData?.dob);
+  }, []);
 
-  const onSubmit = () => {
+  const onUpdateProfilePic = () => {
     if (imgResult?.uri) {
       UpdateUserProfileImg({
         profile_img: imgResult,
@@ -50,6 +68,19 @@ export const UpdateProfile = ({
         title: "Error",
         description: "Image not selected",
         msgType: "ERROR",
+      });
+    }
+  };
+
+  const onUpdateUserProfile = (data: updateProfileFormTypes) => {
+    if (data) {
+      UpdateUserProfileForm({
+        first_name: data?.first_name,
+        last_name: data?.last_name,
+        address: data?.address,
+        phone: removePlusSign(data?.phone),
+        dob: formatMonthDay(data?.dob, "-"),
+        gender: data?.gender.toLowerCase(),
       });
     }
   };
@@ -109,7 +140,7 @@ export const UpdateProfile = ({
             textSize={12}
             textType='medium'
             onPress={() => {
-              onSubmit();
+              onUpdateProfilePic();
             }}
             btnStyle={styles.changeImgBtn}
             isLoading={isPending}
@@ -123,24 +154,64 @@ export const UpdateProfile = ({
               style={{
                 textAlign: "center",
               }}>
-              click image to update profile
+              click image to edit profile pics
             </CustomText>
           </View>
+
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Your Address'
+                title='First Name'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.first_name?.message}
+                type='custom'
+                placeholder='your first name'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='first_name'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Last Name'
+                value={field.value}
+                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                error={errors?.last_name?.message}
+                type='custom'
+                placeholder='your last name'
+                placeHolderTextColor={"#BDBDBD"}
+                keyboardType='default'
+                showErrorText
+                style={styles.input}
+              />
+            )}
+            name='last_name'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Address'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.address?.message}
                 type='custom'
                 placeholder='your address'
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='email-address'
+                keyboardType='default'
                 showErrorText
                 style={styles.input}
-                disabled={true}
               />
             )}
             name='address'
@@ -151,7 +222,7 @@ export const UpdateProfile = ({
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Your DOB'
+                title='DOB'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.dob?.message}
@@ -161,7 +232,6 @@ export const UpdateProfile = ({
                 keyboardType='default'
                 showErrorText
                 style={styles.input}
-                disabled={true}
               />
             )}
             name='dob'
@@ -171,21 +241,42 @@ export const UpdateProfile = ({
           <Controller
             control={control}
             render={({ field }) => (
-              <CustomInput
-                title='Referred By'
+              <CustomPhoneInput
+                title='Phone Number'
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                error={errors?.referred_by?.message}
-                type='custom'
-                placeholder='you were referred by who?'
-                placeHolderTextColor={"#BDBDBD"}
-                keyboardType='default'
+                error={errors?.phone?.message}
+                placeholder='0800 000 0000'
                 showErrorText
                 style={styles.input}
-                disabled={true}
               />
             )}
-            name='referred_by'
+            name='phone'
+            defaultValue=''
+          />
+
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <CustomInput
+                title='Gender'
+                value={field.value}
+                error={errors?.gender?.message}
+                type='dropdown'
+                placeholder='select gender'
+                dropDownItems={["Male", "Female"]}
+                placeHolderTextColor={"#BDBDBD"}
+                onSelectDropDownItem={(pressedValue) =>
+                  field.onChange(pressedValue)
+                }
+                showErrorText
+                style={styles.input}
+                dropDownBtnStyle={{
+                  paddingTop: moderateScale(10),
+                }}
+              />
+            )}
+            name='gender'
             defaultValue=''
           />
           <CustomButton
@@ -195,18 +286,14 @@ export const UpdateProfile = ({
             buttonType='Solid'
             textSize={16}
             textType='medium'
-            onPress={() => {
-              ModalMessageProvider.showModalMsg({
-                title: "Information",
-                description:
-                  "Profile update not active yet for this is still under development. you can only update image now.",
-                msgType: "SUCCESS",
-                animationType: "slide",
-              });
-            }}
-            btnStyle={styles.loginBtn}
-            isLoading={isPending}
+            onPress={handleSubmit(onUpdateUserProfile)}
+            isLoading={isUpdatingProfileForm}
             loaderColor={colors.white}
+          />
+          <View
+            style={{
+              paddingVertical: DVH(5),
+            }}
           />
         </ScrollContainer>
       </Screen>
@@ -273,11 +360,8 @@ const styles = StyleSheet.create({
     borderWidth: DVW(0.3),
     borderColor: "#BDBDBD",
   },
-  loginBtn: {
-    paddingVertical: moderateScale(17),
-  },
   changeImgBtn: {
-    paddingVertical: moderateScale(7),
+    paddingVertical: moderateScale(3),
     width: "35%",
     alignSelf: "center",
   },

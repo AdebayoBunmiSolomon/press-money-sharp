@@ -20,11 +20,12 @@ import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
 import { useFilterServices } from "@src/api/hooks";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
-import { useCategoriesStore } from "@src/api/store/app";
+import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { useLikedServicesIdCache } from "@src/cache";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
+import { openWhatsApp } from "@src/helper/utils";
 
 export const CarSales = ({
   navigation,
@@ -38,6 +39,7 @@ export const CarSales = ({
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const { likedServiceId } = useLikedServicesIdCache();
   const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
     if (pressedCategory) {
@@ -155,7 +157,14 @@ export const CarSales = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
       </Screen>
     </>

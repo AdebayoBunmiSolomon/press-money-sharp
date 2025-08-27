@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomTabBarStackParamList } from "./types";
-import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
-import { StyleSheet } from "react-native";
+import { moderateScale } from "@src/resources/responsiveness";
+// import { StyleSheet } from "react-native";
 import { CustomText } from "@src/components/shared";
 import { bottomTabScreenNames } from "@src/navigation";
 import { bottomTabScreens } from "@src/navigation/bottom-tab-screens";
@@ -25,11 +25,11 @@ export const BottomTabStack = () => {
         },
         tabBarLabel: ({ focused }) =>
           focused ? (
-            <CustomText type='regular' size={12} red>
+            <CustomText type='regular' size={10} red>
               {getFirstCapitalSegment(route?.name)}
             </CustomText>
           ) : (
-            <CustomText type='regular' size={12} lightGray>
+            <CustomText type='regular' size={10} lightGray>
               {getFirstCapitalSegment(route?.name)}
             </CustomText>
           ),
@@ -110,15 +110,3 @@ export const BottomTabStack = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    width: DVW(7),
-    height: DVH(3.5),
-    overflow: "hidden",
-  },
-  icon: {
-    width: "100%",
-    height: "100%",
-  },
-});

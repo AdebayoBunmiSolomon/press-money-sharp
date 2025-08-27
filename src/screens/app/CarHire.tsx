@@ -11,13 +11,12 @@ import {
   View,
   ScrollView,
   FlatList,
-  Alert,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
-import { useCategoriesStore } from "@src/api/store/app";
+import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
 import { useFilterServices } from "@src/api/hooks";
@@ -26,6 +25,7 @@ import { useLikedServicesIdCache } from "@src/cache";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 import { useAuthStore } from "@src/api/store/auth";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
+import { openWhatsApp } from "@src/helper/utils";
 
 export const CarHire = ({
   navigation,
@@ -39,6 +39,7 @@ export const CarHire = ({
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const { likedServiceId } = useLikedServicesIdCache();
   const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
     if (pressedCategory) {
@@ -94,7 +95,7 @@ export const CarHire = ({
                     key={index}
                     onPress={() => setPressedCategory(item)}>
                     <CustomText size={12} type='medium' lightBlack>
-                      {`Car ` + item}
+                      {`Car` + item}
                     </CustomText>
                   </TouchableOpacity>
                 ))}
@@ -156,7 +157,14 @@ export const CarHire = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
       </Screen>
     </>

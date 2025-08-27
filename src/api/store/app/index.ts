@@ -9,3 +9,4 @@ export * from "./userReferralRewardHistoryStore";
 export * from "./allUserChatsStore";
 export * from "./userServieMessagesStore";
 export * from "./termsAndConditionsStore";
+export * from "./userPrefencrencesStore";

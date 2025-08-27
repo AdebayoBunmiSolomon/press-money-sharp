@@ -8,20 +8,26 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { DVW, moderateScale } from "@src/resources/responsiveness";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@src/router/types";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 
 interface IFloatActionBtnProps {
   onPressArrowUp: () => void;
   onPressWhatsApp: () => void;
   containerStyle?: StyleProp<ViewStyle>;
+  showMsgBtn?: boolean;
 }
 
 export const FloatActionButton: React.FC<IFloatActionBtnProps> = ({
   onPressArrowUp,
   onPressWhatsApp,
   containerStyle,
+  showMsgBtn,
 }) => {
+  const navigation: NavigationProp<RootStackParamList> = useNavigation();
   return (
     <View style={[styles.floatBtnContainer, containerStyle]}>
       <TouchableOpacity
@@ -47,6 +53,17 @@ export const FloatActionButton: React.FC<IFloatActionBtnProps> = ({
           color={"#25D366"}
         />
       </TouchableOpacity>
+      {showMsgBtn && (
+        <TouchableOpacity
+          style={styles.floatBtn}
+          onPress={() =>
+            navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
+              screen: appScreenNames.MESSAGES,
+            })
+          }>
+          <Entypo name='chat' size={moderateScale(25)} color={colors.black} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

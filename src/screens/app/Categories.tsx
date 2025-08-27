@@ -16,7 +16,7 @@ import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
-import { useCategoriesStore } from "@src/api/store/app";
+import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
 import { FilterModal } from "@src/components/app/categories";
@@ -26,10 +26,13 @@ import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
 import { useLikedServicesIdCache } from "@src/cache";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
+import { openWhatsApp } from "@src/helper/utils";
 
 export const Categories = ({
   navigation,
+  route,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
+  const { category_type } = route?.params ?? {};
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
@@ -43,12 +46,21 @@ export const Categories = ({
   const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
     null
   );
+  const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
     if (pressedCategory) {
       getFilteredServices(pressedCategory);
     }
   }, [pressedCategory]);
+
+  useEffect(() => {
+    if (category_type) {
+      setPressedCategory(category_type);
+    } else {
+      setPressedCategory(category_type && category_type[0]);
+    }
+  }, [category_type]);
 
   return (
     <>
@@ -71,14 +83,14 @@ export const Categories = ({
           }
           headerStyle={styles.header}
           color={colors.white}
-          showSearchIcon
+          // showSearchIcon
           onPressSearchIcon={() => setShowFilter(!showFilter)}
           onPressBellIcon={() =>
             navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
               screen: appScreenNames.NOTIFICATION,
             })
           }
-          showMenuIcon
+          // showMenuIcon
           showBellIcon
         />
         <View style={styles.contentContainer}>
@@ -197,7 +209,14 @@ export const Categories = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
       </Screen>
       <FilterModal

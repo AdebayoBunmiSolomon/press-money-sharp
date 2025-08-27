@@ -5,8 +5,10 @@ import { apiScheduleConsultation } from "../types/auth";
 import {
   apiAddProductToRecentlyViewed,
   apiAddProductToWishList,
+  apiSaveUserPreferences,
   apiSendChatMessage,
   apiSendMessage,
+  apiUpdateUserProfileForm,
   apiUpdateUserProfileImg,
 } from "../types/app";
 
@@ -23,7 +25,6 @@ export const getCategory = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Get-category service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -43,7 +44,7 @@ export const scheduleConsultation = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Schedule-consultation service error:", err);
+    // console.log("Schedule-consultation service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -61,7 +62,7 @@ export const getAllServices = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Get-AllService service error:", err);
+    // console.log("Get-AllService service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -79,7 +80,7 @@ export const viewService = async (service_uuid: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("View-Service service error:", err);
+    // console.log("View-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -101,7 +102,7 @@ export const sendMessage = async (payload: apiSendMessage, token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Send-message service error:", err);
+    // console.log("Send-message service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -119,7 +120,7 @@ export const getSettings = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Settings-Service service error:", err);
+    // console.log("Settings-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -144,7 +145,7 @@ export const getUserNotifications = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetNotifications-Service service error:", err);
+    // console.log("GetNotifications-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -169,7 +170,7 @@ export const addProductToWishList = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("AddProduct-ToWishList service error:", err);
+    // console.log("AddProduct-ToWishList service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -191,7 +192,7 @@ export const getUserWishList = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetUserWishList-Service service error:", err);
+    // console.log("GetUserWishList-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -215,7 +216,7 @@ export const deleteProductFromWishList = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("DeleteUserWishList-Service service error:", err);
+    // console.log("DeleteUserWishList-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -240,7 +241,7 @@ export const addProductToRecentlyViewed = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("AddProduct-ToRecentlyViewed service error:", err);
+    // console.log("AddProduct-ToRecentlyViewed service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -262,7 +263,7 @@ export const getUserRecentlyViewed = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetRecentlyViewed service error:", err);
+    // console.log("GetRecentlyViewed service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -286,7 +287,7 @@ export const deleteProductFromRecentlyViewed = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("DeleteUserRecentlyViewed-Service service error:", err);
+    // console.log("DeleteUserRecentlyViewed-Service service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -308,7 +309,7 @@ export const getUserReferral = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetReferralHistory service error:", err);
+    // console.log("GetReferralHistory service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -330,7 +331,7 @@ export const getUserReferralRewardHistory = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetUserReferralRewardHistory service error:", err);
+    // console.log("GetUserReferralRewardHistory service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -352,7 +353,7 @@ export const getAllUserChats = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetAllUserChats service error:", err);
+    // console.log("GetAllUserChats service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -377,7 +378,7 @@ export const getUserServiceMessages = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("GetUserServiceMessages service error:", err);
+    // console.log("GetUserServiceMessages service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -480,7 +481,7 @@ export const sendChatMessage = async (
     );
     return { data, status };
   } catch (err: any) {
-    console.log("SendChat-message service error:", err);
+    // console.log("SendChat-message service error:", err);
     return { error: err.message || "An error occurred" };
   }
 };
@@ -516,7 +517,7 @@ export const updateProfileImg = async (
       return { status, data };
     }
   } catch (err: any) {
-    console.log("UpdateUser-Profile service error:", err);
+    // console.log("UpdateUser-Profile service error:", err);
     return { error: err.message || "An error occurred" };
   }
 };
@@ -534,7 +535,79 @@ export const getTermsAndConditions = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Get-Terms&Conditions service error:", err);
+    // console.log("Get-Terms&Conditions service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const updateUserProfileForm = async (
+  payload: apiUpdateUserProfileForm,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.PATCH(
+      endpoint.APP.updateUserProfileForm,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    // console.log("Update-UserProfileForm service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const getUserPreferences = async (token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      endpoint.APP.getUserPreferences,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    // console.log("Get-UserPreferences service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const saveUserPreferences = async (
+  payload: apiSaveUserPreferences,
+  token: string
+) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.POST(
+      endpoint.APP.saveUserPreferences,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    // console.log("Save-UserPreferences service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };

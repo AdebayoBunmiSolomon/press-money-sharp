@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { FontAwesome, EvilIcons } from "@expo/vector-icons";
-import { fixImageUrl, formatAmountWithCommas } from "@src/helper/utils";
+import { formatAmountWithCommas } from "@src/helper/utils";
 import { Loader } from "../Loader";
 
 interface IProductCardProps {
@@ -76,7 +76,13 @@ export const ProductCard: React.FC<IProductCardProps> = ({
               size={moderateScale(16)}
               color={colors.black}
             />
-            <CustomText type='regular' size={13} black>
+            <CustomText
+              type='regular'
+              size={13}
+              black
+              style={{
+                marginBottom: moderateScale(-2),
+              }}>
               {location ? location : "Anywhere"}
             </CustomText>
           </View>
@@ -127,7 +133,7 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     gap: moderateScale(5),
   },
 });

@@ -36,8 +36,7 @@ export const Messages = ({
           title={"Messages"}
           headerStyle={styles.header}
           color={colors.white}
-          showSearchIcon
-          showBellIcon
+          // showBellIcon
           onPressBellIcon={() =>
             navigation.navigate(appScreenNames.NOTIFICATION)
           }
@@ -58,8 +57,17 @@ export const Messages = ({
             }
           />
         )}
-        {selectedItem === "Unread" && <UnreadTab />}
-        {/* {selectedItem === "Spam" && <SpamTab />} Spam */}
+        {selectedItem === "Unread" && (
+          <UnreadTab
+            data={allUserChats && allUserChats.length > 0 ? allUserChats : []}
+            loading={isFetching}
+            onPullDownRefresh={() =>
+              queryClient.invalidateQueries({
+                queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
+              })
+            }
+          />
+        )}
       </Screen>
     </>
   );

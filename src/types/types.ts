@@ -36,6 +36,7 @@ export type lisTypes = {
   subMenu: {
     list: string;
     toggle: boolean;
+    show: boolean;
   }[];
 }[];
 
@@ -45,6 +46,5 @@ export type settingsType =
   | "Instagram"
   | "Payment"
   | "Address"
-  | "Tiktok";
-
-export type imgType = {};
+  | "Tiktok"
+  | "Email";

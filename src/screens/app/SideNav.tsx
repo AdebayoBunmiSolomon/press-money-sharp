@@ -99,7 +99,13 @@ export const SideNav = ({
                   key={subIndex}
                   style={styles.actionListBtn}
                   onPress={() => screenNavigation(subItem?.list)}>
-                  <CustomText type='regular' size={14} lightBlack>
+                  <CustomText
+                    type='regular'
+                    size={14}
+                    lightBlack
+                    style={{
+                      maxWidth: "80%",
+                    }}>
                     {subItem?.list}
                   </CustomText>
                   <MaterialIcons

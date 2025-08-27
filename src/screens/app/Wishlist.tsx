@@ -21,13 +21,14 @@ import { useGetUserWishList } from "@src/api/hooks/queries/app";
 import { apiGetUserWishListResponse } from "@src/api/types/app";
 import { CustomText } from "@src/components/shared";
 import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
-import { queryClient } from "@src/helper/utils";
+import { openWhatsApp, queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { useLikedServicesIdCache } from "@src/cache";
 import {
   useAddProductToWishList,
   useDeleteProductFromWishList,
 } from "@src/api/hooks/mutation/app";
+import { useSettingsStore } from "@src/api/store/app";
 
 export const Wishlist = ({
   navigation,
@@ -41,6 +42,7 @@ export const Wishlist = ({
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { DeleteProductFromWishList, isPending: isDeleting } =
     useDeleteProductFromWishList();
+  const { settings: settingsData } = useSettingsStore();
 
   return (
     <>
@@ -152,7 +154,14 @@ export const Wishlist = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
       </Screen>
     </>

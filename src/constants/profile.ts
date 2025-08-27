@@ -8,18 +8,22 @@ export const profileList: lisTypes = [
       {
         list: "Wishlist",
         toggle: false,
+        show: true,
       },
       {
         list: "Recently Viewed",
         toggle: false,
+        show: true,
       },
       {
         list: "Referrals",
         toggle: false,
+        show: true,
       },
       {
         list: "Coupon",
         toggle: false,
+        show: true,
       },
     ],
   },
@@ -29,10 +33,12 @@ export const profileList: lisTypes = [
       {
         list: "Push Notification",
         toggle: true,
+        show: false,
       },
       {
         list: "Email Notification",
         toggle: true,
+        show: true,
       },
       // {
       //   list: "Chat",
@@ -50,12 +56,14 @@ export const profileList: lisTypes = [
       {
         list: "Terms and Condition",
         toggle: false,
+        show: true,
       },
       {
         list: `Rate us on ${
           Platform.OS === "ios" ? "App Store" : "Play Store"
         }`,
-        toggle: true,
+        toggle: false,
+        show: true,
       },
       // {
       //   list: "Referrals",
@@ -64,6 +72,7 @@ export const profileList: lisTypes = [
       {
         list: "Contact Us",
         toggle: false,
+        show: true,
       },
       // {
       //   list: "Coupon",

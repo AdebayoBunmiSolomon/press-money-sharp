@@ -30,7 +30,7 @@ interface BaseProps {
   titleType?: textType;
   titleColor?: ColorValue;
   value?: any;
-  onChangeText?: (value: any) => void;
+  onChangeText?: (_value: any) => void;
   error?: string;
   showErrorText?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -44,7 +44,8 @@ interface BaseProps {
 interface DropdownProps extends BaseProps {
   type: "dropdown";
   dropDownItems: string[];
-  onSelectDropDownItem: (value: string) => void;
+  onSelectDropDownItem: (_value: string) => void;
+  dropDownBtnStyle?: StyleProp<TextStyle>;
 }
 
 interface PasswordProps extends BaseProps {
@@ -113,8 +114,13 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
   };
 
   const renderDropdown = () => {
-    const { dropDownItems, onSelectDropDownItem } = props as DropdownProps;
+    const { dropDownItems, onSelectDropDownItem, dropDownBtnStyle } =
+      props as DropdownProps;
     const flattenedStyle = StyleSheet.flatten(style);
+    const flattenedDropDownBtnStyle = StyleSheet.flatten(dropDownBtnStyle);
+    const flattenedDropDownBtnPadTopStyles = Number(
+      flattenedDropDownBtnStyle?.paddingTop
+    );
     const flattenedHeight = Number(flattenedStyle?.height);
     const iconSize = flattenedHeight
       ? flattenedHeight * 0.5
@@ -155,7 +161,9 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
             style={[
               styles.iconButton,
               {
-                paddingTop: flattenedHeight
+                paddingTop: flattenedDropDownBtnPadTopStyles
+                  ? flattenedDropDownBtnPadTopStyles
+                  : flattenedHeight
                   ? (flattenedHeight - iconSize) / 2
                   : moderateScale(27),
               },

@@ -24,7 +24,7 @@ export interface IModalMessageProps {
 }
 
 export interface IGlobalModalMessageRef {
-  show: (config: IModalMessageProps) => void;
+  show: (_config: IModalMessageProps) => void;
 }
 
 export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
@@ -68,7 +68,7 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
             }
             style={styles.icon}
           />
-          <CustomText
+          {/* <CustomText
             size={14}
             type='regular'
             black
@@ -76,7 +76,7 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
               textAlign: "center",
             }}>
             {modalData.title}
-          </CustomText>
+          </CustomText> */}
           <CustomText
             size={14}
             type='regular'

@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackParamList } from "@src/router/types";
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
@@ -9,8 +9,9 @@ import { CustomText } from "@src/components/shared";
 import { appScreenNames } from "@src/navigation";
 import { apiGetAllUserChatsResponse } from "@src/api/types/app";
 import { getDateStringVal, truncateText } from "@src/helper/utils";
-import { Loader } from "@src/common";
+// import { Loader } from "@src/common";
 import { colors } from "@src/resources/color/color";
+import { useAuthStore } from "@src/api/store/auth";
 
 interface IAllTabProps {
   data: apiGetAllUserChatsResponse[];
@@ -20,97 +21,104 @@ interface IAllTabProps {
 
 export const AllTab: React.FC<IAllTabProps> = ({
   data,
-  loading,
-  onPullDownRefresh,
+  // loading,
+  // onPullDownRefresh,
 }) => {
+  const { userData } = useAuthStore();
   const navigation: NativeStackNavigationProp<RootStackParamList> =
     useNavigation();
-  return (
-    <View>
-      {loading ? (
+
+  const renderItem = useCallback(
+    ({ item }: { item: apiGetAllUserChatsResponse }) => (
+      <TouchableOpacity
+        style={styles.card}
+        activeOpacity={0.6}
+        onPress={() =>
+          navigation.navigate(appScreenNames.CHAT, {
+            service_uuid: item?.service?.uuid,
+          })
+        }>
+        <View style={styles.row}>
+          <View style={styles.imgContainer}>
+            <Image
+              style={styles.img}
+              contentFit='cover'
+              source={{ uri: item?.service?.image_urls[0] }}
+              cachePolicy='disk'
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <CustomText type='semi-bold' size={12} lightBlack>
+              {truncateText(
+                `${item?.service?.brand} ${item?.service?.model}`,
+                15
+              )}
+            </CustomText>
+            <CustomText type='regular' size={12} style={styles.messageText}>
+              {truncateText(item?.message, 15)}
+            </CustomText>
+          </View>
+        </View>
         <View
           style={{
-            width: "100%",
-            height: "80%",
-            justifyContent: "center",
-            alignItems: "center",
+            flex: 1,
+            justifyContent: "space-around",
+            alignItems: "flex-end",
+            flexDirection: "column",
           }}>
+          <CustomText type='regular' size={9} lightBlack>
+            {getDateStringVal(item?.created_at)}
+          </CustomText>
+          {item?.receiver_id === userData?.uuid && item?.read_at === null && (
+            <View
+              style={{
+                width: moderateScale(7),
+                height: moderateScale(7),
+                borderRadius: moderateScale(100),
+                backgroundColor: colors.danger,
+              }}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+    ),
+    [navigation]
+  );
+
+  const keyExtractor = useCallback(
+    (item: apiGetAllUserChatsResponse) =>
+      item?.uuid ?? item?.service?.uuid ?? Math.random().toString(),
+    []
+  );
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* {loading ? (
+        <View style={styles.loaderContainer}>
           <Loader size='large' color={colors.red} />
         </View>
-      ) : data && data.length > 0 ? (
+      ) :  */}
+      {data && data.length > 0 ? (
         <FlatList
           data={data}
-          contentContainerStyle={{
-            gap: moderateScale(8),
-            paddingBottom: DVH(25),
-            paddingHorizontal: moderateScale(10),
-          }}
-          refreshing={loading}
-          onRefresh={onPullDownRefresh}
-          keyExtractor={(__, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              style={styles.card}
-              key={index}
-              activeOpacity={0.6}
-              onPress={() =>
-                navigation.navigate(appScreenNames.CHAT, {
-                  service_uuid: item?.service?.uuid,
-                })
-              }>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: moderateScale(20),
-                }}>
-                <View style={styles.imgContainer}>
-                  <Image
-                    style={styles.img}
-                    contentFit='fill'
-                    source={item?.service?.image_urls[0]}
-                  />
-                </View>
-                <View
-                  style={{
-                    gap: moderateScale(10),
-                  }}>
-                  <CustomText type='semi-bold' size={12} lightBlack>
-                    {truncateText(
-                      `${item?.service?.brand} ${item?.service?.model}`,
-                      15
-                    )}
-                  </CustomText>
-                  <CustomText
-                    type='regular'
-                    size={12}
-                    style={{
-                      color: "#696161",
-                    }}>
-                    {truncateText(item?.message, 15)}
-                  </CustomText>
-                </View>
-              </View>
-              <View>
-                <CustomText type='regular' size={9} lightBlack>
-                  {getDateStringVal(item?.created_at)}
-                </CustomText>
-              </View>
-            </TouchableOpacity>
-          )}
+          contentContainerStyle={styles.listContent}
+          // refreshing={loading}
+          // onRefresh={onPullDownRefresh}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
           horizontal={false}
           showsVerticalScrollIndicator={false}
-          maxToRenderPerBatch={2}
-          initialNumToRender={2}
-          windowSize={2}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          initialNumToRender={10}
+          getItemLayout={(_, index) => ({
+            length: moderateScale(70), // approximate row height
+            offset: moderateScale(70) * index,
+            index,
+          })}
         />
       ) : (
-        <View
-          style={{
-            width: "100%",
-            height: "80%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
+        <View style={styles.emptyContainer}>
           <CustomText type='medium' size={14} lightGray>
             No Messages Found
           </CustomText>
@@ -119,6 +127,7 @@ export const AllTab: React.FC<IAllTabProps> = ({
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#b0b0b034",
@@ -131,6 +140,10 @@ const styles = StyleSheet.create({
     gap: moderateScale(10),
     overflow: "hidden",
   },
+  row: {
+    flexDirection: "row",
+    gap: moderateScale(20),
+  },
   imgContainer: {
     width: DVW(20),
     height: DVH(6),
@@ -140,5 +153,28 @@ const styles = StyleSheet.create({
   img: {
     width: "100%",
     height: "100%",
+  },
+  textContainer: {
+    gap: moderateScale(10),
+  },
+  messageText: {
+    color: "#696161",
+  },
+  listContent: {
+    gap: moderateScale(8),
+    paddingBottom: DVH(25),
+    paddingHorizontal: moderateScale(10),
+  },
+  loaderContainer: {
+    width: "100%",
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyContainer: {
+    width: "100%",
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

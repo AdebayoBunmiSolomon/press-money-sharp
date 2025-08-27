@@ -28,5 +28,8 @@ export const endpoint = {
     sendChatMessage: "/admin/chats",
     updateUserProfile: "/users/profile",
     getTermsAndConditions: "/compliances",
+    getUserPreferences: "/preferences",
+    updateUserProfileForm: "/users",
+    saveUserPreferences: "/preferences",
   },
 };

@@ -8,8 +8,8 @@ import {
   Entypo,
   Feather,
   FontAwesome,
-  FontAwesome6,
-  Ionicons,
+  // FontAwesome6,
+  // Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
@@ -26,8 +26,6 @@ export const ContactUs = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONTACT_US>) => {
   const { settings } = useSettingsStore();
-
-  console.log(settings);
 
   const openSocialMediaLink = (socialMediaType: settingsType) => {
     const url = String(
@@ -48,7 +46,13 @@ export const ContactUs = ({
           });
         }
       })
-      .catch((err) => console.error("An error occurred", err));
+      .catch((err) =>
+        showFlashMsg({
+          title: "Error",
+          description: `An error occurred: ${err}`,
+          msgType: "ERROR",
+        })
+      );
   };
 
   return (
@@ -94,7 +98,7 @@ export const ContactUs = ({
             </CustomText>
           </View>
           <CustomText type='regular' size={14} lightBlack style={styles.text}>
-            Oke Ile-Owo Opic, Abeokuta
+            {settings && settings.find((i) => i.type === "Address")?.value}
           </CustomText>
         </View>
 
@@ -110,7 +114,8 @@ export const ContactUs = ({
             </CustomText>
           </View>
           <CustomText type='regular' size={14} lightBlack style={styles.text}>
-            Opeyemiolayemi@gmail.com
+            {(settings && settings.find((i) => i.type === "Email")?.value) ||
+              "info@automotor.ng"}
           </CustomText>
         </View>
 
@@ -126,11 +131,11 @@ export const ContactUs = ({
             </CustomText>
           </View>
           <CustomText type='regular' size={14} lightBlack style={styles.text}>
-            0905677890
+            {settings && settings.find((i) => i.type === "Phone")?.value}
           </CustomText>
         </View>
 
-        <View style={styles.textContainer}>
+        {/* <View style={styles.textContainer}>
           <View style={styles.iconTextContainer}>
             <Ionicons
               name='logo-whatsapp'
@@ -141,10 +146,11 @@ export const ContactUs = ({
               Whatsapp
             </CustomText>
           </View>
+
           <CustomText type='regular' size={14} lightBlack style={styles.text}>
-            08134567789
+            {settings && settings.find((i) => i.type === "Whatsapp")?.value}
           </CustomText>
-        </View>
+        </View> */}
 
         <View
           style={{

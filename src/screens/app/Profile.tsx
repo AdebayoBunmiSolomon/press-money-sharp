@@ -3,7 +3,7 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
@@ -11,22 +11,28 @@ import { ScrollContainer } from "../ScrollContainer";
 import { profileList } from "@src/constants/profile";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useSharedValue } from "react-native-reanimated";
 import { ToggleSwitch } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
-import { fixImageUrl } from "@src/helper/utils";
 import { useLogOutUser } from "@src/api/hooks/mutation/auth";
+import { useEmailNotificationPreferenceCache } from "@src/cache";
+import { useSaveUserPreferences } from "@src/api/hooks/mutation/app";
 
 export const Profile = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.PROFILE>) => {
-  const isOn = useSharedValue(false);
   const { logOutUser, loggingOut } = useLogOutUser();
   const { userData } = useAuthStore();
+  const { SaveUserPreference } = useSaveUserPreferences();
+  const { isEmailSubscribed, setIsEmailSubScribed } =
+    useEmailNotificationPreferenceCache();
 
-  const handlePress = () => {
-    isOn.value = !isOn.value;
-  };
+  useEffect(() => {
+    SaveUserPreference({
+      name: "email",
+      type: "notification",
+      value: isEmailSubscribed,
+    });
+  }, [isEmailSubscribed]);
 
   const screenNavigation = (action: string) => {
     switch (action) {
@@ -115,38 +121,43 @@ export const Profile = ({
                   }}>
                   {item?.title}
                 </CustomText>
-                {item?.subMenu?.map((subItem, subIndex) => (
-                  <TouchableOpacity
-                    key={subIndex}
-                    style={styles.actionListBtn}
-                    onPress={
-                      subItem?.toggle
-                        ? undefined
-                        : () => {
-                            // handle navigation or action
-                            screenNavigation(subItem?.list);
-                          }
-                    }
-                    activeOpacity={subItem?.toggle ? 1 : 0.6}>
-                    <CustomText type='regular' size={14} lightBlack>
-                      {subItem.list}
-                    </CustomText>
-                    {subItem?.toggle ? (
-                      <ToggleSwitch
-                        value={isOn}
-                        onPress={handlePress}
-                        style={styles.switch}
-                        trackColors={{ on: colors.red, off: colors.lightGray }}
-                      />
-                    ) : (
-                      <MaterialIcons
-                        name='arrow-forward-ios'
-                        size={moderateScale(16)}
-                        color={colors.lightBlack}
-                      />
-                    )}
-                  </TouchableOpacity>
-                ))}
+                {item?.subMenu?.map((subItem, subIndex) => {
+                  if (!subItem.show) return null;
+                  return (
+                    <TouchableOpacity
+                      key={subIndex}
+                      style={styles.actionListBtn}
+                      onPress={
+                        subItem?.toggle
+                          ? undefined
+                          : () => {
+                              // handle navigation or action
+                              screenNavigation(subItem?.list);
+                            }
+                      }
+                      activeOpacity={subItem?.toggle ? 1 : 0.6}>
+                      <CustomText type='regular' size={14} lightBlack>
+                        {subItem.list}
+                      </CustomText>
+                      {subItem?.toggle ? (
+                        <ToggleSwitch
+                          value={isEmailSubscribed}
+                          onValueChange={setIsEmailSubScribed}
+                          trackColors={{
+                            on: colors.red,
+                            off: colors.lightGray,
+                          }}
+                        />
+                      ) : (
+                        <MaterialIcons
+                          name='arrow-forward-ios'
+                          size={moderateScale(16)}
+                          color={colors.lightBlack}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             ))}
           <CustomButton
@@ -229,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFA500",
   },
   logoutBtn: {
-    paddingVertical: moderateScale(17),
+    paddingVertical: moderateScale(10),
     width: "30%",
     alignSelf: "center",
   },

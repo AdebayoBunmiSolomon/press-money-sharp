@@ -39,7 +39,7 @@ export const useLogin = () => {
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
         message: response?.data?.success
-          ? "Login successful. Welcome to PressMoneySharp"
+          ? "Login successful. Welcome to AutoMotor"
           : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
@@ -186,7 +186,7 @@ export const useForgotPassAndContinue = () => {
     onSuccess: (response, variables) => {
       const { email } = variables;
       APIRequest.RESPONSE_HANDLER({
-        type: "flash",
+        type: "modal",
         status: response?.data?.status, //200 | 401 | 500
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
@@ -232,7 +232,7 @@ export const useVerifyOtpToChangePass = () => {
     onSuccess: (response, variables) => {
       const { email, hash } = variables;
       APIRequest.RESPONSE_HANDLER({
-        type: "flash",
+        type: "modal",
         status: response?.data?.status, //200 | 401 | 500
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",

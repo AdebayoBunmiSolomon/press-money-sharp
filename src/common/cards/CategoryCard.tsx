@@ -8,11 +8,15 @@ import { Feather } from "@expo/vector-icons";
 
 interface ICategoryCardProps {
   item: any;
+  onPressItem: () => void;
 }
 
-export const CategoryCard: React.FC<ICategoryCardProps> = ({ item }) => {
+export const CategoryCard: React.FC<ICategoryCardProps> = ({
+  item,
+  onPressItem,
+}) => {
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity style={styles.itemContainer} onPress={onPressItem}>
       <Image
         source={require("@src/assets/png/category/car-sales.png")}
         contentFit='fill'
@@ -22,15 +26,15 @@ export const CategoryCard: React.FC<ICategoryCardProps> = ({ item }) => {
         <CustomText type='medium' size={12} black>
           {`Car ${item}`}
         </CustomText>
-        <TouchableOpacity style={styles.actionBtn}>
+        <View style={styles.actionBtn}>
           <Feather
             name='arrow-up-right'
             size={moderateScale(15)}
             color={colors.red}
           />
-        </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

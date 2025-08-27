@@ -12,4 +12,5 @@ export enum appQueryKeys {
   GET_ALL_USER_CHATS = "get-all-user-chats",
   GET_USER_SERVICE_MESSAGES = "get-user-service-messages",
   GET_TERMS_AND_CONDITIONS = "get-terms-and-conditions",
+  GET_USER_PREFERENCES = "get-user-preferences",
 }

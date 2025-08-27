@@ -1,6 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 import * as Network from "expo-network";
 import moment from "moment";
+import { Linking, Platform } from "react-native";
+import { showFlashMsg } from "./ui-utils";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +35,7 @@ export const APILogger = (
   code: string,
   message: string
 ) => {
+  /* eslint-disable no-console */
   if (__DEV__) {
     console.log("🚀 Response Log:");
     console.log("Status:", status);
@@ -40,6 +43,7 @@ export const APILogger = (
     console.log("Code:", code);
     console.log("Message:", message);
   }
+  /* eslint-enable no-console */
 };
 
 /**
@@ -108,8 +112,8 @@ export const formatPhoneWithCountryCode = (
  * @returns 1,000
  */
 export const formatAmountWithCommas = (amount: number) => {
-  let amtStr = amount.toString();
-  let formattedAmt = amtStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const amtStr = amount.toString();
+  const formattedAmt = amtStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedAmt;
 };
 
@@ -239,4 +243,57 @@ export const fixImageUrl = (url: string) => {
 
   // Already clean
   return url;
+};
+
+/**
+ * @param value the whats-app phone number from settings
+ */
+export const openWhatsApp = (value: string) => {
+  let phoneNumber = value.trim();
+  const message = "Hello, I'm a customer from AutoMotor";
+
+  // Ensure phone is in international format
+  if (!phoneNumber.startsWith("+")) {
+    phoneNumber = `+${phoneNumber.replace(/[^0-9]/g, "")}`;
+  }
+
+  // Use correct URL per platform
+  const url =
+    Platform.OS === "android"
+      ? `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
+          message
+        )}`
+      : `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  Linking.openURL(url).catch(() => {
+    showFlashMsg({
+      title: "Error",
+      description: "WhatsApp is not installed on your phone.",
+      msgType: "ERROR",
+    });
+  });
+};
+
+export const formatDateOnly = (dateString: string): string => {
+  if (!dateString) return "";
+  // ensure it's a valid date
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+
+  // return in YYYY-MM-DD format
+  return date.toISOString().split("T")[0];
+};
+
+export const formatMonthDay = (
+  dateString: string,
+  separator: "/" | "-" = "/"
+): string => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${month}${separator}${day}`;
 };

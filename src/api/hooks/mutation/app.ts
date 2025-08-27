@@ -5,10 +5,12 @@ import {
   addProductToWishList,
   deleteProductFromRecentlyViewed,
   deleteProductFromWishList,
+  saveUserPreferences,
   scheduleConsultation,
   sendChatMessage,
   sendMessage,
   updateProfileImg,
+  updateUserProfileForm,
 } from "@src/api/services/app";
 import { useAuthStore } from "@src/api/store/auth";
 import {
@@ -16,8 +18,10 @@ import {
   apiAddProductToWishList,
   apiDeleteFromRecentlyViewed,
   apiDeleteProductFromWishlist,
+  apiSaveUserPreferences,
   apiSendChatMessage,
   apiSendMessage,
+  apiUpdateUserProfileForm,
   apiUpdateUserProfileImg,
 } from "@src/api/types/app";
 import { apiScheduleConsultation } from "@src/api/types/auth";
@@ -277,15 +281,15 @@ export const useDeleteRecentlyViewed = () => {
       ),
     onSuccess: (response, variables) => {
       const { service_id } = variables;
-      APIRequest.RESPONSE_HANDLER({
-        type: "flash",
-        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-        success: response?.data?.success, //true | false
-        code: response?.data?.error?.code || "Success",
-        message: response?.data?.success
-          ? "Product removed from recently-viewed successfully"
-          : formatApiErrorMessage(response?.data?.error),
-      });
+      // APIRequest.RESPONSE_HANDLER({
+      //   type: "flash",
+      //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+      //   success: response?.data?.success, //true | false
+      //   code: response?.data?.error?.code || "Success",
+      //   message: response?.data?.success
+      //     ? "Product removed from recently-viewed successfully"
+      //     : formatApiErrorMessage(response?.data?.error),
+      // });
       // ✅ Refetch the user wishlist query
       if (response?.data?.success) {
         queryClient.invalidateQueries({
@@ -339,9 +343,9 @@ export const useSendChatMessage = () => {
         queryClient.invalidateQueries({
           queryKey: [appQueryKeys.GET_USER_SERVICE_MESSAGES, service_uuid],
         });
-        queryClient.invalidateQueries({
-          queryKey: [appQueryKeys.GET_USER_NOTIFICATIONS, userData?.uuid],
-        });
+        // queryClient.invalidateQueries({
+        //   queryKey: [appQueryKeys.GET_USER_NOTIFICATIONS, userData?.uuid],
+        // });
         queryClient.invalidateQueries({
           queryKey: [appQueryKeys.GET_ALL_USER_CHATS, userData?.token],
         });
@@ -413,5 +417,77 @@ export const useUpdateUserProfileImg = () => {
     isError,
     isPending,
     UpdateUserProfileImg,
+  };
+};
+
+export const useUpdateUserProfileForm = () => {
+  const { userData, setIsAuthenticated } = useAuthStore();
+  const {
+    data,
+    isError,
+    isPending,
+    mutate: UpdateUserProfileForm,
+  } = useMutation({
+    mutationFn: (payload: apiUpdateUserProfileForm) =>
+      updateUserProfileForm(payload, userData?.token),
+    onSuccess: (response) => {
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        success: response?.data?.success, //true | false
+        code: response?.data?.error?.code || "Success",
+        message: response?.data?.success
+          ? "User profile updated successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
+        setIsAuthenticated(false);
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    data,
+    isError,
+    isPending,
+    UpdateUserProfileForm,
+  };
+};
+
+export const useSaveUserPreferences = () => {
+  const { userData } = useAuthStore();
+  const {
+    data: response,
+    isError,
+    isPending,
+    mutate: SaveUserPreference,
+  } = useMutation({
+    mutationFn: (payload: apiSaveUserPreferences) =>
+      saveUserPreferences(payload, userData?.token),
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        status: 500,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    response,
+    isError,
+    isPending,
+    SaveUserPreference,
   };
 };

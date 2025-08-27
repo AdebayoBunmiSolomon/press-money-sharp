@@ -1,8 +1,8 @@
 import { CustomButton, CustomText } from "@src/components/shared";
-import { showFlashMsg } from "@src/helper/ui-utils";
+import { openWhatsApp } from "@src/helper/utils";
 import { moderateScale } from "@src/resources/responsiveness";
 import React from "react";
-import { Linking, Modal, Platform, StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
 
 interface IWhatsAppActionProps {
   visible: boolean;
@@ -15,32 +15,6 @@ export const WhatsAppAction: React.FC<IWhatsAppActionProps> = ({
   onClose,
   value,
 }) => {
-  const openWhatsApp = () => {
-    let phoneNumber = value.trim();
-    const message = "Hello, I'm a customer from AutoMotor";
-
-    // Ensure phone is in international format
-    if (!phoneNumber.startsWith("+")) {
-      phoneNumber = `+${phoneNumber.replace(/[^0-9]/g, "")}`;
-    }
-
-    // Use correct URL per platform
-    const url =
-      Platform.OS === "android"
-        ? `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
-            message
-          )}`
-        : `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
-    Linking.openURL(url).catch(() => {
-      showFlashMsg({
-        title: "Error",
-        description: "WhatsApp is not installed on your phone.",
-        msgType: "ERROR",
-      });
-    });
-  };
-
   return (
     <View>
       <Modal visible={visible} transparent animationType='slide'>
@@ -71,7 +45,7 @@ export const WhatsAppAction: React.FC<IWhatsAppActionProps> = ({
                 textWhite
                 textType='medium'
                 buttonType='Solid'
-                onPress={() => openWhatsApp()}
+                onPress={() => openWhatsApp(value)}
                 btnStyle={styles.actionBtn}
               />
             </View>

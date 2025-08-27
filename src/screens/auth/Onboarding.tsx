@@ -56,7 +56,7 @@ export const Onboarding = ({
           <View style={styles.bottomBtnContainer}>
             <CustomButton
               title='Get Started'
-              onPress={() => {}}
+              onPress={() => navigation.navigate(authScreenNames.SIGN_UP)}
               buttonType='Outline'
               textWhite
               textSize={16}

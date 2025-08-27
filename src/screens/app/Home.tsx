@@ -4,22 +4,24 @@ import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
-import { CategoryList, Header } from "@src/components/app/home";
+import { CategoryList, FilterModal, Header } from "@src/components/app/home";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
 import {
   useGetAllServices,
   useGetCategory,
   useGetSettings,
+  useGetUserPreferences,
   useGetUserRecentlyViewed,
   useGetUserWishList,
 } from "@src/api/hooks/queries/app";
 import { ProductCard } from "@src/common/cards";
 import { Loader } from "@src/common";
 import {
+  useEmailNotificationPreferenceCache,
   useLikedServicesIdCache,
   useRecentlyViewedServicesIdCache,
 } from "@src/cache";
@@ -30,11 +32,13 @@ import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 export const Home = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.HOME>) => {
-  const [searchString, setSearchString] = useState<string>("");
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
   const { isFetching, categories } = useGetCategory();
   const { allServices, isFetching: isFetchingAllService } = useGetAllServices();
   const { userData } = useAuthStore();
-  const {} = useGetSettings();
+  useGetSettings();
+  const { userPreferencesData } = useGetUserPreferences(userData?.token);
+  const { setIsEmailSubScribed } = useEmailNotificationPreferenceCache();
   const { addLikedServiceIdToCache, clearLikedServiceIdFromCache } =
     useLikedServicesIdCache();
   const { isFetching: isWishListFetching, userWishList } = useGetUserWishList(
@@ -74,11 +78,23 @@ export const Home = ({
     addRecentlyViewToCache();
   }, [isRecentViewFetching, userRecentlyViewed]);
 
+  //toggle email notification switch based on user preference
+  useEffect(() => {
+    if (userPreferencesData) {
+      const isEmailNotificationEnabled =
+        userPreferencesData &&
+        userPreferencesData.find(
+          (notification) => notification.name === "email"
+        )?.value;
+      if (isEmailNotificationEnabled) {
+        setIsEmailSubScribed(isEmailNotificationEnabled);
+      }
+    }
+  }, [userPreferencesData]);
+
   useEffect(() => {
     clearLikedServiceIdFromCache();
     clearRecentlyViewedServiceIdFromCache();
-
-    console.log("User Info", userData?.uuid, userData?.token);
   }, []);
 
   return (
@@ -93,16 +109,26 @@ export const Home = ({
             })
           }
           showMenuIcon
+          showBellIcon
+          onPressBellIcon={() => {
+            navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
+              screen: appScreenNames.NOTIFICATION,
+            });
+          }}
         />
-        <CustomInput
-          value={searchString}
-          onChangeText={(enteredValue) => setSearchString(enteredValue)}
-          type='custom'
-          placeholder='Search here'
-          placeHolderTextColor={"#BDBDBD"}
-          searchInput
-          style={styles.input}
-        />
+        <TouchableOpacity onPress={() => setShowFilterModal(!showFilterModal)}>
+          <CustomInput
+            value={""}
+            onChangeText={() => {}}
+            type='custom'
+            placeholder='Search here'
+            placeHolderTextColor={"#BDBDBD"}
+            searchInput
+            style={styles.input}
+            disabled={true}
+          />
+        </TouchableOpacity>
+
         <ScrollContainer
           style={styles.scrollContainer}
           refreshing={isFetchingAllService}
@@ -150,39 +176,41 @@ export const Home = ({
             </CustomText>
             {isFetchingAllService ? (
               <Loader size='large' color={colors.danger} />
-            ) : allServices && allServices.length > 0 ? (
-              <ProductCard
-                title={String(
-                  allServices &&
-                    `${allServices[0]?.brand} ${allServices[0]?.model}`
-                )}
-                price={String(allServices && allServices[0]?.fee)}
-                location={String(
-                  allServices && allServices[0]?.location
-                    ? allServices[0]?.location
-                    : "Anywhere"
-                )}
-                image={String(allServices && allServices[0]?.image_urls[0])}
-                onClickCard={() =>
-                  navigation.navigate(appScreenNames.CAR_DETAILS, {
-                    service_uuid: String(allServices && allServices[0]?.uuid),
-                  })
-                }
-              />
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  height: DVH(12),
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
-                <CustomText type='regular' size={16} lightGray>
-                  No services found yet{" "}
-                </CustomText>
-              </View>
-            )}
+            ) : allServices ? (
+              allServices && allServices.length > 0 ? (
+                <ProductCard
+                  title={String(
+                    allServices &&
+                      `${allServices[0]?.brand} ${allServices[0]?.model}`
+                  )}
+                  price={String(allServices && allServices[0]?.fee)}
+                  location={String(
+                    allServices && allServices[0]?.location
+                      ? allServices[0]?.location
+                      : "Anywhere"
+                  )}
+                  image={String(allServices && allServices[0]?.image_urls[0])}
+                  onClickCard={() =>
+                    navigation.navigate(appScreenNames.CAR_DETAILS, {
+                      service_uuid: String(allServices && allServices[0]?.uuid),
+                    })
+                  }
+                />
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    height: DVH(12),
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                  <CustomText type='regular' size={16} lightGray>
+                    No services found yet{" "}
+                  </CustomText>
+                </View>
+              )
+            ) : null}
           </View>
           <View
             style={{
@@ -191,6 +219,10 @@ export const Home = ({
           />
         </ScrollContainer>
       </Screen>
+      <FilterModal
+        onClose={() => setShowFilterModal(!showFilterModal)}
+        visible={showFilterModal}
+      />
     </>
   );
 };
@@ -206,6 +238,7 @@ const styles = StyleSheet.create({
     borderWidth: DVW(0.3),
     borderColor: "#BDBDBD",
     borderRadius: moderateScale(20),
+    height: DVH(5),
   },
   cta: {
     backgroundColor: colors.red,

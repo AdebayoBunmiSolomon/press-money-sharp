@@ -158,7 +158,7 @@ type apiGetUserReferral = {
 };
 
 export type apiGetUserReferralResponse = {
-  user: apiGetUserReferral | {};
+  user: apiGetUserReferral | unknown;
   referral_count: number;
   referrals: referralType[];
 };
@@ -195,7 +195,9 @@ export type apiGetUserReferralRewardHistoryTypes = {
   };
 };
 
-export type apiGetUserReferralRewardHistoryResponse = {};
+export type apiGetUserReferralRewardHistoryResponse = {
+  id: string;
+};
 
 export type apiGetAllUserChatsResponse = {
   attachment: string | null | any;
@@ -267,4 +269,31 @@ export type apiUpdateUserProfileImg = {
   profile_img: any;
 };
 
-export type apiGetTermsAndConditionsStoreResponse = {};
+export type apiUpdateUserProfileForm = {
+  first_name: string;
+  last_name: string;
+  address: string;
+  phone: string;
+  dob: string;
+  gender: string;
+};
+
+export type apiGetTermsAndConditionsStoreResponse = {
+  id: string;
+};
+
+export type apiGetUserPreferencesResponse = {
+  uuid: string;
+  user_id: number;
+  name: string;
+  type: string;
+  value: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type apiSaveUserPreferences = {
+  name: string;
+  type: string;
+  value: boolean;
+};

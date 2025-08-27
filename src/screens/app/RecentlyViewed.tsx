@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Screen } from "../Screen";
 import {
+  Alert,
   FlatList,
   Platform,
   StyleSheet,
@@ -19,7 +20,7 @@ import { FloatActionButton, Loader } from "@src/common";
 import { useGetUserRecentlyViewed } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
 import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
-import { queryClient } from "@src/helper/utils";
+import { openWhatsApp, queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { apiGetUserRecentlyViewedResponse } from "@src/api/types/app";
 import { useRecentlyViewedServicesIdCache } from "@src/cache";
@@ -27,6 +28,7 @@ import {
   useAddProductToRecentlyViewed,
   useDeleteRecentlyViewed,
 } from "@src/api/hooks/mutation/app";
+import { useSettingsStore } from "@src/api/store/app";
 
 export const RecentlyViewed = ({
   navigation,
@@ -45,21 +47,39 @@ export const RecentlyViewed = ({
   const { AddProductToRecentlyViewed, isPending } =
     useAddProductToRecentlyViewed();
   const [isClearing, setIsClearing] = useState<boolean>(false);
+  const { settings: settingsData } = useSettingsStore();
 
   const clearAllRecentlyViewed = async () => {
     setIsClearing(true);
     try {
-      if (userRecentlyViewed && userRecentlyViewed.length > 0) {
-        for (const item of userRecentlyViewed) {
-          DeleteFromRecentlyViewed({
-            service_id: item?.our_service_id,
-            recentlyViewed_uuid: item?.uuid,
-          });
-        }
-        clearRecentlyViewedServiceIdFromCache();
-      }
-    } catch (err: any) {
-      console.log("Error", err);
+      Alert.alert(
+        "Clear Data",
+        "Are you sure you want to clear recently viewed?",
+        [
+          {
+            text: "Yes",
+            onPress: () => {
+              if (userRecentlyViewed && userRecentlyViewed.length > 0) {
+                for (const item of userRecentlyViewed) {
+                  DeleteFromRecentlyViewed({
+                    service_id: item?.our_service_id,
+                    recentlyViewed_uuid: item?.uuid,
+                  });
+                }
+                clearRecentlyViewedServiceIdFromCache();
+              }
+            },
+          },
+          {
+            text: "No",
+            onPress: () => {},
+          },
+        ]
+      );
+    } catch (err: unknown) {
+      Alert.alert("Error", err?.toString());
+      // console.log("Error", err);
+      setIsClearing(false);
     } finally {
       setIsClearing(false);
     }
@@ -193,7 +213,14 @@ export const RecentlyViewed = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
         <CustomButton
           title='Clear All'
