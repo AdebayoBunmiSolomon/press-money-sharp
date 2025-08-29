@@ -19,7 +19,7 @@ export const SenderBubble: React.FC<ISenderBubbleProps> = ({ data }) => {
       {data?.attachment ? (
         <View
           style={{
-            backgroundColor: colors.red,
+            backgroundColor: "#d60209",
             alignSelf: "flex-end",
             paddingHorizontal: moderateScale(10),
             paddingVertical: moderateScale(10),
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   bubbleContainer: {
     paddingVertical: moderateScale(7),
     borderRadius: moderateScale(10), // more bubble-like
-    backgroundColor: colors.red,
+    backgroundColor: "#d60209",
     alignSelf: "flex-end",
     paddingHorizontal: moderateScale(10),
     marginVertical: moderateScale(5),

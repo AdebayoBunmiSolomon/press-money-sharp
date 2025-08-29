@@ -56,14 +56,14 @@ export const profileList: lisTypes = [
       {
         list: "Terms and Condition",
         toggle: false,
-        show: true,
+        show: false,
       },
       {
         list: `Rate us on ${
           Platform.OS === "ios" ? "App Store" : "Play Store"
         }`,
         toggle: false,
-        show: true,
+        show: false,
       },
       // {
       //   list: "Referrals",

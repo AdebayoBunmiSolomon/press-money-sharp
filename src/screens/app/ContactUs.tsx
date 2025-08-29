@@ -21,11 +21,15 @@ import { ScrollContainer } from "../ScrollContainer";
 import { useSettingsStore } from "@src/api/store/app";
 import { showFlashMsg } from "@src/helper/ui-utils";
 import { settingsType } from "@src/types/types";
+import { openWhatsApp } from "@src/helper/utils";
 
 export const ContactUs = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONTACT_US>) => {
   const { settings } = useSettingsStore();
+  const whatsAppUrl = String(
+    settings && settings.find((i) => i.type.toLowerCase() === "whatsapp")?.value
+  );
 
   const openSocialMediaLink = (socialMediaType: settingsType) => {
     const url = String(
@@ -39,6 +43,7 @@ export const ContactUs = ({
         if (supported) {
           Linking.openURL(url);
         } else {
+          // console.log("error opening url: ", url);
           showFlashMsg({
             title: "Error",
             description: `Error opening ${url}`,
@@ -172,7 +177,7 @@ export const ContactUs = ({
             </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openSocialMediaLink("Whatsapp")}>
+              onPress={() => openWhatsApp(whatsAppUrl)}>
               <FontAwesome
                 name='whatsapp'
                 size={moderateScale(17)}
@@ -199,7 +204,7 @@ export const ContactUs = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openSocialMediaLink("Instagram")}>
+              onPress={() => openSocialMediaLink("Tiktok")}>
               <MaterialIcons
                 name='tiktok'
                 size={moderateScale(22)}

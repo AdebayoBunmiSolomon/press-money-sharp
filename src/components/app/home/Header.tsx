@@ -62,7 +62,7 @@ export const Header: React.FC<IHeaderProps> = ({
         <View style={styles.imgContainer}>
           <Image
             source={require("@src/assets/png/app-icon.png")}
-            contentFit='contain'
+            contentFit='cover'
             style={styles.img}
           />
         </View>

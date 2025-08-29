@@ -8,7 +8,8 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
-  ActivityIndicator, // NEW: For refreshing indicator
+  ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
@@ -35,7 +36,7 @@ import {
 import { ImageViewer } from "@src/components/app/chats/ImageViwer";
 import { FileUploadModal } from "@src/common";
 
-// Date Header Component (unchanged)
+// Date Header Component
 const DateHeader: React.FC<{ date: string }> = React.memo(({ date }) => {
   const { formatMessageDate } = useDateFormatter();
 
@@ -52,12 +53,12 @@ export const Chat = ({
 }: RootStackScreenProps<appScreenNames.CHAT>) => {
   const [fileUploadVisible, setFileUploadVisible] = useState<boolean>(false);
   const [showImgViewer, setShowImgViewer] = useState<boolean>(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false); // Track keyboard visibility
   const { pickFromCamera, pickFromGallery } = useMedia();
   const isFocused = useIsFocused();
-  const { service_uuid } = route?.params;
+  const { service_uuid } = route?.params ?? {};
   const { userData } = useAuthStore();
 
-  // FIXED: Destructure the hook returns to get isFetching
   const { isFetching } = useGetUserServiceMessages(
     service_uuid,
     userData?.token
@@ -71,13 +72,32 @@ export const Chat = ({
   const [message, setMessage] = useState<string>("");
   const [imgResult, setImgResult] = useState<ImagePickerResult | null>(null);
 
-  // 🎯 Use the custom hook - much cleaner!
   const groupedData = useGroupedMessages(userServiceMessagesStore);
 
   const flatListRef = useRef<FlatList>(null);
-  const prevGroupedLengthRef = useRef<number>(0); // NEW: Track previous length for conditional scroll
+  const prevGroupedLengthRef = useRef<number>(0);
 
-  //on mount, load chat messages first
+  // Keyboard event listeners - the key to fixing the issue!
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener?.remove();
+      keyboardDidHideListener?.remove();
+    };
+  }, []);
+
   useEffect(() => {
     if (isFocused) {
       queryClient.invalidateQueries({
@@ -86,7 +106,6 @@ export const Chat = ({
     }
   }, [isFocused]);
 
-  // FIXED: Auto-scroll only if new messages are added (length increases)
   useEffect(() => {
     const currentLength = groupedData.length;
     if (currentLength > prevGroupedLengthRef.current && flatListRef.current) {
@@ -99,14 +118,12 @@ export const Chat = ({
     prevGroupedLengthRef.current = currentLength;
   }, [groupedData]);
 
-  //side effect that showsImg viewer to show image when there is an imgResult
   useEffect(() => {
     if (imgResult?.uri) {
       setShowImgViewer(true);
     }
   }, [imgResult?.uri]);
 
-  // Optimized render function (unchanged)
   const renderItem = React.useCallback(
     ({ item }: { item: FlatListItem }) => {
       if (item.type === "header") {
@@ -211,11 +228,14 @@ export const Chat = ({
 
   return (
     <>
+      {/* KeyboardAvoidingView only enabled when keyboard is visible */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? moderateScale(100) : 0} // adjust based on header height
-      >
+        enabled={isKeyboardVisible} // This is the key fix!
+        keyboardVerticalOffset={
+          Platform.OS === "ios" ? moderateScale(0) : moderateScale(0)
+        }>
         <Screen style={styles.screen} bgColor={colors.white}>
           <Header
             title={"Chats"}
@@ -232,7 +252,6 @@ export const Chat = ({
             }
           />
           <View style={styles.chatContainer}>
-            {/* NEW: Show refreshing indicator during background refetches */}
             {isFetching && (
               <ActivityIndicator
                 size='small'
@@ -253,6 +272,7 @@ export const Chat = ({
               contentContainerStyle={{
                 flexGrow: 1,
                 paddingHorizontal: moderateScale(7),
+                paddingBottom: moderateScale(10), // Add some bottom padding
               }}
               horizontal={false}
               showsVerticalScrollIndicator={false}
@@ -265,62 +285,76 @@ export const Chat = ({
               scrollEventThrottle={16}
             />
           </View>
-          <View style={styles.actionContainer}>
-            <View style={{ width: "80%" }}>
-              <CustomInput
-                value={message}
-                onChangeText={(enteredValue) => {
-                  setMessage(enteredValue);
-                }}
-                type='custom'
-                placeholder='Type a message'
-                placeHolderTextColor={"#BDBDBD"}
-                keyboardType='default'
-                showErrorText
-                style={styles.input}
-              />
-            </View>
-            <CustomButton
-              buttonType='Solid'
-              white
-              rightIcon={
-                <AntDesign
-                  name='paperclip'
-                  size={moderateScale(25)}
-                  color={colors.black}
-                />
-              }
-              onPress={() => setFileUploadVisible(!fileUploadVisible)}
-              btnStyle={{
-                paddingVertical: moderateScale(11),
-                width: "9%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: moderateScale(100),
-              }}
-            />
-            <CustomButton
-              buttonType='Solid'
-              white
-              rightIcon={
-                <Ionicons
-                  name='send'
-                  size={moderateScale(25)}
-                  color={colors.black}
-                />
-              }
-              onPress={handleSendMessage}
-              btnStyle={{
-                paddingVertical: moderateScale(11),
-                width: "9%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: moderateScale(100),
-              }}
-            />
-          </View>
         </Screen>
       </KeyboardAvoidingView>
+
+      {/* Input area positioned outside KeyboardAvoidingView for Android */}
+      <View
+        style={[
+          styles.actionContainer,
+          {
+            paddingBottom:
+              Platform.OS === "android"
+                ? isKeyboardVisible
+                  ? moderateScale(310)
+                  : moderateScale(60) // Adjust for nav bar
+                : moderateScale(40),
+          },
+        ]}>
+        <View style={{ width: "80%" }}>
+          <CustomInput
+            value={message}
+            onChangeText={(enteredValue) => {
+              setMessage(enteredValue);
+            }}
+            type='custom'
+            placeholder='Type a message'
+            placeHolderTextColor={"#BDBDBD"}
+            keyboardType='default'
+            showErrorText
+            style={styles.input}
+          />
+        </View>
+        <CustomButton
+          buttonType='Solid'
+          white
+          rightIcon={
+            <AntDesign
+              name='paperclip'
+              size={moderateScale(25)}
+              color={colors.black}
+            />
+          }
+          onPress={() => setFileUploadVisible(!fileUploadVisible)}
+          btnStyle={{
+            paddingVertical: moderateScale(11),
+            width: "9%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: moderateScale(100),
+          }}
+        />
+        <CustomButton
+          buttonType='Solid'
+          white
+          rightIcon={
+            <Ionicons
+              name='send'
+              size={moderateScale(25)}
+              color={colors.black}
+            />
+          }
+          onPress={handleSendMessage}
+          btnStyle={{
+            paddingVertical: moderateScale(11),
+            width: "9%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: moderateScale(100),
+          }}
+        />
+      </View>
+
       <FileUploadModal
         visible={fileUploadVisible}
         onClose={() => setFileUploadVisible(!fileUploadVisible)}
@@ -366,6 +400,7 @@ const styles = StyleSheet.create({
   screen: {
     paddingHorizontal: moderateScale(0),
     paddingVertical: moderateScale(0),
+    flex: 1,
   },
   header: {
     backgroundColor: colors.red,
@@ -375,18 +410,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  // Input area positioned absolutely but with proper spacing
   actionContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: "center",
     flexDirection: "row",
     gap: moderateScale(5),
-    position: "absolute",
-    bottom: moderateScale(0),
-    paddingBottom:
-      Platform.OS === "ios" ? moderateScale(30) : moderateScale(50),
     backgroundColor: colors.white,
-    paddingTop: moderateScale(10),
+    paddingTop: moderateScale(15),
     paddingHorizontal: moderateScale(10),
-    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "#E0E0E0",
+    // Add elevation for Android and shadow for iOS
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
   },
   input: {
     backgroundColor: "#bdbdbd2f",
@@ -394,9 +443,11 @@ const styles = StyleSheet.create({
     height: DVH(6),
     borderColor: "#BDBDBD",
   },
+  // Chat container with proper bottom margin to account for input
   chatContainer: {
+    flex: 1,
     width: "100%",
-    height: "77%",
+    marginBottom: moderateScale(90), // Space for input area
   },
   dateHeader: {
     alignSelf: "center",

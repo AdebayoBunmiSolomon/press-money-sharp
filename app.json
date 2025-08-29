@@ -3,7 +3,7 @@
     "name": "AutoMotor",
     "scheme": "AutoMotor",
     "slug": "AutoMotor",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/splash-icon.png",
     "userInterfaceStyle": "light",
@@ -18,13 +18,12 @@
       "supportsTablet": true,
       "jsEngine": "hermes",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "whatsapp"
-        ],
+        "LSApplicationQueriesSchemes": ["whatsapp", "whatsapp"],
         "NSCameraUsageDescription": "This app needs access to your camera to take photos.",
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select images.",
         "NSPhotoLibraryAddUsageDescription": "This app needs access to save photos to your library."
-      }
+      },
+      "bundleIdentifier": "com.adebunmy.AutoMotor"
     },
     "android": {
       "adaptiveIcon": {

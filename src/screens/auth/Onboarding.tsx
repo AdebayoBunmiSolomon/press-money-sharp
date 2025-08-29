@@ -36,10 +36,10 @@ export const Onboarding = ({
                 justifyContent: "flex-end",
               }}
               key={index}>
-              <CustomText type='semi-bold' size={30} white>
+              <CustomText type='semi-bold' size={27} white>
                 {item.title}
               </CustomText>
-              <CustomText type='regular' size={15} white>
+              <CustomText type='regular' size={12} lightGray>
                 {item?.desc}
               </CustomText>
             </View>

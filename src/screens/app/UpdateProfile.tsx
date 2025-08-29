@@ -172,6 +172,7 @@ export const UpdateProfile = ({
                 keyboardType='default'
                 showErrorText
                 style={styles.input}
+                disabled={true}
               />
             )}
             name='first_name'
@@ -192,6 +193,7 @@ export const UpdateProfile = ({
                 keyboardType='default'
                 showErrorText
                 style={styles.input}
+                disabled={true}
               />
             )}
             name='last_name'

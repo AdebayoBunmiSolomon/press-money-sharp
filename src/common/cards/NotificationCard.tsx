@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     width: DVW(12),
-    height: DVH(4),
+    height: DVH(6),
     overflow: "hidden",
     borderRadius: moderateScale(10),
   },

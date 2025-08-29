@@ -2,7 +2,7 @@ import { CustomButton, CustomInput } from "@src/components/shared";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { Image } from "expo-image";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,10 +10,8 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
-  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context"; // Optional, for better handling of safe areas
 
 interface IImageViewerProps {
   visible: boolean;
@@ -32,54 +30,41 @@ export const ImageViewer: React.FC<IImageViewerProps> = ({
   messageText,
   handleSendMessage,
 }) => {
-  const keyboardOffset = useRef(new Animated.Value(0)).current;
-  const insets = useSafeAreaInsets(); // Optional: Get safe area insets (navigation bar height)
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false); // Track keyboard visibility
+  // const keyboardOffset = useRef(new Animated.Value(0)).current;
+  // const insets = useSafeAreaInsets(); // Optional: Get safe area insets (navigation bar height)
 
+  // Keyboard event listeners - the key to fixing the issue!
   useEffect(() => {
-    if (!visible) return;
-
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
-      (event) => {
-        const keyboardHeight = event.endCoordinates.height;
-        // Adjust moveUpDistance to account for the navigation bar (insets.bottom)
-        const moveUpDistance =
-          keyboardHeight -
-          (Platform.OS === "ios" ? moderateScale(230) : moderateScale(250)) +
-          insets.bottom; // Add navigation bar height
-        Animated.timing(keyboardOffset, {
-          toValue: -moveUpDistance,
-          duration: 250,
-          useNativeDriver: true,
-        }).start();
+      () => {
+        setKeyboardVisible(true);
       }
     );
-
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
-        Animated.timing(keyboardOffset, {
-          toValue: 0, // Reset to original position
-          duration: 250,
-          useNativeDriver: true,
-        }).start();
+        setKeyboardVisible(false);
       }
     );
 
     return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+      keyboardDidShowListener?.remove();
+      keyboardDidHideListener?.remove();
     };
-  }, [visible, keyboardOffset, insets.bottom]);
+  }, []);
 
   if (!visible) return null;
 
   return (
     <KeyboardAvoidingView
-      style={styles.overlayContainer}
+      style={[styles.overlayContainer, { flex: 1 }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : insets.bottom} // Adjust for navigation bar
-    >
+      enabled={isKeyboardVisible} // This is the key fix!
+      keyboardVerticalOffset={
+        Platform.OS === "ios" ? moderateScale(0) : moderateScale(0)
+      }>
       <Pressable
         style={styles.container}
         onPress={() => {
@@ -95,13 +80,16 @@ export const ImageViewer: React.FC<IImageViewerProps> = ({
           ) : null}
         </View>
       </Pressable>
-      <Animated.View
+      <View
         style={[
           styles.actionContainer,
           {
-            transform: [{ translateY: keyboardOffset }],
             paddingBottom:
-              Platform.OS === "ios" ? moderateScale(30) : insets.bottom, // Use insets for Android
+              Platform.OS === "android"
+                ? isKeyboardVisible
+                  ? moderateScale(30)
+                  : moderateScale(60) // Adjust for nav bar
+                : moderateScale(40),
           },
         ]}>
         <View style={{ width: "90%" }}>
@@ -137,7 +125,7 @@ export const ImageViewer: React.FC<IImageViewerProps> = ({
             borderRadius: moderateScale(100),
           }}
         />
-      </Animated.View>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -172,15 +160,30 @@ const styles = StyleSheet.create({
     height: Platform.OS === "ios" ? "50%" : "40%",
   },
   actionContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: "center",
     flexDirection: "row",
     gap: moderateScale(5),
-    position: "absolute",
-    bottom: 0,
     backgroundColor: colors.white,
-    paddingTop: moderateScale(10),
+    paddingTop: moderateScale(15),
     paddingHorizontal: moderateScale(10),
-    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "#E0E0E0",
+    // Add elevation for Android and shadow for iOS
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
   },
   input: {
     backgroundColor: colors.white,

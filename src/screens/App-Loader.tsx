@@ -21,7 +21,7 @@ export const AppLoader = () => {
         <View style={loaderStyles.iconContainer}>
           <Image
             source={require("@src/assets/png/app-icon.png")}
-            contentFit='contain'
+            contentFit='cover'
             style={loaderStyles.icon}
           />
         </View>

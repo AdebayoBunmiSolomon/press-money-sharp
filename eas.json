@@ -46,6 +46,14 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./eas-android-service-account.json"
+      },
+      "ios": {
+        "appleId": "techtroveresearch@gmail.com",
+        "ascAppId": "6751642250"
+      }
+    }
   }
 }
