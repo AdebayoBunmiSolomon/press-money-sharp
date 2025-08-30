@@ -10,15 +10,20 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { sideNav } from "@src/constants/sidenav";
 import { ScrollContainer } from "../ScrollContainer";
+import { useCategoriesStore } from "@src/api/store/app";
 
 export const SideNav = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.SIDE_NAV>) => {
+  const { categories } = useCategoriesStore();
   const screenNavigation = (action: string) => {
     switch (action) {
       case sideNav[0].subMenu[0]?.list:
         navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
           screen: appScreenNames.CATEGORIES,
+          params: {
+            category_type: categories && categories[0], // 👈 whatever value you want to pass
+          },
         });
         break;
       case sideNav[1].subMenu[0]?.list:
@@ -94,27 +99,31 @@ export const SideNav = ({
                 }}>
                 {item?.title}
               </CustomText>
-              {item?.subMenu?.map((subItem, subIndex) => (
-                <TouchableOpacity
-                  key={subIndex}
-                  style={styles.actionListBtn}
-                  onPress={() => screenNavigation(subItem?.list)}>
-                  <CustomText
-                    type='regular'
-                    size={14}
-                    lightBlack
-                    style={{
-                      maxWidth: "80%",
-                    }}>
-                    {subItem?.list}
-                  </CustomText>
-                  <MaterialIcons
-                    name='arrow-forward-ios'
-                    size={moderateScale(16)}
-                    color={colors.lightBlack}
-                  />
-                </TouchableOpacity>
-              ))}
+              {item?.subMenu?.map((subItem, subIndex) => {
+                return (
+                  subItem?.show && (
+                    <TouchableOpacity
+                      key={subIndex}
+                      style={styles.actionListBtn}
+                      onPress={() => screenNavigation(subItem?.list)}>
+                      <CustomText
+                        type='regular'
+                        size={14}
+                        lightBlack
+                        style={{
+                          maxWidth: "80%",
+                        }}>
+                        {subItem?.list}
+                      </CustomText>
+                      <MaterialIcons
+                        name='arrow-forward-ios'
+                        size={moderateScale(16)}
+                        color={colors.lightBlack}
+                      />
+                    </TouchableOpacity>
+                  )
+                );
+              })}
             </View>
           ))}
       </ScrollContainer>

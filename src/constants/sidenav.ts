@@ -7,6 +7,7 @@ export const sideNav: lisTypes = [
       {
         list: "Category Listing",
         toggle: false,
+        show: true,
       },
     ],
   },
@@ -16,18 +17,22 @@ export const sideNav: lisTypes = [
       {
         list: "Car Sales (Tokunbo and Naija Used)",
         toggle: false,
+        show: true,
       },
       {
         list: "Car Hire (Personal, Commercial and Logistics)",
         toggle: false,
+        show: true,
       },
       {
         list: "Car/Spare Parts",
         toggle: false,
+        show: true,
       },
       {
         list: "Consultation Services",
         toggle: false,
+        show: true,
       },
       // {
       //   list: "Dealers Deal",
@@ -41,14 +46,17 @@ export const sideNav: lisTypes = [
       {
         list: "Wishlist",
         toggle: false,
+        show: true,
       },
       {
         list: "Recently Viewed",
         toggle: false,
+        show: true,
       },
       {
         list: "Cart",
         toggle: false,
+        show: false,
       },
     ],
   },

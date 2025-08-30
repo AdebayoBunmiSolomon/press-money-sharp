@@ -14,12 +14,11 @@ import {
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
-import { Header } from "@src/components/app/home";
+import { FilterModal, Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
 import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
-import { FilterModal } from "@src/components/app/categories";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
 import { useFilterServices } from "@src/api/hooks";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
@@ -33,7 +32,7 @@ export const Categories = ({
   route,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const { category_type } = route?.params ?? {};
-  const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { likedServiceId } = useLikedServicesIdCache();
@@ -84,7 +83,6 @@ export const Categories = ({
           headerStyle={styles.header}
           color={colors.white}
           // showSearchIcon
-          onPressSearchIcon={() => setShowFilter(!showFilter)}
           onPressBellIcon={() =>
             navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
               screen: appScreenNames.NOTIFICATION,
@@ -100,7 +98,9 @@ export const Categories = ({
               paddingBottom: moderateScale(10),
             }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity style={styles.filterBtn}>
+              <TouchableOpacity
+                style={styles.filterBtn}
+                onPress={() => setShowFilterModal(!showFilterModal)}>
                 <Foundation
                   name='filter'
                   size={moderateScale(17)}
@@ -220,8 +220,8 @@ export const Categories = ({
         />
       </Screen>
       <FilterModal
-        visible={showFilter}
-        onClose={() => setShowFilter(!showFilter)}
+        onClose={() => setShowFilterModal(!showFilterModal)}
+        visible={showFilterModal}
       />
     </>
   );

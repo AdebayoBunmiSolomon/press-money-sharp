@@ -27,6 +27,7 @@ export const ContactUs = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONTACT_US>) => {
   const { settings } = useSettingsStore();
+  // console.log("settings", settings);
   const whatsAppUrl = String(
     settings && settings.find((i) => i.type.toLowerCase() === "whatsapp")?.value
   );

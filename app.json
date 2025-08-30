@@ -39,7 +39,8 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.adebunmy.AutoMotor"
+      "package": "com.adebunmy.AutoMotor",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

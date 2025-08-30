@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -47,7 +47,7 @@ interface CustomPhoneInputProps {
 }
 
 export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
-  dial_code,
+  // dial_code,
   flag,
   disabled = false,
   multiLine = false,
@@ -159,8 +159,13 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
             if (text.startsWith(selectedCountry.dialCode)) {
               cleanNumber = text.slice(selectedCountry.dialCode.length);
             }
+
+            // 🚀 Remove leading zero if present (after country code)
+            cleanNumber = cleanNumber.replace(/^0/, "");
+
             // Pass the full number (with country code) to the parent
             onChangeText(`${selectedCountry.dialCode}${cleanNumber}`);
+
             // Update the input value to show only the phone number
             return cleanNumber;
           }}
@@ -173,7 +178,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
             inputStyle,
           ]}
           keyboardType='phone-pad'
-          placeholderTextColor={placeHolderTextColor || colors.black}
+          placeholderTextColor={placeHolderTextColor || colors.lightGray}
           maxLength={maxLength}
           editable={!disabled}
           multiline={multiLine}

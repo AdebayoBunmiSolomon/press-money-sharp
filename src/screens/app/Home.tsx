@@ -154,6 +154,9 @@ export const Home = ({
                 onPress={() =>
                   navigation.navigate(bottomTabScreenNames.CATEGORIES_STACK, {
                     screen: appScreenNames.CATEGORIES,
+                    params: {
+                      category_type: categories && categories[0], // 👈 whatever value you want to pass
+                    },
                   })
                 }
                 btnStyle={styles.xPloreBtn}

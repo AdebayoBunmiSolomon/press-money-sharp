@@ -26,11 +26,15 @@ export const BottomTabStack = () => {
         tabBarLabel: ({ focused }) =>
           focused ? (
             <CustomText type='regular' size={10} red>
-              {getFirstCapitalSegment(route?.name)}
+              {route?.name === "CategoriesStack"
+                ? "Services"
+                : getFirstCapitalSegment(route?.name)}
             </CustomText>
           ) : (
             <CustomText type='regular' size={10} lightGray>
-              {getFirstCapitalSegment(route?.name)}
+              {route?.name === "CategoriesStack"
+                ? "Services"
+                : getFirstCapitalSegment(route?.name)}
             </CustomText>
           ),
         tabBarIcon: ({ focused }) =>

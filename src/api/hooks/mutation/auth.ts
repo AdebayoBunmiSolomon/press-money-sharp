@@ -143,12 +143,15 @@ export const useVerifyEmail = () => {
   } = useMutation({
     mutationFn: (payload: apiVerifyEmailFormTypes) => verifyEmail(payload),
     onSuccess: (response) => {
+      // console.log("verify-email-response", response?.data);
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
-        status: response?.data?.success ? 200 : 401, //200 | 401 | 500
+        status: response?.data?.status,
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
-        message: response?.data?.data?.message,
+        message: response?.data?.success
+          ? `OTP verified successfully`
+          : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
         navigation.navigate(authScreenNames.LOGIN);

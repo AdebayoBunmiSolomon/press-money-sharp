@@ -48,7 +48,7 @@ export const SignUp = ({
     if (data) {
       SignUp({
         first_name: data?.first_name,
-        last_name: data?.gender,
+        last_name: data?.last_name,
         email: data?.email,
         password: data?.password,
         referral_code: String(data?.referral_code),
@@ -171,9 +171,11 @@ export const SignUp = ({
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.phone?.message}
-                placeholder='0800 000 0000'
+                placeholder='800 000 0000'
                 showErrorText
                 style={styles.input}
+                placeHolderTextColor={colors.lightGray}
+                maxLength={14}
               />
             )}
             name='phone'

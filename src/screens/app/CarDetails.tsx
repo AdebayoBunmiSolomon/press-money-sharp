@@ -214,13 +214,13 @@ export const CarDetails = ({
                   <CustomText size={17} type='medium' lightBlack>
                     {formatAmountWithCommas(Number(serviceInfo?.fee))}
                   </CustomText>
-                  <CustomText
+                  {/* <CustomText
                     size={7}
                     type='regular'
                     red
                     style={styles.percentText}>
                     20% off
-                  </CustomText>
+                  </CustomText> */}
                 </View>
                 <View style={styles.locationContainer}>
                   <EvilIcons
@@ -247,62 +247,51 @@ export const CarDetails = ({
                 <View style={styles.headerRule} />
                 {/* 1 */}
                 <View style={styles.subInfoContainer}>
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      {serviceInfo?.brand}
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Make
-                    </CustomText>
-                  </View>
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      {serviceInfo?.model}
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Model
-                    </CustomText>
-                  </View>
+                  {serviceInfo?.brand && (
+                    <View style={styles.subInfoItemContainer}>
+                      <CustomText size={16} lightBlack type='medium'>
+                        {serviceInfo?.brand}
+                      </CustomText>
+                      <CustomText size={13} lightGray type='medium'>
+                        Make
+                      </CustomText>
+                    </View>
+                  )}
+                  {serviceInfo?.model && (
+                    <View style={styles.subInfoItemContainer}>
+                      <CustomText size={16} lightBlack type='medium'>
+                        {serviceInfo?.model}
+                      </CustomText>
+                      <CustomText size={13} lightGray type='medium'>
+                        Model
+                      </CustomText>
+                    </View>
+                  )}
                 </View>
-                {/* 2 */}
-                {/* <View style={styles.subInfoContainer}>
-                  {returnedData &&
-                    Object.entries(returnedData).map(([key, value]) => (
-                      <View key={key} style={{ marginBottom: 8 }}>
-                        <CustomText size={16} lightBlack type='medium'>
-                          {String(value)}
-                        </CustomText>
-                        <CustomText size={13} lightGray type='medium'>
-                          {key}
-                        </CustomText>
-                      </View>
-                    ))}
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      2008
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Year of Manufacture
-                    </CustomText>
+                {serviceInfo?.type && (
+                  <View style={styles.subInfoContainer}>
+                    <View style={styles.subInfoItemContainer}>
+                      <CustomText size={16} lightBlack type='medium'>
+                        {serviceInfo?.type}
+                      </CustomText>
+                      <CustomText size={13} lightGray type='medium'>
+                        Type
+                      </CustomText>
+                    </View>
                   </View>
-                </View> */}
-                {/* 3 */}
+                )}
                 <View style={styles.subInfoContainer}>
-                  <View style={styles.subInfoItemContainer}>
-                    <CustomText size={16} lightBlack type='medium'>
-                      {serviceInfo?.type}
-                    </CustomText>
-                    <CustomText size={13} lightGray type='medium'>
-                      Type
-                    </CustomText>
-                  </View>
-                </View>
-                <View style={styles.subInfoContainer}>
-                  <View style={styles.subInfoItemContainer}>
+                  <View
+                    style={[
+                      styles.subInfoItemContainer,
+                      {
+                        width: "100%",
+                      },
+                    ]}>
                     <View
                       style={{
                         flexDirection: "row",
-                        alignItems: "center",
+                        flexWrap: "wrap",
                         gap: moderateScale(5),
                       }}>
                       {returnedData &&

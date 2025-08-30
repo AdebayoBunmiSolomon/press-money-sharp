@@ -100,7 +100,7 @@ export const RecentlyViewed = ({
         title={"Recently Viewed"}
         headerStyle={styles.header}
         color={colors.white}
-        showSearchIcon
+        // showSearchIcon
       />
       <View style={styles.contentContainer}>
         {isFetching ? (

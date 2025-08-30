@@ -35,7 +35,10 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
   const { allServices } = useAllServicesStore();
   const { userData } = useAuthStore();
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
-  const searchKeys = useMemo(() => ["brand", "location"], []);
+  const searchKeys = useMemo(
+    () => ["brand", "location", "model", "fee", "type"],
+    []
+  );
   const flatListRef = useRef<FlatList>(null);
   const { settings: settingsData } = useSettingsStore();
 
@@ -81,7 +84,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
                   setSearchValue(enteredText);
                 }}
                 type='custom'
-                placeholder='Search by brand or location'
+                placeholder='Search by brand,price,model,location or type'
                 placeHolderTextColor={"#BDBDBD"}
                 searchInput
                 style={styles.input}
