@@ -1,9 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
 import * as Network from "expo-network";
 import moment from "moment";
-import { Linking, Platform } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import { showFlashMsg } from "./ui-utils";
 import { apiGetUserNotificationsResponse } from "@src/api/types/app";
+import _ from "lodash";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -303,4 +304,28 @@ export const hasUnreadNotifications = (
   notifications: apiGetUserNotificationsResponse[]
 ): boolean => {
   return notifications.some((notif) => notif.read_at === null);
+};
+
+export const deserializeJSON = (value?: string) => {
+  if (!value || value.trim() === "") return [];
+
+  try {
+    // Parse the JSON string inside value
+    const parsed = JSON.parse(value);
+
+    // Ensure it's an object
+    if (typeof parsed !== "object" || parsed === null) {
+      return [];
+    }
+
+    // Map into { title, description } format
+    return Object.entries(parsed).map(([title, description]) => ({
+      title,
+      description,
+    }));
+  } catch (_error: unknown) {
+    Alert.alert("Error", _error?.toString() || "Failed to parse JSON");
+    // console.warn("Failed to parse terms & conditions JSON:", error);
+    return [];
+  }
 };

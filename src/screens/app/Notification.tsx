@@ -8,11 +8,10 @@ import { DVH, moderateScale } from "@src/resources/responsiveness";
 import { Header } from "@src/components/app/home";
 import { CustomText } from "@src/components/shared";
 import { useAuthStore } from "@src/api/store/auth";
-import { useGetUserNotifications } from "@src/api/hooks/queries/app";
-import { Loader } from "@src/common";
 import { AntDesign } from "@expo/vector-icons";
 import { NotificationCard } from "@src/common/cards";
 import { NotificationView } from "@src/components/app/notifications";
+import { useUserNotificationsStore } from "@src/api/store/app";
 
 type modalContentType = {
   visible: boolean;
@@ -31,10 +30,7 @@ export const Notification = ({
     notifiable_type: "",
   });
   const { userData } = useAuthStore();
-  const { isFetching, userNotifications } = useGetUserNotifications(
-    userData?.uuid,
-    userData?.token
-  );
+  const { userNotifications } = useUserNotificationsStore();
 
   return (
     <>
@@ -56,16 +52,7 @@ export const Notification = ({
             </TouchableOpacity>
           }
         />
-        {isFetching ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <Loader size='large' color={colors.red} />
-          </View>
-        ) : userNotifications ? (
+        {userNotifications ? (
           <FlatList
             data={userNotifications}
             contentContainerStyle={{

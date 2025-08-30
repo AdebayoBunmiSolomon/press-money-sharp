@@ -279,7 +279,14 @@ export type apiUpdateUserProfileForm = {
 };
 
 export type apiGetTermsAndConditionsStoreResponse = {
-  id: string;
+  id: number;
+  uuid: string;
+  name: string;
+  value: string;
+  type: string;
+  status: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export type apiGetUserPreferencesResponse = {

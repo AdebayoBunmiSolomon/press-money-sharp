@@ -31,12 +31,12 @@ export const Categories = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
-  const { category_type } = route?.params ?? {};
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
+  const { category_type } = route?.params ?? { category_type: categories?.[0] };
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[0]
   );

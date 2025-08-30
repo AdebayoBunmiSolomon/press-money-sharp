@@ -212,7 +212,7 @@ export const CarDetails = ({
               <View style={styles.pricePercentLocationContainer}>
                 <View style={styles.percentPriceContainer}>
                   <CustomText size={17} type='medium' lightBlack>
-                    {formatAmountWithCommas(Number(serviceInfo?.fee))}
+                    #{formatAmountWithCommas(Number(serviceInfo?.fee))}
                   </CustomText>
                   {/* <CustomText
                     size={7}
@@ -300,14 +300,17 @@ export const CarDetails = ({
                             key={index}
                             size={16}
                             lightBlack
-                            type='medium'>
-                            {`${item.title.trim()}: ${item.value}`}
+                            style={{
+                              textAlign: "justify",
+                            }}
+                            type='regular'>
+                            {`${item.title.trim()} ${item.value}`}
                           </CustomText>
                         ))}
                     </View>
-                    <CustomText size={13} lightGray type='medium'>
+                    {/* <CustomText size={13} lightGray type='medium'>
                       Condition
-                    </CustomText>
+                    </CustomText> */}
                   </View>
                 </View>
               </View>

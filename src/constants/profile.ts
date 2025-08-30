@@ -56,7 +56,7 @@ export const profileList: lisTypes = [
       {
         list: "Terms and Condition",
         toggle: false,
-        show: false,
+        show: true,
       },
       {
         list: `Rate us on ${

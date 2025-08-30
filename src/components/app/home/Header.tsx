@@ -11,8 +11,9 @@ import {
 import { Feather, Fontisto } from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { CustomText } from "@src/components/shared";
-import { useUserNotificationsStore } from "@src/api/store/app";
 import { hasUnreadNotifications } from "@src/helper/utils";
+import { useGetUserNotifications } from "@src/api/hooks/queries/app";
+import { useAuthStore } from "@src/api/store/auth";
 
 interface IHeaderProps {
   showAppIcon?: boolean;
@@ -43,10 +44,16 @@ export const Header: React.FC<IHeaderProps> = ({
   onPressSearchIcon,
   extraComponent,
 }) => {
-  const { userNotifications } = useUserNotificationsStore();
+  const { userData } = useAuthStore();
+  const { userNotifications } = useGetUserNotifications(
+    userData?.uuid,
+    userData?.token
+  );
   const unreadNotificationExists = hasUnreadNotifications(
     userNotifications ? userNotifications : []
   );
+  // console.log("userNotifications", userNotifications);
+  // console.log("unreadNotificationExists", unreadNotificationExists);
   return (
     <View
       style={[

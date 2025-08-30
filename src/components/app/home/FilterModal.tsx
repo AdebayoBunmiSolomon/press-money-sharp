@@ -36,7 +36,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
   const { userData } = useAuthStore();
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
   const searchKeys = useMemo(
-    () => ["brand", "location", "model", "fee", "type"],
+    () => ["brand", "location", "model", "fee", "type", "description"],
     []
   );
   const flatListRef = useRef<FlatList>(null);
