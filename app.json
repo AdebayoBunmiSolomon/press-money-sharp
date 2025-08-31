@@ -23,7 +23,8 @@
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select images.",
         "NSPhotoLibraryAddUsageDescription": "This app needs access to save photos to your library."
       },
-      "bundleIdentifier": "com.adebunmy.AutoMotor"
+      "bundleIdentifier": "com.adebunmy.AutoMotor",
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +41,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.adebunmy.AutoMotor",
-      "versionCode": 2
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -49,7 +50,7 @@
       [
         "react-native-video",
         {
-          "enableNotificationControls": true,
+          "enableNotificationControls": false,
           "androidExtensions": {
             "useExoplayerRtsp": false,
             "useExoplayerSmoothStreaming": false,
