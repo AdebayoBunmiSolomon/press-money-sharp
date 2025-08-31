@@ -41,6 +41,7 @@ export const Categories = ({
     categories && categories[0]
   );
   const { userData } = useAuthStore();
+  // console.log(userData?.token);
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
     null
