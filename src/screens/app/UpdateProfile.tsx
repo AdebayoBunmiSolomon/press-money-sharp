@@ -27,7 +27,11 @@ import {
   useUpdateUserProfileImg,
 } from "@src/api/hooks/mutation/app";
 import { showFlashMsg } from "@src/helper/ui-utils";
-import { formatMonthDay, removePlusSign } from "@src/helper/utils";
+import {
+  formatDayMonthYear,
+  removeCountryCode,
+  removePlusSign,
+} from "@src/helper/utils";
 
 export const UpdateProfile = ({
   navigation,
@@ -53,7 +57,7 @@ export const UpdateProfile = ({
     setValue("first_name", userData?.first_name);
     setValue("last_name", userData?.last_name);
     setValue("address", userData?.address);
-    setValue("phone", userData?.phone);
+    setValue("phone", removeCountryCode(userData?.phone));
     setValue("gender", userData?.gender);
     setValue("dob", userData?.dob);
   }, []);
@@ -79,7 +83,7 @@ export const UpdateProfile = ({
         last_name: data?.last_name,
         address: data?.address,
         phone: removePlusSign(data?.phone),
-        dob: formatMonthDay(data?.dob, "-"),
+        dob: formatDayMonthYear(data?.dob, "-"),
         gender: data?.gender.toLowerCase(),
       });
     }
@@ -226,7 +230,10 @@ export const UpdateProfile = ({
               <CustomInput
                 title='DOB'
                 value={field.value}
-                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                onChangeText={(enteredValue) => {
+                  field.onChange(enteredValue);
+                  // console.log(enteredValue);
+                }}
                 error={errors?.dob?.message}
                 type='date'
                 placeholder='your DOB'
@@ -246,11 +253,14 @@ export const UpdateProfile = ({
               <CustomPhoneInput
                 title='Phone Number'
                 value={field.value}
-                onChangeText={(enteredValue) => field.onChange(enteredValue)}
+                onChangeText={(enteredValue) => {
+                  field.onChange(enteredValue);
+                }}
                 error={errors?.phone?.message}
                 placeholder='0800 000 0000'
                 showErrorText
                 style={styles.input}
+                maxLength={14}
               />
             )}
             name='phone'

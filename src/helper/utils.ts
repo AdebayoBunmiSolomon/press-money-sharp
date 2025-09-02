@@ -94,6 +94,26 @@ export const removePlusSign = (input: string): string => {
 };
 
 /**
+ * Removes the country code (1–3 digits, with or without "+") from a phone number string.
+ * Works for most international formats (e.g., +234, 234, +1, +44, etc.).
+ *
+ * @param phone - The phone number string (e.g., "+2349076544958" or "2349076544958")
+ * @returns The phone number without the country code (e.g., "9076544958")
+ */
+export const removeCountryCode = (phone: string): string => {
+  phone = phone.toString().replace(/\s+/g, ""); // remove spaces
+
+  // Remove leading "+" if present
+  if (phone.startsWith("+")) {
+    phone = phone.slice(1);
+  }
+
+  // For most countries, country codes are 1–3 digits
+  // So remove up to first 3 digits, leaving the rest
+  return phone.replace(/^\d{1,3}/, "");
+};
+
+/**
  * Combines country dial code with user input (phone number)
  * Removes +, trims leading 0 from phone, and returns a full international format
  * @param dialCode e.g. "+234"
@@ -286,7 +306,14 @@ export const formatDateOnly = (dateString: string): string => {
   return date.toISOString().split("T")[0];
 };
 
-export const formatMonthDay = (
+/**
+ * Format a date string into "DD/MM/YYYY" or "DD-MM-YYYY"
+ *
+ * @param dateString - The input date string (ISO or any valid date format)
+ * @param separator - The separator to use between parts ("/" or "-"), default is "/"
+ * @returns Formatted date string or empty string if invalid
+ */
+export const formatDayMonthYear = (
   dateString: string,
   separator: "/" | "-" = "/"
 ): string => {
@@ -294,10 +321,11 @@ export const formatMonthDay = (
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return "";
 
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
   const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
+  const year = String(date.getFullYear());
 
-  return `${month}${separator}${day}`;
+  return `${day}${separator}${month}${separator}${year}`;
 };
 
 export const hasUnreadNotifications = (

@@ -13,4 +13,5 @@ export enum appQueryKeys {
   GET_USER_SERVICE_MESSAGES = "get-user-service-messages",
   GET_TERMS_AND_CONDITIONS = "get-terms-and-conditions",
   GET_USER_PREFERENCES = "get-user-preferences",
+  REFRESH_USER = "refresh_user",
 }

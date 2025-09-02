@@ -67,6 +67,28 @@ export const updateProfileValidationSchema = yup.object().shape({
   last_name: yup.string().required("last name is required"),
   address: yup.string().required("address required"),
   phone: yup.string().required("phone is required"),
-  dob: yup.string().required("DOB is required"),
+  dob: yup
+    .string()
+    .required("DOB is required")
+    .test("is-18", "You must be at least 18 years old", function (value) {
+      if (!value) return false;
+
+      // Parse DOB as UTC to avoid timezone shift
+      const dob = new Date(value.split("T")[0]); // take only YYYY-MM-DD
+      const today = new Date();
+
+      let age = today.getFullYear() - dob.getFullYear();
+
+      const hasHadBirthdayThisYear =
+        today.getMonth() > dob.getMonth() ||
+        (today.getMonth() === dob.getMonth() &&
+          today.getDate() >= dob.getDate());
+
+      if (!hasHadBirthdayThisYear) {
+        age -= 1;
+      }
+
+      return age >= 18;
+    }),
   gender: yup.string().required("gender not selected"),
 });

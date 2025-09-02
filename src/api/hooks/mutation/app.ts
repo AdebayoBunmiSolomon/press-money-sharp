@@ -33,6 +33,7 @@ import { appQueryKeys } from "../queries/query-key";
 import { useLikedServiceId } from "../likedService";
 import { useRecentlyViewedServiceId } from "../recentlyServiceViewed";
 import { useLogOutUser } from "./auth";
+import { refreshUserProfile } from "@src/api/services/auth";
 
 export const useScheduleConsultation = () => {
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -421,7 +422,7 @@ export const useUpdateUserProfileImg = () => {
 };
 
 export const useUpdateUserProfileForm = () => {
-  const { userData, setIsAuthenticated } = useAuthStore();
+  const { userData, setUserData } = useAuthStore();
   const {
     data,
     isError,
@@ -430,7 +431,7 @@ export const useUpdateUserProfileForm = () => {
   } = useMutation({
     mutationFn: (payload: apiUpdateUserProfileForm) =>
       updateUserProfileForm(payload, userData?.token),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
         status: response?.data?.success ? 200 : 401, //200 | 401 | 500
@@ -441,7 +442,47 @@ export const useUpdateUserProfileForm = () => {
           : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
-        setIsAuthenticated(false);
+        try {
+          // 🔄 Refetch the user profile after successful update
+          const { data: response } = (await refreshUserProfile(
+            userData?.token
+          )) as { data: any };
+
+          if (response?.data?.success === true) {
+            // ✅ Save new user data in store
+            setUserData({
+              uuid: response?.data?.data?.user?.user?.uuid,
+              first_name: response?.data?.data?.user?.first_name,
+              last_name: response?.data?.data?.user?.last_name,
+              referred_by: response?.data?.data?.user?.referred_by,
+              referral_code: response?.data?.data?.user?.referral_code,
+              gender: response?.data?.data?.user?.gender,
+              profile_img: response?.data?.data?.user?.profile_img,
+              email: response?.data?.data?.user?.email,
+              phone: response?.data?.data?.user?.phone,
+              address: response?.data?.data?.user?.address,
+              dob: response?.data?.data?.user?.dob,
+              email_verified_at: response?.data?.data?.user?.email_verified_at,
+              login_at: response?.data?.data?.user?.login_at,
+              is_admin: response?.data?.data?.user?.is_admin,
+              status: response?.data?.data?.user?.status,
+              created_at: response?.data?.data?.user?.created_at,
+              updated_at: response?.data?.data?.user?.updated_at,
+              deleted_at: response?.data?.data?.user?.deleted_at,
+              token: response?.data?.token,
+            });
+          } else {
+            // Alert.alert(
+            //   "Error",
+            //   "Failed to refresh user profile. Please login again."
+            // );
+          }
+        } catch {
+          // Alert.alert(
+          //   "Error",
+          //   "Failed to refresh user profile. Please login again."
+          // );
+        }
       }
     },
     onError: (error) => {

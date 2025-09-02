@@ -1,5 +1,5 @@
 import { CustomText } from "@src/components/shared";
-import { appScreenNames } from "@src/navigation";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
@@ -14,36 +14,54 @@ import {
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
-import { Header } from "@src/components/app/home";
+import { FilterModal, Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
+import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
-import { useFilterServices } from "@src/api/hooks";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
-import { useCategoriesStore } from "@src/api/store/app";
-import { useLikedServicesIdCache } from "@src/cache";
+import { useFilterServices } from "@src/api/hooks";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import { useLikedServicesIdCache } from "@src/cache";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
+import { openWhatsApp } from "@src/helper/utils";
 
 export const SpareParts = ({
   navigation,
+  route,
 }: RootStackScreenProps<appScreenNames.SPARE_PARTS>) => {
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
+  const { category_type } = route?.params ?? { category_type: categories?.[5] };
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[5]
   );
   const { userData } = useAuthStore();
+  // console.log(userData?.token);
   const { filteredServicesData, getFilteredServices } = useFilterServices();
-  const { likedServiceId } = useLikedServicesIdCache();
-  const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
+    null
+  );
+  const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
     if (pressedCategory) {
       getFilteredServices(pressedCategory);
     }
   }, [pressedCategory]);
+
+  useEffect(() => {
+    if (category_type) {
+      setPressedCategory(category_type);
+    } else {
+      setPressedCategory(category_type && category_type[5]);
+    }
+  }, [category_type]);
+
   return (
     <>
       <StatusBar style='dark' />
@@ -58,10 +76,21 @@ export const SpareParts = ({
               />
             </TouchableOpacity>
           }
-          title={`Cars for ${pressedCategory}`}
+          title={
+            pressedCategory
+              ? `Car ${pressedCategory}`
+              : String(categories && `Car ${categories[0]}`)
+          }
           headerStyle={styles.header}
           color={colors.white}
-          showSearchIcon
+          // showSearchIcon
+          onPressBellIcon={() =>
+            navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
+              screen: appScreenNames.NOTIFICATION,
+            })
+          }
+          // showMenuIcon
+          showBellIcon
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}
@@ -70,7 +99,9 @@ export const SpareParts = ({
               paddingBottom: moderateScale(10),
             }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity style={styles.filterBtn}>
+              <TouchableOpacity
+                style={styles.filterBtn}
+                onPress={() => setShowFilterModal(!showFilterModal)}>
                 <Foundation
                   name='filter'
                   size={moderateScale(17)}
@@ -108,7 +139,13 @@ export const SpareParts = ({
                 paddingBottom: DVH(25),
               }}
               keyExtractor={(__, index) => index.toString()}
-              renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: apiGetAllServicesResponse;
+                index: number;
+              }) => {
                 const isLiked =
                   likedServiceId &&
                   likedServiceId.some((id) => id === item?.id);
@@ -125,10 +162,12 @@ export const SpareParts = ({
                     image={item?.image_urls[0]}
                     onLikeProd={() => {
                       if (!isLiked) {
+                        setSelectedProdIndex(index);
                         AddProductToWishList({
                           service_id: item?.id,
                         });
                       } else {
+                        setSelectedProdIndex(index);
                         ModalMessageProvider.showModalMsg({
                           title: `Hello ${userData?.first_name.toUpperCase()}`,
                           description: "Go to your wishlist to remove item",
@@ -136,8 +175,8 @@ export const SpareParts = ({
                         });
                       }
                     }}
+                    loading={selectedProdIndex === index ? isPending : false}
                     liked={isLiked}
-                    loading={isPending}
                   />
                 );
               }}
@@ -161,7 +200,6 @@ export const SpareParts = ({
               </CustomText>
             </View>
           )}
-
           <View
             style={{
               paddingVertical: DVH(10),
@@ -172,9 +210,20 @@ export const SpareParts = ({
           onPressArrowUp={() =>
             flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
-          onPressWhatsApp={() => {}}
+          onPressWhatsApp={() => {
+            const whatsAppNumber =
+              settingsData &&
+              settingsData.find((i) => i.type === "Whatsapp")?.value;
+            if (whatsAppNumber) {
+              openWhatsApp(whatsAppNumber);
+            }
+          }}
         />
       </Screen>
+      <FilterModal
+        onClose={() => setShowFilterModal(!showFilterModal)}
+        visible={showFilterModal}
+      />
     </>
   );
 };

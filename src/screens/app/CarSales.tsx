@@ -1,5 +1,5 @@
 import { CustomText } from "@src/components/shared";
-import { appScreenNames } from "@src/navigation";
+import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
@@ -14,31 +14,38 @@ import {
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
-import { Header } from "@src/components/app/home";
+import { FilterModal, Header } from "@src/components/app/home";
 import { AntDesign, Foundation } from "@expo/vector-icons";
+import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
 import { FloatActionButton } from "@src/common";
-import { useFilterServices } from "@src/api/hooks";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
-import { useCategoriesStore, useSettingsStore } from "@src/api/store/app";
-import { useLikedServicesIdCache } from "@src/cache";
+import { useFilterServices } from "@src/api/hooks";
 import { useAddProductToWishList } from "@src/api/hooks/mutation/app";
+import { useLikedServicesIdCache } from "@src/cache";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
 import { openWhatsApp } from "@src/helper/utils";
 
 export const CarSales = ({
   navigation,
+  route,
 }: RootStackScreenProps<appScreenNames.CAR_SALES>) => {
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
+  const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
+  const { category_type } = route?.params ?? { category_type: categories?.[1] };
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
     categories && categories[1]
   );
   const { userData } = useAuthStore();
+  // console.log(userData?.token);
   const { filteredServicesData, getFilteredServices } = useFilterServices();
-  const { likedServiceId } = useLikedServicesIdCache();
-  const { AddProductToWishList, isPending } = useAddProductToWishList();
+  const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
+    null
+  );
   const { settings: settingsData } = useSettingsStore();
 
   useEffect(() => {
@@ -46,6 +53,15 @@ export const CarSales = ({
       getFilteredServices(pressedCategory);
     }
   }, [pressedCategory]);
+
+  useEffect(() => {
+    if (category_type) {
+      setPressedCategory(category_type);
+    } else {
+      setPressedCategory(category_type && category_type[1]);
+    }
+  }, [category_type]);
+
   return (
     <>
       <StatusBar style='dark' />
@@ -60,10 +76,21 @@ export const CarSales = ({
               />
             </TouchableOpacity>
           }
-          title={`Cars for ${pressedCategory}`}
+          title={
+            pressedCategory
+              ? `Car ${pressedCategory}`
+              : String(categories && `Car ${categories[0]}`)
+          }
           headerStyle={styles.header}
           color={colors.white}
-          showSearchIcon
+          // showSearchIcon
+          onPressBellIcon={() =>
+            navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
+              screen: appScreenNames.NOTIFICATION,
+            })
+          }
+          // showMenuIcon
+          showBellIcon
         />
         <View style={styles.contentContainer}>
           {/* filter categories */}
@@ -72,7 +99,9 @@ export const CarSales = ({
               paddingBottom: moderateScale(10),
             }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity style={styles.filterBtn}>
+              <TouchableOpacity
+                style={styles.filterBtn}
+                onPress={() => setShowFilterModal(!showFilterModal)}>
                 <Foundation
                   name='filter'
                   size={moderateScale(17)}
@@ -101,52 +130,76 @@ export const CarSales = ({
                 ))}
             </ScrollView>
           </View>
-          <FlatList
-            ref={flatListRef}
-            data={filteredServicesData}
-            contentContainerStyle={{
-              gap: moderateScale(15),
-              paddingBottom: DVH(25),
-            }}
-            keyExtractor={(__, index) => index.toString()}
-            renderItem={({ item }: { item: apiGetAllServicesResponse }) => {
-              const isLiked =
-                likedServiceId && likedServiceId.some((id) => id === item?.id);
-              return (
-                <ProductCard
-                  title={`${item?.brand} ${item?.model}`}
-                  price={String(item?.fee)}
-                  location={item?.location}
-                  onClickCard={() =>
-                    navigation.navigate(appScreenNames.CAR_DETAILS, {
-                      service_uuid: item?.uuid,
-                    })
-                  }
-                  image={item?.image_urls[0]}
-                  onLikeProd={() => {
-                    if (!isLiked) {
-                      AddProductToWishList({
-                        service_id: item?.id,
-                      });
-                    } else {
-                      ModalMessageProvider.showModalMsg({
-                        title: `Hello ${userData?.first_name.toUpperCase()}`,
-                        description: "Go to your wishlist to remove item",
-                        msgType: "FAILED",
-                      });
+          {filteredServicesData && filteredServicesData.length > 0 ? (
+            <FlatList
+              ref={flatListRef}
+              data={filteredServicesData}
+              contentContainerStyle={{
+                gap: moderateScale(15),
+                paddingBottom: DVH(25),
+              }}
+              keyExtractor={(__, index) => index.toString()}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: apiGetAllServicesResponse;
+                index: number;
+              }) => {
+                const isLiked =
+                  likedServiceId &&
+                  likedServiceId.some((id) => id === item?.id);
+                return (
+                  <ProductCard
+                    title={`${item?.brand} ${item?.model}`}
+                    price={String(item?.fee)}
+                    location={item?.location}
+                    onClickCard={() =>
+                      navigation.navigate(appScreenNames.CAR_DETAILS, {
+                        service_uuid: item?.uuid,
+                      })
                     }
-                  }}
-                  liked={isLiked}
-                  loading={isPending}
-                />
-              );
-            }}
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            windowSize={2}
-          />
+                    image={item?.image_urls[0]}
+                    onLikeProd={() => {
+                      if (!isLiked) {
+                        setSelectedProdIndex(index);
+                        AddProductToWishList({
+                          service_id: item?.id,
+                        });
+                      } else {
+                        setSelectedProdIndex(index);
+                        ModalMessageProvider.showModalMsg({
+                          title: `Hello ${userData?.first_name.toUpperCase()}`,
+                          description: "Go to your wishlist to remove item",
+                          msgType: "FAILED",
+                        });
+                      }
+                    }}
+                    loading={selectedProdIndex === index ? isPending : false}
+                    liked={isLiked}
+                  />
+                );
+              }}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
+              maxToRenderPerBatch={2}
+              initialNumToRender={2}
+              windowSize={2}
+            />
+          ) : (
+            <View
+              style={{
+                // flex: 1,
+                width: "100%",
+                height: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <CustomText type='regular' size={16} lightGray>
+                No record found for {`Car ${pressedCategory}`}
+              </CustomText>
+            </View>
+          )}
           <View
             style={{
               paddingVertical: DVH(10),
@@ -167,6 +220,10 @@ export const CarSales = ({
           }}
         />
       </Screen>
+      <FilterModal
+        onClose={() => setShowFilterModal(!showFilterModal)}
+        visible={showFilterModal}
+      />
     </>
   );
 };

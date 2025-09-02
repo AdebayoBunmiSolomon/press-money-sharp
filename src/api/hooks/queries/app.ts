@@ -582,3 +582,41 @@ export const useGetUserPreferences = (token: string) => {
     isError,
   };
 };
+
+// export const useRefreshUser = (token: string) => {
+//   const { setUserPreferences } = useUserPreferencesStore();
+//   const { data, isFetching, isError } = useQuery<
+//     apiGetUserPreferencesResponse[]
+//   >({
+//     queryKey: [appQueryKeys.REFRESH_USER, token],
+//     queryFn: async () => {
+//       const response = await refreshUserProfile(token);
+//       if (response && response?.data?.success === true) {
+//         const userPreferencesResp: apiGetUserPreferencesResponse[] =
+//           response?.data?.data || [];
+//         setUserPreferences(userPreferencesResp);
+//         return userPreferencesResp; // ✅ Return the real data
+//       }
+//       APIRequest.RESPONSE_HANDLER({
+//         type: "modal",
+//         status: 500,
+//         success: false,
+//         code: "NETWORK ERROR",
+//         message:
+//           response?.error?.message ||
+//           "Network error. Please check your connection.",
+//       });
+
+//       return []; // fallback
+//     },
+//     enabled: !!token,
+//     retry: true,
+//     refetchOnReconnect: true,
+//   });
+
+//   return {
+//     userPreferencesData: data,
+//     isFetching,
+//     isError,
+//   };
+// };

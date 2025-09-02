@@ -31,5 +31,6 @@ export const endpoint = {
     getUserPreferences: "/preferences",
     updateUserProfileForm: "/users",
     saveUserPreferences: "/preferences",
+    refreshUserProfile: "/profile",
   },
 };

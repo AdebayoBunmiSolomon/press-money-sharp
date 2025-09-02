@@ -23,7 +23,7 @@ export const login = async (payload: apiLoginFormTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Sign-in service error:", err);
+    // console.log("Sign-in service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -41,7 +41,7 @@ export const signUp = async (payload: apiSignUpFormTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Sign-up service error:", err);
+    // console.log("Sign-up service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -59,7 +59,7 @@ export const verifyEmail = async (payload: apiVerifyEmailFormTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Sign-up service error:", err);
+    // console.log("Sign-up service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -79,7 +79,7 @@ export const forgotPasswordAndContinue = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Forgot-password service error:", err);
+    // console.log("Forgot-password service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -99,7 +99,7 @@ export const verifyOtpToChangePassword = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Verify-otp-to-change-password service error:", err);
+    // console.log("Verify-otp-to-change-password service error:", err);
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
@@ -117,7 +117,28 @@ export const updatePassword = async (payload: apiUpdatePasswordTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    console.log("Update-password service error:", err);
+    // console.log("Update-password service error:", err);
+    return { error: err.message || "An error occurred" }; // Return error as part of response
+  }
+};
+
+export const refreshUserProfile = async (token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    const { data, status } = await APIRequest.GET(
+      endpoint.APP.refreshUserProfile,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      },
+      {}
+    );
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
     return { error: err.message || "An error occurred" }; // Return error as part of response
   }
 };
