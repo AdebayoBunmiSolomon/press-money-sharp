@@ -282,16 +282,6 @@ export const useDeleteRecentlyViewed = () => {
       ),
     onSuccess: (response, variables) => {
       const { service_id } = variables;
-      // APIRequest.RESPONSE_HANDLER({
-      //   type: "flash",
-      //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-      //   success: response?.data?.success, //true | false
-      //   code: response?.data?.error?.code || "Success",
-      //   message: response?.data?.success
-      //     ? "Product removed from recently-viewed successfully"
-      //     : formatApiErrorMessage(response?.data?.error),
-      // });
-      // ✅ Refetch the user wishlist query
       if (response?.data?.success) {
         queryClient.invalidateQueries({
           queryKey: [appQueryKeys.GET_RECENTLY_VIEWED, userData?.token],
