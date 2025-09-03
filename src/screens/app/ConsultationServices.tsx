@@ -1,6 +1,6 @@
 import { appScreenNames } from "@src/navigation";
 import { RootStackScreenProps } from "@src/router/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { Screen } from "../Screen";
 import { Header } from "@src/components/app/home";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -23,7 +23,8 @@ import { useScheduleConsultation } from "@src/api/hooks/mutation/app";
 export const ConsultationServices = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.CONSULTATION_SERVICES>) => {
-  const { ScheduleConsultation, isPending } = useScheduleConsultation();
+  const { ScheduleConsultation, isPending, isSuccess } =
+    useScheduleConsultation();
   const {
     handleSubmit,
     reset,
@@ -44,10 +45,13 @@ export const ConsultationServices = ({
       priority: data?.priority,
       type: data?.type,
     });
-    if (!isPending) {
-      reset(); //clear form fields
-    }
   };
+
+  useEffect(() => {
+    if (!isSuccess) {
+      reset();
+    }
+  }, [isSuccess]);
 
   return (
     <Screen safeArea style={styles.screenContainer}>
@@ -124,6 +128,7 @@ export const ConsultationServices = ({
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
+                maxLength={14}
               />
             )}
             name='phone'

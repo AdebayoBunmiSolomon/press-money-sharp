@@ -41,6 +41,7 @@ export const useScheduleConsultation = () => {
     data,
     isError,
     isPending,
+    isSuccess,
     mutate: ScheduleConsultation,
   } = useMutation({
     mutationFn: (payload: apiScheduleConsultation) =>
@@ -63,7 +64,8 @@ export const useScheduleConsultation = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "modal",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -77,6 +79,7 @@ export const useScheduleConsultation = () => {
     isError,
     isPending,
     ScheduleConsultation,
+    isSuccess,
   };
 };
 
@@ -104,7 +107,8 @@ export const useSendMessage = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "flash",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -156,7 +160,8 @@ export const useAddProductToWishList = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "flash",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -207,7 +212,8 @@ export const useDeleteProductFromWishList = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "flash",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -381,7 +387,7 @@ export const useUpdateUserProfileImg = () => {
     onSuccess: (response) => {
       if (response?.data?.success) {
         APIRequest.RESPONSE_HANDLER({
-          type: "flash",
+          type: "modal",
           status: response?.data?.success ? 200 : 401, //200 | 401 | 500
           success: response?.data?.success, //true | false
           code: response?.data?.error?.code || "Success",
@@ -394,7 +400,8 @@ export const useUpdateUserProfileImg = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "modal",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -477,7 +484,8 @@ export const useUpdateUserProfileForm = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "modal",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -506,7 +514,8 @@ export const useSaveUserPreferences = () => {
       saveUserPreferences(payload, userData?.token),
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "modal",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:

@@ -70,7 +70,8 @@ export const useLogin = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
-        status: 500,
+        type: "modal",
+        status: 401,
         success: false,
         code: "NETWORK ERROR",
         message:
@@ -116,6 +117,7 @@ export const useSignUp = () => {
     },
     onError: (error) => {
       APIRequest.RESPONSE_HANDLER({
+        type: "modal",
         status: 500,
         success: false,
         code: "NETWORK ERROR",

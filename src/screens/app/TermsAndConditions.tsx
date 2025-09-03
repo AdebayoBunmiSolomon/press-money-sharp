@@ -12,11 +12,12 @@ import { ScrollContainer } from "../ScrollContainer";
 import { useGetTermsAndConditions } from "@src/api/hooks/queries/app";
 import { deserializeJSON } from "@src/helper/utils";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Loader } from "@src/common";
 
 export const TermsAndConditions = ({
   navigation,
 }: RootStackScreenProps<appScreenNames.TERMS_AND_CONDITIONS>) => {
-  const { termsAndConditions } = useGetTermsAndConditions();
+  const { termsAndConditions, isFetching } = useGetTermsAndConditions();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const serializedData = deserializeJSON(
     termsAndConditions && termsAndConditions[0]?.value
@@ -45,55 +46,66 @@ export const TermsAndConditions = ({
         }
         color={colors.lightBlack}
       />
-      <ScrollContainer
-        style={{
-          flexGrow: 1,
-        }}>
-        {serializedData &&
-          serializedData.map((item, index) => (
-            <View key={index}>
-              <TouchableOpacity
-                style={styles.dropdownBtn}
-                onPress={() =>
-                  setSelectedIdx(selectedIdx === index ? null : index)
-                }>
-                <CustomText type='medium' size={14} lightBlack>
-                  {item?.title}
-                </CustomText>
-                <MaterialIcons
-                  name={
-                    selectedIdx === index
-                      ? "keyboard-arrow-up"
-                      : "keyboard-arrow-down"
-                  }
-                  size={moderateScale(25)}
-                  color={colors.lightBlack}
-                />
-              </TouchableOpacity>
-              {selectedIdx === index && (
-                <View
-                  style={{
-                    width: "100%",
-                  }}>
-                  <CustomText
-                    type='regular'
-                    size={13}
-                    lightBlack
-                    style={{
-                      textAlign: "justify",
-                    }}>
-                    {item?.description as string}
-                  </CustomText>
-                </View>
-              )}
-            </View>
-          ))}
+      {isFetching ? (
         <View
           style={{
-            paddingVertical: DVH(5),
-          }}
-        />
-      </ScrollContainer>
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Loader size='large' color={colors.red} />
+        </View>
+      ) : (
+        <ScrollContainer
+          style={{
+            flexGrow: 1,
+          }}>
+          {serializedData &&
+            serializedData.map((item, index) => (
+              <View key={index}>
+                <TouchableOpacity
+                  style={styles.dropdownBtn}
+                  onPress={() =>
+                    setSelectedIdx(selectedIdx === index ? null : index)
+                  }>
+                  <CustomText type='medium' size={14} lightBlack>
+                    {item?.title}
+                  </CustomText>
+                  <MaterialIcons
+                    name={
+                      selectedIdx === index
+                        ? "keyboard-arrow-up"
+                        : "keyboard-arrow-down"
+                    }
+                    size={moderateScale(25)}
+                    color={colors.lightBlack}
+                  />
+                </TouchableOpacity>
+                {selectedIdx === index && (
+                  <View
+                    style={{
+                      width: "100%",
+                    }}>
+                    <CustomText
+                      type='regular'
+                      size={13}
+                      lightBlack
+                      style={{
+                        textAlign: "justify",
+                      }}>
+                      {item?.description as string}
+                    </CustomText>
+                  </View>
+                )}
+              </View>
+            ))}
+          <View
+            style={{
+              paddingVertical: DVH(5),
+            }}
+          />
+        </ScrollContainer>
+      )}
     </Screen>
   );
 };

@@ -60,16 +60,6 @@ export const useGetCategory = () => {
         setCategories(categories); // ✅ Now setting correctly
         return categories; // ✅ Return the real data
       }
-
-      APIRequest.RESPONSE_HANDLER({
-        status: 500,
-        success: false,
-        code: "NETWORK ERROR",
-        message:
-          response?.error?.message ||
-          "Network error. Please check your connection.",
-      });
-
       return []; // fallback
     },
     retry: 1,
@@ -105,7 +95,7 @@ export const useGetAllServices = () => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -141,7 +131,6 @@ export const useViewService = (service_uuid: string) => {
         code: "NETWORK ERROR",
         message:
           formatApiErrorMessage(response?.data?.error) ||
-          response?.error?.message ||
           "Network error. Please check your connection.",
       });
 
@@ -180,7 +169,7 @@ export const useGetSettings = () => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -212,15 +201,6 @@ export const useGetUserNotifications = (user_uuid: string, token: string) => {
       ) {
         const userNotificationsResp: apiGetUserNotificationsResponse[] =
           response?.data?.data || [];
-        // APIRequest.RESPONSE_HANDLER({
-        //   type: "flash",
-        //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-        //   success: response?.data?.success, //true | false
-        //   code: response?.data?.error?.code || "Success",
-        //   message: response?.data?.success
-        //     ? "Notifications fetched successfully"
-        //     : formatApiErrorMessage(response?.data?.error),
-        // });
         setUserNotifications(userNotificationsResp);
         return userNotificationsResp; // ✅ Return the real data
       }
@@ -230,7 +210,7 @@ export const useGetUserNotifications = (user_uuid: string, token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -261,15 +241,6 @@ export const useGetUserWishList = (token: string) => {
       ) {
         const userWishListResp: apiGetUserWishListResponse[] =
           response?.data?.data || [];
-        // APIRequest.RESPONSE_HANDLER({
-        //   type: "flash",
-        //   status: response?.data?.success ? 200 : 401, //200 | 401 | 500
-        //   success: response?.data?.success, //true | false
-        //   code: response?.data?.error?.code || "Success",
-        //   message: response?.data?.success
-        //     ? "User Wishlist fetched successfully"
-        //     : formatApiErrorMessage(response?.data?.error),
-        // });
         setUserWishList(userWishListResp);
         return userWishListResp; // ✅ Return the real data
       }
@@ -279,7 +250,7 @@ export const useGetUserWishList = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -322,7 +293,7 @@ export const useGetUserRecentlyViewed = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -368,7 +339,7 @@ export const useGetUserReferral = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -406,7 +377,7 @@ export const useGetUserReferralRewardHistory = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -445,7 +416,7 @@ export const useGetAllUserChats = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -488,7 +459,7 @@ export const useGetUserServiceMessages = (
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
       return [];
@@ -527,7 +498,7 @@ export const useGetTermsAndConditions = () => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
       return [];
@@ -565,7 +536,7 @@ export const useGetUserPreferences = (token: string) => {
         success: false,
         code: "NETWORK ERROR",
         message:
-          response?.error?.message ||
+          formatApiErrorMessage(response?.data?.error) ||
           "Network error. Please check your connection.",
       });
 
@@ -582,41 +553,3 @@ export const useGetUserPreferences = (token: string) => {
     isError,
   };
 };
-
-// export const useRefreshUser = (token: string) => {
-//   const { setUserPreferences } = useUserPreferencesStore();
-//   const { data, isFetching, isError } = useQuery<
-//     apiGetUserPreferencesResponse[]
-//   >({
-//     queryKey: [appQueryKeys.REFRESH_USER, token],
-//     queryFn: async () => {
-//       const response = await refreshUserProfile(token);
-//       if (response && response?.data?.success === true) {
-//         const userPreferencesResp: apiGetUserPreferencesResponse[] =
-//           response?.data?.data || [];
-//         setUserPreferences(userPreferencesResp);
-//         return userPreferencesResp; // ✅ Return the real data
-//       }
-//       APIRequest.RESPONSE_HANDLER({
-//         type: "modal",
-//         status: 500,
-//         success: false,
-//         code: "NETWORK ERROR",
-//         message:
-//           response?.error?.message ||
-//           "Network error. Please check your connection.",
-//       });
-
-//       return []; // fallback
-//     },
-//     enabled: !!token,
-//     retry: true,
-//     refetchOnReconnect: true,
-//   });
-
-//   return {
-//     userPreferencesData: data,
-//     isFetching,
-//     isError,
-//   };
-// };

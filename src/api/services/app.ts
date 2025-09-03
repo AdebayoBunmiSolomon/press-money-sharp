@@ -25,7 +25,9 @@ export const getCategory = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching categories"
+    );
   }
 };
 
@@ -44,8 +46,9 @@ export const scheduleConsultation = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Schedule-consultation service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during scheduling consultation"
+    );
   }
 };
 
@@ -62,8 +65,9 @@ export const getAllServices = async () => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Get-AllService service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    );
   }
 };
 
@@ -80,8 +84,9 @@ export const viewService = async (service_uuid: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("View-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    );
   }
 };
 
@@ -102,8 +107,9 @@ export const sendMessage = async (payload: apiSendMessage, token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Send-message service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    );
   }
 };
 
@@ -121,7 +127,9 @@ export const getSettings = async () => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Settings-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -146,7 +154,9 @@ export const getUserNotifications = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetNotifications-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -171,7 +181,9 @@ export const addProductToWishList = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("AddProduct-ToWishList service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -193,7 +205,9 @@ export const getUserWishList = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserWishList-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -217,7 +231,9 @@ export const deleteProductFromWishList = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("DeleteUserWishList-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -242,7 +258,9 @@ export const addProductToRecentlyViewed = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("AddProduct-ToRecentlyViewed service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -264,7 +282,9 @@ export const getUserRecentlyViewed = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetRecentlyViewed service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -288,7 +308,9 @@ export const deleteProductFromRecentlyViewed = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("DeleteUserRecentlyViewed-Service service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -310,7 +332,9 @@ export const getUserReferral = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetReferralHistory service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -332,7 +356,9 @@ export const getUserReferralRewardHistory = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserReferralRewardHistory service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -354,7 +380,9 @@ export const getAllUserChats = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetAllUserChats service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -379,65 +407,11 @@ export const getUserServiceMessages = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserServiceMessages service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
-
-//working for android, not working for ios...
-// export const sendChatMessage = async (
-//   payload: apiSendChatMessage,
-//   token: string
-// ) => {
-//   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
-//   if (!isNetworkConnectedAndReachable) {
-//     throw new Error("No internet connection. Please try again later.");
-//   }
-
-//   try {
-//     if (payload.file) {
-//       console.log("Uploading file:", payload.file);
-
-//       const ext = payload.file.name?.split(".").pop()?.toLowerCase() || "jpg";
-//       const mimeType = ext === "png" ? "image/png" : "image/jpeg";
-
-//       const formData = new FormData();
-//       formData.append("message", payload.message?.trim() || " ");
-//       formData.append("service", payload.service);
-//       formData.append("file", {
-//         uri: payload.file.uri,
-//         name: payload.file.name || `chat_${Date.now()}.${ext}`,
-//         type: mimeType,
-//       } as any);
-
-//       const res = await fetch(`${BASE_URL}${endpoint.APP.sendChatMessage}`, {
-//         method: "POST",
-//         body: formData,
-//         headers: {
-//           Authorization: `Bearer ${token.trim()}`,
-//           "Content-Type": "multipart/form-data", // explicitly set
-//         },
-//       });
-
-//       const json = await res.json();
-//       console.log("Response JSON:", json);
-//       return { status: res.status, data: json };
-//     }
-
-//     const { data, status } = await APIRequest.POST(
-//       `${endpoint.APP.sendChatMessage}`,
-//       payload,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token.trim()}`,
-//         },
-//       }
-//     );
-//     return { data, status };
-//   } catch (err: any) {
-//     console.log("SendChat-message service error:", err);
-//     return { error: err.message || "An error occurred" };
-//   }
-// };
 
 export const sendChatMessage = async (
   payload: apiSendChatMessage,
@@ -482,7 +456,9 @@ export const sendChatMessage = async (
     return { data, status };
   } catch (err: any) {
     // console.log("SendChat-message service error:", err);
-    return { error: err.message || "An error occurred" };
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    );
   }
 };
 
@@ -518,7 +494,9 @@ export const updateProfileImg = async (
     }
   } catch (err: any) {
     // console.log("UpdateUser-Profile service error:", err);
-    return { error: err.message || "An error occurred" };
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    );
   }
 };
 
@@ -536,7 +514,9 @@ export const getTermsAndConditions = async () => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Get-Terms&Conditions service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -561,7 +541,9 @@ export const updateUserProfileForm = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Update-UserProfileForm service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -583,7 +565,9 @@ export const getUserPreferences = async (token: string) => {
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Get-UserPreferences service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };
 
@@ -608,6 +592,8 @@ export const saveUserPreferences = async (
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Save-UserPreferences service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
   }
 };

@@ -15,16 +15,16 @@ export const login = async (payload: apiLoginFormTypes) => {
   if (!isNetworkConnectedAndReachable) {
     throw new Error("No internet connection. Please try again later.");
   }
+
   try {
     const { data, status } = await APIRequest.POST(
       endpoint.AUTH.login,
       payload,
       {}
     );
-    return { data, status }; // Return response instead of throwing an error
+    return { data, status };
   } catch (err: any) {
-    // console.log("Sign-in service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(err.message || "An error occurred during login");
   }
 };
 
@@ -41,8 +41,7 @@ export const signUp = async (payload: apiSignUpFormTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Sign-up service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(err.message || "An error occurred during sign-up");
   }
 };
 
@@ -59,8 +58,9 @@ export const verifyEmail = async (payload: apiVerifyEmailFormTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Sign-up service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during email verification"
+    );
   }
 };
 
@@ -79,8 +79,9 @@ export const forgotPasswordAndContinue = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Forgot-password service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(
+      err.message || "An error occurred during password reset request"
+    );
   }
 };
 
@@ -99,8 +100,7 @@ export const verifyOtpToChangePassword = async (
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Verify-otp-to-change-password service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(err.message || "An error occurred during OTP verification");
   }
 };
 
@@ -117,8 +117,7 @@ export const updatePassword = async (payload: apiUpdatePasswordTypes) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    // console.log("Update-password service error:", err);
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(err.message || "An error occurred during password update");
   }
 };
 
@@ -139,6 +138,6 @@ export const refreshUserProfile = async (token: string) => {
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
-    return { error: err.message || "An error occurred" }; // Return error as part of response
+    throw new Error(err.message || "An error occurred during profile refresh");
   }
 };

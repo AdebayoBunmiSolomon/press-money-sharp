@@ -36,7 +36,7 @@ export const ReceiverBubble: React.FC<IReceiverBubbleProps> = ({ data }) => {
               contentFit='fill'
             />
           </View>
-          {data?.message && (
+          {data?.message !== "image" && (
             <CustomText
               type='regular'
               size={14}
