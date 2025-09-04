@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -51,7 +51,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
   flag,
   disabled = false,
   multiLine = false,
-  maxLength,
+  maxLength = 10,
   placeholder,
   title = "Phone number",
   titleType = "medium",
@@ -74,16 +74,20 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
     flag: countriesDialCode[0].flag,
     dialCode: countriesDialCode[0].dialCode,
   });
+  const [activeDialCode, setActiveDialCode] = useState<string>("");
 
   const valueFont = getValueFontType(valueFontType);
   const borderColor = error ? colors.danger : "#d3cacaf5";
-  // const activeDialCode = dial_code || selectedCountry.dialCode;
   const activeFlag = flag || selectedCountry.flag;
 
   const handleCountrySelect = (country: CountryType) => {
     setSelectedCountry(country);
     setModalVisible(false);
   };
+
+  useEffect(() => {
+    setActiveDialCode(selectedCountry.dialCode);
+  }, [selectedCountry.dialCode]);
 
   const renderCountryItem = ({ item }: { item: CountryType }) => (
     <TouchableOpacity
@@ -145,9 +149,9 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
           </CustomText>
         </TouchableOpacity>
 
-        {/* <CustomText type='regular' size={14} style={styles.dialCodeText}>
+        <CustomText type='regular' size={14} style={styles.dialCodeText}>
           {activeDialCode}
-        </CustomText> */}
+        </CustomText>
 
         <TextInput
           onSubmitEditing={onSubmitEditing}
@@ -164,7 +168,7 @@ export const CustomPhoneInput: React.FC<CustomPhoneInputProps> = ({
             cleanNumber = cleanNumber.replace(/^0/, "");
 
             // Pass the full number (with country code) to the parent
-            onChangeText(`${selectedCountry.dialCode}${cleanNumber}`);
+            onChangeText(`${cleanNumber}`);
 
             // Update the input value to show only the phone number
             return cleanNumber;
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
     height: "100%",
     padding: 0,
     margin: 0,
-    includeFontPadding: false,
+    // includeFontPadding: false,
   },
   flagBtn: {
     backgroundColor: "transparent",
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   dialCodeText: {
-    paddingHorizontal: moderateScale(5),
+    paddingRight: moderateScale(1),
   },
   errorText: {
     color: colors.danger,

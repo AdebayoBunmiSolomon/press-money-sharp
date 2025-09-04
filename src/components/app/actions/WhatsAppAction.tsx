@@ -27,7 +27,7 @@ export const WhatsAppAction: React.FC<IWhatsAppActionProps> = ({
               style={{
                 paddingVertical: moderateScale(10),
               }}>
-              Start WhatsApp Chat
+              Start WhatsApp Chat with AutoMotor
             </CustomText>
             <View style={styles.actionBtnContainer}>
               <CustomButton

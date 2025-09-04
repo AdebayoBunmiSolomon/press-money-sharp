@@ -124,11 +124,10 @@ export const ConsultationServices = ({
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.phone?.message}
-                placeholder='0800 000 0000'
+                placeholder='800 000 0000'
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
-                maxLength={14}
               />
             )}
             name='phone'

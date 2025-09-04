@@ -175,7 +175,6 @@ export const SignUp = ({
                 showErrorText
                 style={styles.input}
                 placeHolderTextColor={colors.lightGray}
-                maxLength={14}
               />
             )}
             name='phone'

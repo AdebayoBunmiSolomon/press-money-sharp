@@ -8,24 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		3A4A4AE9B25168B34A2428E8 /* libPods-AutoMotor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABBEE8354FB441EBE61D157C /* libPods-AutoMotor.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		A56EA04AEBF7A08BF0F38D47 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A839B1C95C83279262AEF792 /* ExpoModulesProvider.swift */; };
+		5F845EDFADB7E5CF5B08B41F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9A98DD5B35A51B9CB06EF999 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		E7F02D08AD72629C794FFE4B /* libPods-AutoMotor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 649E17DF904DAFEB89D66AD3 /* libPods-AutoMotor.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FCE259771E746F7AEAA62AF6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13C86751187B00682E86C5B5 /* PrivacyInfo.xcprivacy */; };
+		FC2C77C5A7BE3F04E0AEC395 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31B11E9EA570951FBA85D06 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* AutoMotor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoMotor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AutoMotor/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AutoMotor/Info.plist; sourceTree = "<group>"; };
-		13C86751187B00682E86C5B5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = AutoMotor/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		48288FF87EB53933D8A98D31 /* Pods-AutoMotor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoMotor.release.xcconfig"; path = "Target Support Files/Pods-AutoMotor/Pods-AutoMotor.release.xcconfig"; sourceTree = "<group>"; };
-		7DBEFD7884612E1CF8CDF94B /* Pods-AutoMotor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoMotor.debug.xcconfig"; path = "Target Support Files/Pods-AutoMotor/Pods-AutoMotor.debug.xcconfig"; sourceTree = "<group>"; };
-		A839B1C95C83279262AEF792 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-AutoMotor/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		646B61153ED4B6EC3C1CBC0C /* Pods-AutoMotor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoMotor.debug.xcconfig"; path = "Target Support Files/Pods-AutoMotor/Pods-AutoMotor.debug.xcconfig"; sourceTree = "<group>"; };
+		649E17DF904DAFEB89D66AD3 /* libPods-AutoMotor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AutoMotor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A98DD5B35A51B9CB06EF999 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = AutoMotor/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		9EC3179A5172EC27196BED99 /* Pods-AutoMotor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoMotor.release.xcconfig"; path = "Target Support Files/Pods-AutoMotor/Pods-AutoMotor.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = AutoMotor/SplashScreen.storyboard; sourceTree = "<group>"; };
-		ABBEE8354FB441EBE61D157C /* libPods-AutoMotor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AutoMotor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B31B11E9EA570951FBA85D06 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-AutoMotor/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AutoMotor/AppDelegate.swift; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A4A4AE9B25168B34A2428E8 /* libPods-AutoMotor.a in Frameworks */,
+				E7F02D08AD72629C794FFE4B /* libPods-AutoMotor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,15 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				13C86751187B00682E86C5B5 /* PrivacyInfo.xcprivacy */,
-			);
-			name = AutoMotor;
-			sourceTree = "<group>";
-		};
-		1DE20FAECBD3C9F5BEA74435 /* AutoMotor */ = {
-			isa = PBXGroup;
-			children = (
-				A839B1C95C83279262AEF792 /* ExpoModulesProvider.swift */,
+				9A98DD5B35A51B9CB06EF999 /* PrivacyInfo.xcprivacy */,
 			);
 			name = AutoMotor;
 			sourceTree = "<group>";
@@ -70,9 +62,25 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				ABBEE8354FB441EBE61D157C /* libPods-AutoMotor.a */,
+				649E17DF904DAFEB89D66AD3 /* libPods-AutoMotor.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		45B55FC2BF46D989E4EC616B /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				6210AF78CD6FE2881E60D51F /* AutoMotor */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		6210AF78CD6FE2881E60D51F /* AutoMotor */ = {
+			isa = PBXGroup;
+			children = (
+				B31B11E9EA570951FBA85D06 /* ExpoModulesProvider.swift */,
+			);
+			name = AutoMotor;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -89,8 +97,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				C290C61EE7B54C4DAC41BB10 /* Pods */,
-				BF0D85634BDD93133E724695 /* ExpoModulesProviders */,
+				EE9BD9E171434826BFE66443 /* Pods */,
+				45B55FC2BF46D989E4EC616B /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -114,19 +122,11 @@
 			path = AutoMotor/Supporting;
 			sourceTree = "<group>";
 		};
-		BF0D85634BDD93133E724695 /* ExpoModulesProviders */ = {
+		EE9BD9E171434826BFE66443 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1DE20FAECBD3C9F5BEA74435 /* AutoMotor */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		C290C61EE7B54C4DAC41BB10 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7DBEFD7884612E1CF8CDF94B /* Pods-AutoMotor.debug.xcconfig */,
-				48288FF87EB53933D8A98D31 /* Pods-AutoMotor.release.xcconfig */,
+				646B61153ED4B6EC3C1CBC0C /* Pods-AutoMotor.debug.xcconfig */,
+				9EC3179A5172EC27196BED99 /* Pods-AutoMotor.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AutoMotor" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				7FB090E2E485C686175496E3 /* [Expo] Configure project */,
+				3FBD835EFB77B9EAC54BE87E /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				4079AEDCBCA82425059F81F1 /* [CP] Embed Pods Frameworks */,
+				495C331076BAF67AD66B47DB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				FCE259771E746F7AEAA62AF6 /* PrivacyInfo.xcprivacy in Resources */,
+				5F845EDFADB7E5CF5B08B41F /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,25 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4079AEDCBCA82425059F81F1 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AutoMotor/Pods-AutoMotor-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AutoMotor/Pods-AutoMotor-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7FB090E2E485C686175496E3 /* [Expo] Configure project */ = {
+		3FBD835EFB77B9EAC54BE87E /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -276,6 +258,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-AutoMotor/expo-configure-project.sh\"\n";
+		};
+		495C331076BAF67AD66B47DB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AutoMotor/Pods-AutoMotor-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AutoMotor/Pods-AutoMotor-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -325,7 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				A56EA04AEBF7A08BF0F38D47 /* ExpoModulesProvider.swift in Sources */,
+				FC2C77C5A7BE3F04E0AEC395 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,7 +334,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7DBEFD7884612E1CF8CDF94B /* Pods-AutoMotor.debug.xcconfig */;
+			baseConfigurationReference = 646B61153ED4B6EC3C1CBC0C /* Pods-AutoMotor.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -363,14 +363,14 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "AutoMotor/AutoMotor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48288FF87EB53933D8A98D31 /* Pods-AutoMotor.release.xcconfig */;
+			baseConfigurationReference = 9EC3179A5172EC27196BED99 /* Pods-AutoMotor.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -393,7 +393,7 @@
 				PRODUCT_NAME = AutoMotor;
 				SWIFT_OBJC_BRIDGING_HEADER = "AutoMotor/AutoMotor-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

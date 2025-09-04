@@ -31,7 +31,7 @@ export const CallAction: React.FC<ICallActionProps> = ({
               style={{
                 paddingVertical: moderateScale(10),
               }}>
-              Call PressMoneySharp on {value}
+              Call AutoMotor on {value}
             </CustomText>
             <View style={styles.actionBtnContainer}>
               <CustomButton

@@ -27,11 +27,7 @@ import {
   useUpdateUserProfileImg,
 } from "@src/api/hooks/mutation/app";
 import { showFlashMsg } from "@src/helper/ui-utils";
-import {
-  formatDayMonthYear,
-  removeCountryCode,
-  removePlusSign,
-} from "@src/helper/utils";
+import { formatDayMonthYear } from "@src/helper/utils";
 
 export const UpdateProfile = ({
   navigation,
@@ -57,7 +53,7 @@ export const UpdateProfile = ({
     setValue("first_name", userData?.first_name);
     setValue("last_name", userData?.last_name);
     setValue("address", userData?.address);
-    setValue("phone", removeCountryCode(userData?.phone));
+    setValue("phone", userData?.phone);
     setValue("gender", userData?.gender);
     setValue("dob", userData?.dob);
   }, []);
@@ -82,7 +78,7 @@ export const UpdateProfile = ({
         first_name: data?.first_name,
         last_name: data?.last_name,
         address: data?.address,
-        phone: removePlusSign(data?.phone),
+        phone: data?.phone,
         dob: formatDayMonthYear(data?.dob, "-"),
         gender: data?.gender.toLowerCase(),
       });
@@ -257,10 +253,9 @@ export const UpdateProfile = ({
                   field.onChange(enteredValue);
                 }}
                 error={errors?.phone?.message}
-                placeholder='0800 000 0000'
+                placeholder='800 000 0000'
                 showErrorText
                 style={styles.input}
-                maxLength={14}
               />
             )}
             name='phone'

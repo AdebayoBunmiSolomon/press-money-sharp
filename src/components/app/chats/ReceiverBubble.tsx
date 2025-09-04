@@ -19,14 +19,15 @@ export const ReceiverBubble: React.FC<IReceiverBubbleProps> = ({ data }) => {
       {data?.attachment ? (
         <View
           style={{
-            backgroundColor: colors.lightGray,
+            // backgroundColor: colors.lightGray,
             alignSelf: "flex-start",
             paddingHorizontal: moderateScale(10),
             paddingVertical: moderateScale(10),
             width: "80%",
             borderRadius: moderateScale(10),
             overflow: "hidden",
-            marginBottom: moderateScale(10),
+            marginBottom: moderateScale(5),
+            marginLeft: moderateScale(-8),
           }}>
           <View style={styles.imgContainer}>
             <Image
@@ -36,42 +37,55 @@ export const ReceiverBubble: React.FC<IReceiverBubbleProps> = ({ data }) => {
               contentFit='fill'
             />
           </View>
-          {data?.message !== "image" && (
-            <CustomText
-              type='regular'
-              size={14}
-              style={{ color: colors.black }}>
-              {data?.message}
-            </CustomText>
-          )}
           <View
             style={{
-              alignItems: "flex-end",
-              paddingVertical: moderateScale(2),
+              backgroundColor: colors.lightGray,
+              alignSelf: "flex-start",
+              paddingHorizontal: moderateScale(10),
+              marginTop: moderateScale(-11),
+              paddingVertical: moderateScale(10),
+              width: "100%",
+              borderBottomLeftRadius: moderateScale(10),
+              borderBottomRightRadius: moderateScale(10),
+              overflow: "hidden",
             }}>
-            {time === "Invalid date" ? (
-              <Ionicons
-                name='timer-outline'
-                color={colors.black}
-                size={moderateScale(14)}
-              />
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: moderateScale(4),
-                }}>
-                <CustomText
-                  type='regular'
-                  size={9}
-                  style={{
-                    color: colors.black,
-                  }}>
-                  {time}
-                </CustomText>
-              </View>
+            {data?.message !== "image" && (
+              <CustomText
+                type='regular'
+                size={14}
+                style={{ color: colors.black }}>
+                {data?.message}
+              </CustomText>
             )}
+            <View
+              style={{
+                alignItems: "flex-end",
+                paddingVertical: moderateScale(2),
+              }}>
+              {time === "Invalid date" ? (
+                <Ionicons
+                  name='timer-outline'
+                  color={colors.black}
+                  size={moderateScale(14)}
+                />
+              ) : (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: moderateScale(4),
+                  }}>
+                  <CustomText
+                    type='regular'
+                    size={9}
+                    style={{
+                      color: colors.black,
+                    }}>
+                    {time}
+                  </CustomText>
+                </View>
+              )}
+            </View>
           </View>
         </View>
       ) : (

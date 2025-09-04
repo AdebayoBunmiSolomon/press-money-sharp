@@ -3,7 +3,13 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -61,6 +67,65 @@ export const CarSales = ({
       setPressedCategory(category_type && category_type[1]);
     }
   }, [category_type]);
+
+  const likedSet = useMemo(
+    () => new Set(likedServiceId || []),
+    [likedServiceId]
+  );
+
+  // ✅ Handler for navigating to details
+  const handleCardClick = useCallback(
+    (uuid: string) => {
+      navigation.navigate(appScreenNames.CAR_DETAILS, { service_uuid: uuid });
+    },
+    [navigation]
+  );
+
+  // ✅ Handler for liking products
+  const handleLike = useCallback(
+    (item: apiGetAllServicesResponse, index: number, isLiked: boolean) => {
+      setSelectedProdIndex(index);
+      if (!isLiked) {
+        AddProductToWishList({ service_id: item?.id });
+      } else {
+        ModalMessageProvider.showModalMsg({
+          title: `Hello ${userData?.first_name?.toUpperCase()}`,
+          description: "Go to your wishlist to remove item",
+          msgType: "FAILED",
+        });
+      }
+    },
+    [AddProductToWishList, setSelectedProdIndex, userData]
+  );
+
+  // ✅ Memoized renderItem with React.memo for ProductCard
+  const renderItem = useCallback(
+    ({ item, index }: { item: apiGetAllServicesResponse; index: number }) => {
+      const isLiked = likedSet.has(item?.id);
+
+      return (
+        <ProductCard
+          title={`${item?.brand} ${item?.model}`}
+          price={String(item?.fee)}
+          location={item?.location}
+          onClickCard={() => handleCardClick(item?.uuid)}
+          image={item?.image_urls[0]}
+          onLikeProd={() => handleLike(item, index, isLiked)}
+          loading={selectedProdIndex === index ? isPending : false}
+          liked={isLiked}
+          key={item?.uuid || item?.id}
+        />
+      );
+    },
+    [likedSet, handleCardClick, handleLike, selectedProdIndex, isPending]
+  );
+
+  // ✅ Better keyExtractor
+  const keyExtractor = useCallback(
+    (item: apiGetAllServicesResponse, index: number) =>
+      item?.uuid || item?.id?.toString() || index.toString(),
+    []
+  );
 
   return (
     <>
@@ -138,53 +203,14 @@ export const CarSales = ({
                 gap: moderateScale(15),
                 paddingBottom: DVH(25),
               }}
-              keyExtractor={(__, index) => index.toString()}
-              renderItem={({
-                item,
-                index,
-              }: {
-                item: apiGetAllServicesResponse;
-                index: number;
-              }) => {
-                const isLiked =
-                  likedServiceId &&
-                  likedServiceId.some((id) => id === item?.id);
-                return (
-                  <ProductCard
-                    title={`${item?.brand} ${item?.model}`}
-                    price={String(item?.fee)}
-                    location={item?.location}
-                    onClickCard={() =>
-                      navigation.navigate(appScreenNames.CAR_DETAILS, {
-                        service_uuid: item?.uuid,
-                      })
-                    }
-                    image={item?.image_urls[0]}
-                    onLikeProd={() => {
-                      if (!isLiked) {
-                        setSelectedProdIndex(index);
-                        AddProductToWishList({
-                          service_id: item?.id,
-                        });
-                      } else {
-                        setSelectedProdIndex(index);
-                        ModalMessageProvider.showModalMsg({
-                          title: `Hello ${userData?.first_name.toUpperCase()}`,
-                          description: "Go to your wishlist to remove item",
-                          msgType: "FAILED",
-                        });
-                      }
-                    }}
-                    loading={selectedProdIndex === index ? isPending : false}
-                    liked={isLiked}
-                  />
-                );
-              }}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
               horizontal={false}
               showsVerticalScrollIndicator={false}
-              maxToRenderPerBatch={2}
-              initialNumToRender={2}
-              windowSize={2}
+              maxToRenderPerBatch={10}
+              initialNumToRender={10}
+              windowSize={10}
+              updateCellsBatchingPeriod={10}
             />
           ) : (
             <View

@@ -272,7 +272,8 @@ export const Chat = ({
               contentContainerStyle={{
                 flexGrow: 1,
                 paddingHorizontal: moderateScale(7),
-                paddingBottom: moderateScale(10), // Add some bottom padding
+                paddingBottom:
+                  Platform.OS === "ios" ? moderateScale(20) : moderateScale(10), // Add some bottom padding
               }}
               horizontal={false}
               showsVerticalScrollIndicator={false}
