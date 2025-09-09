@@ -68,9 +68,9 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "This app accesses your photos to let you share them with your friends.",
-          "cameraPermission": "Allow AutoMotor to access your camera",
-          "microphonePermission": "Allow AutoMotor to access your microphone"
+          "photosPermission": "AutoMotor needs access to your photos so you can upload pictures of your vehicles, share images in your listings, and personalize your profile.",
+          "cameraPermission": "AutoMotor uses your camera to let you take photos of your car for listings, capture documents for verification, and share pictures directly without leaving the app.",
+          "microphonePermission": "AutoMotor needs access to your microphone so you can record voice notes, communicate with buyers and sellers through voice messages, and enhance your listing experience."
         }
       ]
     ],

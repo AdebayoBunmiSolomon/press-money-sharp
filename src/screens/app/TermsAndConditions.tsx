@@ -12,7 +12,7 @@ import { ScrollContainer } from "../ScrollContainer";
 import { useGetTermsAndConditions } from "@src/api/hooks/queries/app";
 import { deserializeJSON } from "@src/helper/utils";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Loader } from "@src/common";
+import { FullScreenLoader } from "@src/common";
 
 export const TermsAndConditions = ({
   navigation,
@@ -47,15 +47,16 @@ export const TermsAndConditions = ({
         color={colors.lightBlack}
       />
       {isFetching ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-          <Loader size='large' color={colors.red} />
-        </View>
+        <FullScreenLoader visible={isFetching} />
       ) : (
+        // <View
+        //   style={{
+        //     flex: 1,
+        //     justifyContent: "center",
+        //     alignItems: "center",
+        //   }}>
+        //   <Loader size='large' color={colors.red} />
+        // </View>
         <ScrollContainer
           style={{
             flexGrow: 1,

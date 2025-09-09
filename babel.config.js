@@ -41,6 +41,7 @@ module.exports = function (api) {
             "UPDATE_USER_PROFILE_FORM",
             "SAVE_USER_PREFERENCES",
             "REFRESH_USER_PROFILE",
+            "DELETE_USER_ACCOUNT",
           ],
           safe: false,
           allowUndefined: true,

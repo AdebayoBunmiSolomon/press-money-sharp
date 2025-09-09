@@ -25,6 +25,11 @@ export const profileList: lisTypes = [
         toggle: false,
         show: true,
       },
+      {
+        list: "Delete Account",
+        toggle: false,
+        show: false,
+      },
     ],
   },
   {

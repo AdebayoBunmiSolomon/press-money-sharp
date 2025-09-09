@@ -16,7 +16,7 @@ import { colors } from "@src/resources/color/color";
 import { AntDesign } from "@expo/vector-icons";
 import { Header } from "@src/components/app/home";
 import { ProductCard } from "@src/common/cards";
-import { FloatActionButton, Loader } from "@src/common";
+import { FloatActionButton, FullScreenLoader } from "@src/common";
 import { useGetUserRecentlyViewed } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
 import { useGetServiceInfoFromAllServiceStore } from "@src/api/hooks";
@@ -103,17 +103,7 @@ export const RecentlyViewed = ({
         // showSearchIcon
       />
       <View style={styles.contentContainer}>
-        {isFetching ? (
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <Loader size='large' color={colors.red} />
-          </View>
-        ) : userRecentlyViewed && userRecentlyViewed.length > 0 ? (
+        {userRecentlyViewed && userRecentlyViewed.length > 0 ? (
           <FlatList
             ListFooterComponent={
               <View
@@ -235,6 +225,7 @@ export const RecentlyViewed = ({
           isLoading={isClearing}
         />
       </View>
+      <FullScreenLoader visible={isFetching || isClearing} />
     </Screen>
   );
 };

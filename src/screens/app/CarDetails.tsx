@@ -29,7 +29,7 @@ import {
 } from "@src/components/app/actions";
 import { useViewService } from "@src/api/hooks/queries/app";
 import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
-import { Loader } from "@src/common";
+import { FullScreenLoader, ImageViewer, Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import {
@@ -61,6 +61,10 @@ export const CarDetails = ({
   const { userWishList } = useUserWishListStore();
   const { addToCart } = useCartCache();
   const { settings: settingsData } = useSettingsStore();
+  const [viewImages, setViewImages] = useState<boolean>(false);
+  const [imagesToView, setImagesToView] = useState<{
+    uri: "";
+  } | null>(null);
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -116,14 +120,7 @@ export const CarDetails = ({
           headerStyle={styles.header}
         />
         {isFetching ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <Loader size='large' color={colors.danger} />
-          </View>
+          <FullScreenLoader visible={isFetching} />
         ) : (
           <View style={styles.contentContainer}>
             <CustomText type='regular' size={20} lightBlack>
@@ -176,6 +173,23 @@ export const CarDetails = ({
                               color={colors.red}
                             />
                           )}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.heartBtn}
+                          onPress={() => {
+                            const images =
+                              serviceInfo?.image_urls &&
+                              serviceInfo.image_urls.map((img) => ({
+                                uri: img,
+                              }));
+                            setImagesToView(images);
+                            setViewImages(!viewImages);
+                          }}>
+                          <FontAwesome
+                            name={"eye"}
+                            size={moderateScale(15)}
+                            color={colors.red}
+                          />
                         </TouchableOpacity>
                       </ImageBackground>
                     );
@@ -308,9 +322,6 @@ export const CarDetails = ({
                           </CustomText>
                         ))}
                     </View>
-                    {/* <CustomText size={13} lightGray type='medium'>
-                      Condition
-                    </CustomText> */}
                   </View>
                 </View>
               </View>
@@ -445,6 +456,11 @@ export const CarDetails = ({
           });
         }}
       />
+      <ImageViewer
+        images={imagesToView}
+        visible={viewImages}
+        closeImageViewer={() => setViewImages(!imagesToView)}
+      />
     </>
   );
 };
@@ -467,6 +483,8 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "flex-end",
     alignItems: "flex-end",
+    gap: moderateScale(5),
+    flexDirection: "row",
     paddingHorizontal: moderateScale(10),
     paddingVertical: moderateScale(10),
   },
@@ -534,6 +552,7 @@ const styles = StyleSheet.create({
     bottom: moderateScale(0),
     backgroundColor: colors.white,
     paddingBottom: moderateScale(47),
+    paddingTop: moderateScale(10),
     paddingHorizontal: moderateScale(15),
     flexDirection: "row",
     alignItems: "center",

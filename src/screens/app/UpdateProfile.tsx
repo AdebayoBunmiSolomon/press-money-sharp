@@ -55,7 +55,7 @@ export const UpdateProfile = ({
     setValue("address", userData?.address);
     setValue("phone", userData?.phone);
     setValue("gender", userData?.gender);
-    setValue("dob", userData?.dob);
+    // setValue("dob", userData?.dob);
   }, []);
 
   const onUpdateProfilePic = () => {
@@ -220,7 +220,7 @@ export const UpdateProfile = ({
             defaultValue=''
           />
 
-          <Controller
+          {/* <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
@@ -241,7 +241,7 @@ export const UpdateProfile = ({
             )}
             name='dob'
             defaultValue=''
-          />
+          /> */}
 
           <Controller
             control={control}

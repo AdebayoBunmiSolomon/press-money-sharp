@@ -32,4 +32,5 @@ declare module "@env" {
   export const UPDATE_USER_PROFILE_FORM: string;
   export const SAVE_USER_PREFERENCES: string;
   export const REFRESH_USER_PROFILE: string;
+  export const DELETE_USER_ACCOUNT: string;
 }

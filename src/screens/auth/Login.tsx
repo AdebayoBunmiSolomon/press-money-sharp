@@ -10,11 +10,11 @@ import { Controller, useForm } from "react-hook-form";
 import { loginFormTypes } from "@src/form/schema/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidationSchema } from "@src/form/validation/rules";
-import { loginOptions } from "@src/constants/login";
-import { Image } from "expo-image";
+// import { loginOptions } from "@src/constants/login";
+// import { Image } from "expo-image";
 import { ScrollContainer } from "../ScrollContainer";
 import { useLogin } from "@src/api/hooks/mutation/auth";
-import { ModalMessageProvider } from "@src/helper/ui-utils";
+// import { ModalMessageProvider } from "@src/helper/ui-utils";
 
 export const Login = ({
   navigation,
@@ -120,7 +120,7 @@ export const Login = ({
               or login with
             </CustomText>
           </View>
-          <View style={styles.optionIconContainer}>
+          {/* <View style={styles.optionIconContainer}>
             {loginOptions &&
               loginOptions.map((item, index) => (
                 <TouchableOpacity
@@ -141,7 +141,7 @@ export const Login = ({
                   />
                 </TouchableOpacity>
               ))}
-          </View>
+          </View> */}
           <View style={styles.actionTextContainer}>
             <CustomText type='medium' size={13} lightGray>
               Don't have an account?

@@ -5,6 +5,7 @@ import {
   addProductToWishList,
   deleteProductFromRecentlyViewed,
   deleteProductFromWishList,
+  deleteUserAccount,
   saveUserPreferences,
   scheduleConsultation,
   sendChatMessage,
@@ -419,7 +420,7 @@ export const useUpdateUserProfileImg = () => {
 };
 
 export const useUpdateUserProfileForm = () => {
-  const { userData, setUserData } = useAuthStore();
+  const { userData, setUserData, setIsAuthenticated } = useAuthStore();
   const {
     data,
     isError,
@@ -435,7 +436,7 @@ export const useUpdateUserProfileForm = () => {
         success: response?.data?.success, //true | false
         code: response?.data?.error?.code || "Success",
         message: response?.data?.success
-          ? "User profile updated successfully"
+          ? "User profile updated successfully, Please login again to refresh data"
           : formatApiErrorMessage(response?.data?.error),
       });
       if (response?.data?.success) {
@@ -444,36 +445,29 @@ export const useUpdateUserProfileForm = () => {
           const { data: response } = (await refreshUserProfile(
             userData?.token
           )) as { data: any };
-
-          if (response?.data?.success === true) {
-            // ✅ Save new user data in store
-            setUserData({
-              uuid: response?.data?.data?.user?.user?.uuid,
-              first_name: response?.data?.data?.user?.first_name,
-              last_name: response?.data?.data?.user?.last_name,
-              referred_by: response?.data?.data?.user?.referred_by,
-              referral_code: response?.data?.data?.user?.referral_code,
-              gender: response?.data?.data?.user?.gender,
-              profile_img: response?.data?.data?.user?.profile_img,
-              email: response?.data?.data?.user?.email,
-              phone: response?.data?.data?.user?.phone,
-              address: response?.data?.data?.user?.address,
-              dob: response?.data?.data?.user?.dob,
-              email_verified_at: response?.data?.data?.user?.email_verified_at,
-              login_at: response?.data?.data?.user?.login_at,
-              is_admin: response?.data?.data?.user?.is_admin,
-              status: response?.data?.data?.user?.status,
-              created_at: response?.data?.data?.user?.created_at,
-              updated_at: response?.data?.data?.user?.updated_at,
-              deleted_at: response?.data?.data?.user?.deleted_at,
-              token: response?.data?.token,
-            });
-          } else {
-            // Alert.alert(
-            //   "Error",
-            //   "Failed to refresh user profile. Please login again."
-            // );
-          }
+          // ✅ Save new user data in store
+          setUserData({
+            uuid: response?.data?.data?.user?.user?.uuid,
+            first_name: response?.data?.data?.user?.first_name,
+            last_name: response?.data?.data?.user?.last_name,
+            referred_by: response?.data?.data?.user?.referred_by,
+            referral_code: response?.data?.data?.user?.referral_code,
+            gender: response?.data?.data?.user?.gender,
+            profile_img: response?.data?.data?.user?.profile_img,
+            email: response?.data?.data?.user?.email,
+            phone: response?.data?.data?.user?.phone,
+            address: response?.data?.data?.user?.address,
+            dob: response?.data?.data?.user?.dob,
+            email_verified_at: response?.data?.data?.user?.email_verified_at,
+            login_at: response?.data?.data?.user?.login_at,
+            is_admin: response?.data?.data?.user?.is_admin,
+            status: response?.data?.data?.user?.status,
+            created_at: response?.data?.data?.user?.created_at,
+            updated_at: response?.data?.data?.user?.updated_at,
+            deleted_at: response?.data?.data?.user?.deleted_at,
+            token: response?.data?.token,
+          });
+          setIsAuthenticated(false);
         } catch {
           // Alert.alert(
           //   "Error",
@@ -529,5 +523,48 @@ export const useSaveUserPreferences = () => {
     isError,
     isPending,
     SaveUserPreference,
+  };
+};
+
+export const useDeleteUserAccount = () => {
+  const { userData, setIsAuthenticated } = useAuthStore();
+  const {
+    data: response,
+    isError,
+    isPending,
+    mutate: DeleteUserAccount,
+  } = useMutation({
+    mutationFn: () => deleteUserAccount(userData?.uuid, userData?.token),
+    onSuccess: (response) => {
+      APIRequest.RESPONSE_HANDLER({
+        type: "flash",
+        status: response?.data?.success === true ? 200 : 401,
+        success: response?.data?.success,
+        code: response?.data?.success ? "Success" : "Error",
+        message: response?.data?.success
+          ? "User data deleted successfully"
+          : formatApiErrorMessage(response?.data?.error),
+      });
+      if (response?.data?.success) {
+        setIsAuthenticated(false);
+      }
+    },
+    onError: (error) => {
+      APIRequest.RESPONSE_HANDLER({
+        type: "modal",
+        status: 401,
+        success: false,
+        code: "NETWORK ERROR",
+        message:
+          error?.message || "Network error. Please check your connection.",
+      });
+    },
+  });
+
+  return {
+    response,
+    isError,
+    isPending,
+    DeleteUserAccount,
   };
 };

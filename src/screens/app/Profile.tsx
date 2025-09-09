@@ -3,19 +3,28 @@ import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { RootStackScreenProps } from "@src/router/types";
-import React, { useEffect } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
 import { ScrollContainer } from "../ScrollContainer";
 import { profileList } from "@src/constants/profile";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { ToggleSwitch } from "@src/common";
+import { FullScreenLoader, ToggleSwitch } from "@src/common";
 import { useAuthStore } from "@src/api/store/auth";
 import { useLogOutUser } from "@src/api/hooks/mutation/auth";
 import { useEmailNotificationPreferenceCache } from "@src/cache";
-import { useSaveUserPreferences } from "@src/api/hooks/mutation/app";
+import {
+  useDeleteUserAccount,
+  useSaveUserPreferences,
+} from "@src/api/hooks/mutation/app";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 
 export const Profile = ({
@@ -26,6 +35,8 @@ export const Profile = ({
   const { SaveUserPreference } = useSaveUserPreferences();
   const { isEmailSubscribed, setIsEmailSubScribed } =
     useEmailNotificationPreferenceCache();
+  const { DeleteUserAccount, isPending } = useDeleteUserAccount();
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   useEffect(() => {
     SaveUserPreference({
@@ -34,6 +45,10 @@ export const Profile = ({
       value: isEmailSubscribed,
     });
   }, [isEmailSubscribed]);
+
+  useEffect(() => {
+    setIsDeleting(isPending);
+  }, [isPending]);
 
   const screenNavigation = (action: string) => {
     switch (action) {
@@ -71,6 +86,25 @@ export const Profile = ({
         // Optionally handle unknown action
         break;
     }
+  };
+
+  const deleteAcct = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete account? Please note that this action is irreversible.",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            DeleteUserAccount();
+          },
+        },
+        {
+          text: "No",
+          onPress: () => {},
+        },
+      ]
+    );
   };
 
   return (
@@ -167,25 +201,51 @@ export const Profile = ({
                 })}
               </View>
             ))}
-          <CustomButton
-            title='Log Out'
-            red
-            textWhite
-            buttonType='Solid'
-            textSize={16}
-            textType='medium'
-            onPress={async () => await logOutUser()}
-            btnStyle={styles.logoutBtn}
-            isLoading={loggingOut}
-            loaderColor={colors.white}
-          />
           <View
             style={{
-              paddingVertical: DVH(10),
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: moderateScale(20),
+            }}>
+            <CustomButton
+              title='Log Out'
+              red
+              textWhite
+              buttonType='Solid'
+              textSize={16}
+              textType='medium'
+              onPress={async () => await logOutUser()}
+              btnStyle={styles.logoutBtn}
+              isLoading={loggingOut}
+              loaderColor={colors.white}
+            />
+            <CustomButton
+              title='Delete Account'
+              red
+              textRed
+              buttonType='Outline'
+              textSize={16}
+              textType='medium'
+              onPress={() => deleteAcct()}
+              btnStyle={[
+                styles.logoutBtn,
+                {
+                  width: "40%",
+                },
+              ]}
+              isLoading={loggingOut}
+              loaderColor={colors.white}
+            />
+          </View>
+          <View
+            style={{
+              paddingVertical: DVH(9),
             }}
           />
         </ScrollContainer>
       </Screen>
+      <FullScreenLoader visible={isDeleting} />
     </>
   );
 };
@@ -209,7 +269,7 @@ const styles = StyleSheet.create({
   },
   userImgContainer: {
     width: DVW(12),
-    height: Platform.OS === "ios" ? DVH(5) : DVH(6),
+    height: Platform.OS === "ios" ? DVH(5.5) : DVH(6),
     overflow: "hidden",
     borderRadius: moderateScale(100),
   },

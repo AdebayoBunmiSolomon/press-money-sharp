@@ -44,6 +44,6 @@ export type updateProfileFormTypes = {
   last_name: string;
   address: string;
   phone: string;
-  dob: string;
+  dob?: string;
   gender: string;
 };

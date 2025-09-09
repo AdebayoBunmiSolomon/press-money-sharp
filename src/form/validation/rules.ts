@@ -69,12 +69,13 @@ export const updateProfileValidationSchema = yup.object().shape({
   phone: yup.string().required("phone is required"),
   dob: yup
     .string()
-    .required("DOB is required")
+    .nullable() // allows null
+    .notRequired() // makes it optional
     .test("is-18", "You must be at least 18 years old", function (value) {
-      if (!value) return false;
+      if (!value) return true; // ✅ skip validation if empty
 
       // Parse DOB as UTC to avoid timezone shift
-      const dob = new Date(value.split("T")[0]); // take only YYYY-MM-DD
+      const dob = new Date(value.split("T")[0]); // YYYY-MM-DD
       const today = new Date();
 
       let age = today.getFullYear() - dob.getFullYear();

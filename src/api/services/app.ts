@@ -597,3 +597,31 @@ export const saveUserPreferences = async (
     ); // Return error as part of response
   }
 };
+
+export const deleteUserAccount = async (user_uuid: string, token: string) => {
+  const { isNetworkConnectedAndReachable } = await getNetworkStatus();
+  // console.log("Hello1");
+  if (!isNetworkConnectedAndReachable) {
+    throw new Error("No internet connection. Please try again later.");
+  }
+  try {
+    // console.log("Hello2");
+    const { data, status } = await APIRequest.DELETE(
+      `${endpoint.APP.deleteUserAccount}/${user_uuid}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+      }
+    );
+    // console.log("Hello3");
+    // console.log("data", data);
+    // console.log("status", status);
+    return { data, status }; // Return response instead of throwing an error
+  } catch (err: any) {
+    // console.log("Save-UserPreferences service error:", err);
+    throw new Error(
+      err.message || "An error occurred during fetching services"
+    ); // Return error as part of response
+  }
+};

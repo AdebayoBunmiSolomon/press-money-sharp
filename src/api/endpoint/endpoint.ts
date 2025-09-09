@@ -1,6 +1,7 @@
 import {
   ADD_PRODUCT_TO_RECENTLY_VIEWED,
   ADD_PRODUCT_TO_WISHLIST,
+  DELETE_USER_ACCOUNT,
   DELETE_USER_RECENTLY_VIEWED,
   DELETE_USER_WISHLIST,
   GET_ALL_SERVICES,
@@ -65,5 +66,6 @@ export const endpoint = {
     updateUserProfileForm: UPDATE_USER_PROFILE_FORM,
     saveUserPreferences: SAVE_USER_PREFERENCES,
     refreshUserProfile: REFRESH_USER_PROFILE,
+    deleteUserAccount: DELETE_USER_ACCOUNT,
   },
 };
