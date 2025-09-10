@@ -6,3 +6,4 @@ export * from "./Login";
 export * from "./VerifyEmailForPasswordUpdate";
 export * from "./PasswordUpdate";
 export * from "./VerifyEmailForSignUp";
+export * from "./AuthLoader";

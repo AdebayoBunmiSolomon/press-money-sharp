@@ -4,6 +4,7 @@ import { type BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 //auth screen stack navigation
 export interface AuthStackParamList extends ParamListBase {
+  AuthLoader: undefined;
   Onboarding: undefined;
   Login: undefined;
   SignUp: undefined;

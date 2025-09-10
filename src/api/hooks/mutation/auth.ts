@@ -20,7 +20,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { AuthStackParamList } from "@src/router/types";
 import { authScreenNames } from "@src/navigation";
-import { formatApiErrorMessage } from "@src/helper/utils";
+import { AuthStorage, formatApiErrorMessage } from "@src/helper/utils";
 import { useState } from "react";
 
 export const useLogin = () => {
@@ -32,7 +32,7 @@ export const useLogin = () => {
     mutate: Login,
   } = useMutation({
     mutationFn: (payload: apiLoginFormTypes) => login(payload),
-    onSuccess: (response) => {
+    onSuccess: async (response, variables) => {
       APIRequest.RESPONSE_HANDLER({
         type: "modal",
         status: response?.data?.status, //200 | 401 | 500
@@ -66,6 +66,10 @@ export const useLogin = () => {
           deleted_at: response?.data?.data?.deleted_at,
           token: response?.data?.token,
         });
+        await AuthStorage.saveUserCredential(
+          variables?.email,
+          variables?.password
+        );
       }
     },
     onError: (error) => {
@@ -343,6 +347,7 @@ export const useLogOutUser = () => {
       token: "",
     });
     setLoggingOut(false);
+    await AuthStorage.deleteCredentials();
   };
 
   return {

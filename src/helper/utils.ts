@@ -5,6 +5,7 @@ import { Alert, Linking, Platform } from "react-native";
 import { showFlashMsg } from "./ui-utils";
 import { apiGetUserNotificationsResponse } from "@src/api/types/app";
 import _ from "lodash";
+import * as SecureStore from "expo-secure-store";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -356,4 +357,44 @@ export const deserializeJSON = (value?: string) => {
     // console.warn("Failed to parse terms & conditions JSON:", error);
     return [];
   }
+};
+
+export const AuthStorage = {
+  saveUserCredential: async (email: string, password: string) => {
+    try {
+      await SecureStore.setItemAsync("email", email);
+      await SecureStore.setItemAsync("password", password);
+    } catch (err) {
+      Alert.alert("Error saving user credential to store", err as any);
+    }
+  },
+
+  getUserCredentials: async (): Promise<{
+    email: string | null;
+    password: string | null;
+  }> => {
+    try {
+      const email = await SecureStore.getItemAsync("email");
+      const password = await SecureStore.getItemAsync("password");
+      return {
+        email,
+        password,
+      };
+    } catch (err) {
+      Alert.alert("Error retrieving user credential from store", err as any);
+      return {
+        email: null,
+        password: null,
+      };
+    }
+  },
+
+  deleteCredentials: async () => {
+    try {
+      await SecureStore.deleteItemAsync("email");
+      await SecureStore.deleteItemAsync("password");
+    } catch (err) {
+      Alert.alert("Error deleting user credential from store", err as any);
+    }
+  },
 };

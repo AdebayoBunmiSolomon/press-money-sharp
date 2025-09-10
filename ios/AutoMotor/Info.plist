@@ -61,13 +61,13 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Allow AutoMotor to access your camera</string>
+    <string>AutoMotor uses your camera to let you take photos of your car for listings, capture documents for verification, and share pictures directly without leaving the app.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Allow AutoMotor to access your microphone</string>
+    <string>AutoMotor needs access to your microphone so you can record voice notes, communicate with buyers and sellers through voice messages, and enhance your listing experience.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>This app needs access to save photos to your library.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app accesses your photos to let you share them with your friends.</string>
+    <string>AutoMotor needs access to your photos so you can upload pictures of your vehicles, share images in your listings, and personalize your profile.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

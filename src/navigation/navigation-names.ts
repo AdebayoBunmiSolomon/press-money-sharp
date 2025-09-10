@@ -6,6 +6,7 @@ export enum authScreenNames {
   VERIFY_EMAIL_FOR_PASSWORD_UPDATE = "VerifyEmailForPasswordUpdate",
   PASSWORD_UPDATE = "PasswordUpdate",
   VERIFY_EMAIL_FOR_SIGN_UP = "VerifyEmailForSignUp",
+  AUTH_LOADER = "AuthLoader",
 }
 
 export enum bottomTabScreenNames {
