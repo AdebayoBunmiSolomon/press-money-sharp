@@ -1,4 +1,4 @@
-import { CustomText } from "@src/components/shared";
+import { CustomText, PaginationControls } from "@src/components/shared";
 import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
@@ -16,7 +16,6 @@ import {
   Platform,
   View,
   ScrollView,
-  FlatList,
 } from "react-native";
 import { Screen } from "../Screen";
 import { StatusBar } from "expo-status-bar";
@@ -32,13 +31,15 @@ import { useLikedServicesIdCache } from "@src/cache";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
 import { openWhatsApp } from "@src/helper/utils";
+import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { usePaginationControl } from "@src/components/shared/hooks";
 
 export const Categories = ({
   navigation,
   route,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
-  const flatListRef = useRef<FlatList>(null);
+  const flashListRef = useRef<FlashListRef<apiGetAllServicesResponse>>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
@@ -47,12 +48,18 @@ export const Categories = ({
     categories && categories[0]
   );
   const { userData } = useAuthStore();
-  // console.log(userData?.token);
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
     null
   );
   const { settings: settingsData } = useSettingsStore();
+
+  // ✅ Pagination hook - reset when category changes
+  const pagination = usePaginationControl({
+    data: filteredServicesData || [],
+    itemsPerPage: 3,
+    resetOnDataChange: true,
+  });
 
   useEffect(() => {
     if (pressedCategory) {
@@ -64,13 +71,40 @@ export const Categories = ({
     if (category_type) {
       setPressedCategory(category_type);
     } else {
-      setPressedCategory(category_type && category_type[0]);
+      setPressedCategory(categories?.[0]);
     }
-  }, [category_type]);
+  }, [category_type, categories]);
 
   const likedSet = useMemo(
     () => new Set(likedServiceId || []),
     [likedServiceId]
+  );
+
+  // ✅ Scroll to top when changing pages
+  const handlePageChange = useCallback(() => {
+    flashListRef.current?.scrollToOffset({
+      offset: 0,
+      animated: true,
+    });
+  }, []);
+
+  // ✅ Enhanced page navigation with scroll
+  const handleNextPage = useCallback(() => {
+    pagination.goToNextPage();
+    handlePageChange();
+  }, [pagination.goToNextPage, handlePageChange]);
+
+  const handlePrevPage = useCallback(() => {
+    pagination.goToPrevPage();
+    handlePageChange();
+  }, [pagination.goToPrevPage, handlePageChange]);
+
+  const handleGoToPage = useCallback(
+    (page: number) => {
+      pagination.goToPage(page);
+      handlePageChange();
+    },
+    [pagination.goToPage, handlePageChange]
   );
 
   // ✅ Handler for navigating to details
@@ -81,10 +115,12 @@ export const Categories = ({
     [navigation]
   );
 
-  // ✅ Handler for liking products
+  // ✅ Handler for liking products with pagination adjustment
   const handleLike = useCallback(
     (item: apiGetAllServicesResponse, index: number, isLiked: boolean) => {
-      setSelectedProdIndex(index);
+      // Calculate global index for pagination
+      const globalIndex = pagination.startIndex + index;
+      setSelectedProdIndex(globalIndex);
       if (!isLiked) {
         AddProductToWishList({ service_id: item?.id });
       } else {
@@ -95,13 +131,19 @@ export const Categories = ({
         });
       }
     },
-    [AddProductToWishList, setSelectedProdIndex, userData]
+    [
+      AddProductToWishList,
+      setSelectedProdIndex,
+      userData,
+      pagination.startIndex,
+    ]
   );
 
   // ✅ Memoized renderItem with React.memo for ProductCard
   const renderItem = useCallback(
     ({ item, index }: { item: apiGetAllServicesResponse; index: number }) => {
       const isLiked = likedSet.has(item?.id);
+      const globalIndex = pagination.startIndex + index;
 
       return (
         <ProductCard
@@ -111,13 +153,20 @@ export const Categories = ({
           onClickCard={() => handleCardClick(item?.uuid)}
           image={item?.image_urls[0]}
           onLikeProd={() => handleLike(item, index, isLiked)}
-          loading={selectedProdIndex === index ? isPending : false}
+          loading={selectedProdIndex === globalIndex ? isPending : false}
           liked={isLiked}
           key={item?.uuid || item?.id}
         />
       );
     },
-    [likedSet, handleCardClick, handleLike, selectedProdIndex, isPending]
+    [
+      likedSet,
+      handleCardClick,
+      handleLike,
+      selectedProdIndex,
+      isPending,
+      pagination.startIndex,
+    ]
   );
 
   // ✅ Better keyExtractor
@@ -125,6 +174,15 @@ export const Categories = ({
     (item: apiGetAllServicesResponse, index: number) =>
       item?.uuid || item?.id?.toString() || index.toString(),
     []
+  );
+
+  // ✅ Handle category change - reset pagination and scroll to top
+  const handleCategoryPress = useCallback(
+    (category: string) => {
+      setPressedCategory(category);
+      // Reset pagination will be handled by the hook's resetOnDataChange
+    },
+    [setPressedCategory]
   );
 
   return (
@@ -148,17 +206,15 @@ export const Categories = ({
           }
           headerStyle={styles.header}
           color={colors.white}
-          // showSearchIcon
           onPressBellIcon={() =>
             navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
               screen: appScreenNames.NOTIFICATION,
             })
           }
-          // showMenuIcon
           showBellIcon
         />
         <View style={styles.contentContainer}>
-          {/* filter categories */}
+          {/* Filter categories */}
           <View
             style={{
               paddingBottom: moderateScale(10),
@@ -187,7 +243,7 @@ export const Categories = ({
                       },
                     ]}
                     key={index}
-                    onPress={() => setPressedCategory(item)}>
+                    onPress={() => handleCategoryPress(item)}>
                     <CustomText size={12} type='medium' lightBlack>
                       {`Car ` + item}
                     </CustomText>
@@ -195,46 +251,41 @@ export const Categories = ({
                 ))}
             </ScrollView>
           </View>
-          {filteredServicesData && filteredServicesData.length > 0 ? (
-            <FlatList
-              ref={flatListRef}
-              data={filteredServicesData}
+
+          {/* ✅ FlashList with Pagination */}
+          {pagination.paginatedData && pagination.paginatedData.length > 0 ? (
+            <FlashList
+              ref={flashListRef}
+              data={pagination.paginatedData}
               contentContainerStyle={{
-                gap: moderateScale(15),
-                paddingBottom: DVH(25),
+                paddingBottom: DVH(5),
               }}
               keyExtractor={keyExtractor}
               renderItem={renderItem}
-              horizontal={false}
               showsVerticalScrollIndicator={false}
-              maxToRenderPerBatch={10}
-              initialNumToRender={10}
-              windowSize={10}
-              updateCellsBatchingPeriod={10}
+              ItemSeparatorComponent={() => (
+                <View style={{ height: moderateScale(15) }} />
+              )}
+              getItemType={(item) => {
+                return item.type || "default";
+              }}
+              // ✅ Performance optimizations
+              drawDistance={200}
             />
           ) : (
-            <View
-              style={{
-                // flex: 1,
-                width: "100%",
-                height: "80%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
+            <View style={styles.emptyContainer}>
               <CustomText type='regular' size={16} lightGray>
                 No record found for {`Car ${pressedCategory}`}
               </CustomText>
             </View>
           )}
-          <View
-            style={{
-              paddingVertical: DVH(10),
-            }}
-          />
+
+          <View style={{ paddingVertical: DVH(2) }} />
         </View>
+
         <FloatActionButton
           onPressArrowUp={() =>
-            flatListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
+            flashListRef?.current?.scrollToOffset({ animated: true, offset: 0 })
           }
           onPressWhatsApp={() => {
             const whatsAppNumber =
@@ -245,6 +296,22 @@ export const Categories = ({
             }
           }}
         />
+        {/* ✅ Pagination Controls - Top */}
+        {pagination.totalPages > 1 && (
+          <PaginationControls
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.totalItems}
+            currentItems={pagination.currentItems}
+            onNextPage={handleNextPage}
+            onPrevPage={handlePrevPage}
+            onGoToPage={handleGoToPage}
+            showPageNumbers={false}
+            maxPageNumbers={3}
+            primaryColor={colors.red}
+            style={styles.pagination}
+          />
+        )}
       </Screen>
       <FilterModal
         onClose={() => setShowFilterModal(!showFilterModal)}
@@ -273,6 +340,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: moderateScale(15),
     paddingTop: moderateScale(10),
+    flex: 1,
   },
   filterBtn: {
     flexDirection: "row",
@@ -284,5 +352,15 @@ const styles = StyleSheet.create({
     borderWidth: DVW(0.3),
     borderColor: colors.lightGray,
     marginRight: moderateScale(10),
+  },
+  emptyContainer: {
+    width: "100%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pagination: {
+    marginBottom: moderateScale(10),
+    width: "82%",
   },
 });

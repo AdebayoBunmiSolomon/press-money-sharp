@@ -10,7 +10,7 @@ export type signUpFormTypes = {
   email: string;
   password: string;
   confirm_password: string;
-  phone: string;
+  phone: string | null;
   referral_code: string | undefined;
 };
 

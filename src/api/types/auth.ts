@@ -10,7 +10,7 @@ export type apiSignUpFormTypes = {
   referral_code: string;
   gender: string;
   password: string;
-  phone: string;
+  phone: string | null;
 };
 
 export type apiVerifyEmailFormTypes = {

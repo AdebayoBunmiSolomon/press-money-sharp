@@ -70,6 +70,8 @@ export const useLogin = () => {
           variables?.email,
           variables?.password
         );
+      } else {
+        setIsAuthenticated(false);
       }
     },
     onError: (error) => {

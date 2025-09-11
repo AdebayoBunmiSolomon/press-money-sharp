@@ -12,14 +12,14 @@ import { signUpValidationSchema } from "@src/form/validation/rules";
 import {
   CustomButton,
   CustomInput,
-  CustomPhoneInput,
+  // CustomPhoneInput,
   CustomText,
 } from "@src/components/shared";
 import { ScrollContainer } from "../ScrollContainer";
 import { Image } from "expo-image";
 import { BackArrowBtn } from "@src/common/BackArrowBtn";
 import { useSignUp } from "@src/api/hooks/mutation/auth";
-import { removePlusSign } from "@src/helper/utils";
+// import { removePlusSign } from "@src/helper/utils";
 
 export const SignUp = ({
   navigation,
@@ -38,6 +38,10 @@ export const SignUp = ({
   });
 
   useEffect(() => {
+    setValue("phone", "");
+  }, []);
+
+  useEffect(() => {
     const { referral_code } = getValues();
     if (!referral_code) {
       setValue("referral_code", "");
@@ -53,7 +57,7 @@ export const SignUp = ({
         password: data?.password,
         referral_code: String(data?.referral_code),
         gender: data?.gender,
-        phone: removePlusSign(data?.phone),
+        phone: data?.phone, // removePlusSign(data?.phone),
       });
     }
   };
@@ -163,7 +167,7 @@ export const SignUp = ({
             defaultValue=''
           />
 
-          <Controller
+          {/* <Controller
             control={control}
             render={({ field }) => (
               <CustomPhoneInput
@@ -179,7 +183,7 @@ export const SignUp = ({
             )}
             name='phone'
             defaultValue=''
-          />
+          /> */}
 
           <Controller
             control={control}
@@ -238,7 +242,7 @@ export const SignUp = ({
           />
           <View
             style={{
-              paddingVertical: DVH(17),
+              paddingVertical: DVH(10),
             }}
           />
         </ScrollContainer>

@@ -21,7 +21,7 @@ export const signUpValidationSchema = yup.object().shape({
     .string()
     .oneOf([yup.ref("password"), undefined], "Passwords must match")
     .required("Please confirm your password"),
-  phone: yup.string().required("phone number is required"),
+  phone: yup.string().notRequired(),
   referral_code: yup.string().notRequired(), // ✅ now optional
 });
 

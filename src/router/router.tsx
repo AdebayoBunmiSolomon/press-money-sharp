@@ -6,23 +6,16 @@ import { AppStack } from "./app-stack";
 
 interface IRouterProps {
   isAuthenticated: boolean;
-  isLoggingIn: boolean;
 }
 
-export const Router = ({ isAuthenticated, isLoggingIn }: IRouterProps) => {
+export const Router = ({ isAuthenticated }: IRouterProps) => {
   return (
     <>
       <NavigationContainer>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={styles.container}>
-          {!isLoggingIn && isAuthenticated ? (
-            <AppStack />
-          ) : isLoggingIn && !isAuthenticated ? (
-            <AuthStack isLoggingIn={isLoggingIn} />
-          ) : (
-            <AuthStack isLoggingIn={isLoggingIn} />
-          )}
+          {isAuthenticated ? <AppStack /> : <AuthStack />}
         </KeyboardAvoidingView>
       </NavigationContainer>
     </>

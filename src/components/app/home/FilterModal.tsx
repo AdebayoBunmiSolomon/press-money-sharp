@@ -1,12 +1,15 @@
 import { useAllServicesStore, useSettingsStore } from "@src/api/store/app";
 import { ProductCard } from "@src/common/cards";
-import { CustomInput, CustomText } from "@src/components/shared";
+import {
+  CustomInput,
+  CustomText,
+  PaginationControls,
+} from "@src/components/shared";
 import { useSearchFilter } from "@src/hooks/services";
 import { colors } from "@src/resources/color/color";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
-  FlatList,
   Modal,
   Platform,
   StyleSheet,
@@ -23,6 +26,8 @@ import { useAuthStore } from "@src/api/store/auth";
 import { FloatActionButton } from "@src/common";
 import { openWhatsApp } from "@src/helper/utils";
 import { apiGetAllServicesResponse } from "@src/api/types/app";
+import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { usePaginationControl } from "@src/components/shared/hooks";
 
 interface IFilterModalProps {
   visible: boolean;
@@ -40,13 +45,21 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     () => ["brand", "location", "model", "fee", "type", "description"],
     []
   );
-  const flatListRef = useRef<FlatList>(null);
+  const flashListRef = useRef<FlashListRef<apiGetAllServicesResponse>>(null);
   const { settings: settingsData } = useSettingsStore();
 
   const { searchValue, setSearchValue, filteredData } = useSearchFilter(
     allServices,
     searchKeys as any
   );
+
+  // ✅ Use the pagination hook
+  const pagination = usePaginationControl({
+    data: filteredData || [],
+    itemsPerPage: 10,
+    resetOnDataChange: true,
+  });
+
   const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
     null
   );
@@ -58,6 +71,33 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     () => new Set(likedServiceId || []),
     [likedServiceId]
   );
+
+  // ✅ Scroll to top when changing pages
+  const handlePageChange = useCallback(() => {
+    flashListRef.current?.scrollToOffset({
+      offset: 0,
+      animated: true,
+    });
+  }, []);
+
+  // ✅ Enhanced page navigation with scroll
+  const handleNextPage = useCallback(() => {
+    pagination.goToNextPage();
+    handlePageChange();
+  }, [pagination.goToNextPage, handlePageChange]);
+
+  const handlePrevPage = useCallback(() => {
+    pagination.goToPrevPage();
+    handlePageChange();
+  }, [pagination.goToPrevPage, handlePageChange]);
+
+  // const handleGoToPage = useCallback(
+  //   (page: number) => {
+  //     pagination.goToPage(page);
+  //     handlePageChange();
+  //   },
+  //   [pagination.goToPage, handlePageChange]
+  // );
 
   // ✅ Handler for navigating to details
   const handleCardClick = useCallback(
@@ -71,7 +111,8 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
   // ✅ Handler for liking products
   const handleLike = useCallback(
     (item: apiGetAllServicesResponse, index: number, isLiked: boolean) => {
-      setSelectedProdIndex(index);
+      const globalIndex = pagination.startIndex + index;
+      setSelectedProdIndex(globalIndex);
       if (!isLiked) {
         AddProductToWishList({ service_id: item?.id });
       } else {
@@ -82,13 +123,19 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
         });
       }
     },
-    [AddProductToWishList, setSelectedProdIndex, userData]
+    [
+      AddProductToWishList,
+      setSelectedProdIndex,
+      userData,
+      pagination.startIndex,
+    ]
   );
 
-  // ✅ Memoized renderItem with React.memo for ProductCard
+  // ✅ Memoized renderItem
   const renderItem = useCallback(
     ({ item, index }: { item: apiGetAllServicesResponse; index: number }) => {
       const isLiked = likedSet.has(item?.id);
+      const globalIndex = pagination.startIndex + index;
 
       return (
         <ProductCard
@@ -98,13 +145,20 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
           onClickCard={() => handleCardClick(item?.uuid)}
           image={item?.image_urls[0]}
           onLikeProd={() => handleLike(item, index, isLiked)}
-          loading={selectedProdIndex === index ? isPending : false}
+          loading={selectedProdIndex === globalIndex ? isPending : false}
           liked={isLiked}
           key={item?.uuid || item?.id}
         />
       );
     },
-    [likedSet, handleCardClick, handleLike, selectedProdIndex, isPending]
+    [
+      likedSet,
+      handleCardClick,
+      handleLike,
+      selectedProdIndex,
+      isPending,
+      pagination.startIndex,
+    ]
   );
 
   // ✅ Better keyExtractor
@@ -137,6 +191,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
                 </CustomText>
               </TouchableOpacity>
             </View>
+
             <View
               style={{
                 paddingBottom: moderateScale(10),
@@ -153,22 +208,22 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
                 style={styles.input}
               />
             </View>
-            {filteredData && filteredData.length > 0 ? (
-              <FlatList
-                ref={flatListRef}
-                data={filteredData}
+            {pagination.paginatedData && pagination.paginatedData.length > 0 ? (
+              <FlashList
+                ref={flashListRef}
+                data={pagination.paginatedData}
                 contentContainerStyle={{
-                  gap: moderateScale(15),
                   paddingBottom: DVH(10),
                 }}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
-                horizontal={false}
-                showsVerticalScrollIndicator={false}
-                maxToRenderPerBatch={10}
-                initialNumToRender={10}
-                windowSize={10}
-                updateCellsBatchingPeriod={10}
+                showsVerticalScrollIndicator={true}
+                ItemSeparatorComponent={() => (
+                  <View style={{ height: moderateScale(15) }} />
+                )}
+                getItemType={(item, __) => {
+                  return item.type || "default";
+                }}
               />
             ) : (
               <View
@@ -183,14 +238,39 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
                 </CustomText>
               </View>
             )}
+
+            {/* ✅ Reusable Pagination Controls - Bottom */}
+            {pagination.totalPages > 1 && (
+              <PaginationControls
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                currentItems={pagination.currentItems}
+                onNextPage={handleNextPage}
+                onPrevPage={handlePrevPage}
+                showItemCount={false}
+                primaryColor={colors.red}
+                previousText='Prev'
+                nextText='Next'
+                style={{
+                  zIndex: 10,
+                  width: "85%",
+                  marginBottom:
+                    Platform.OS === "ios"
+                      ? moderateScale(30)
+                      : moderateScale(10),
+                }}
+              />
+            )}
           </View>
+
           <FloatActionButton
-            onPressArrowUp={() =>
-              flatListRef?.current?.scrollToOffset({
-                animated: true,
+            onPressArrowUp={() => {
+              flashListRef?.current?.scrollToOffset({
                 offset: 0,
-              })
-            }
+                animated: true,
+              });
+            }}
             onPressWhatsApp={() => {
               const whatsAppNumber =
                 settingsData &&

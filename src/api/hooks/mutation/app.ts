@@ -26,7 +26,11 @@ import {
   apiUpdateUserProfileImg,
 } from "@src/api/types/app";
 import { apiScheduleConsultation } from "@src/api/types/auth";
-import { formatApiErrorMessage, queryClient } from "@src/helper/utils";
+import {
+  AuthStorage,
+  formatApiErrorMessage,
+  queryClient,
+} from "@src/helper/utils";
 import { appScreenNames, bottomTabScreenNames } from "@src/navigation";
 import { RootStackParamList } from "@src/router/types";
 import { useMutation } from "@tanstack/react-query";
@@ -468,6 +472,7 @@ export const useUpdateUserProfileForm = () => {
             token: response?.data?.token,
           });
           setIsAuthenticated(false);
+          await AuthStorage.deleteCredentials();
         } catch {
           // Alert.alert(
           //   "Error",

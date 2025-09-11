@@ -3,14 +3,14 @@ import * as Screen from "@src/screens/auth";
 import { authScreenNames } from "./navigation-names";
 
 export const authScreen: authScreenTypes[] = [
-  {
-    screenName: authScreenNames.AUTH_LOADER,
-    component: Screen.AuthLoader,
-  },
-  {
-    screenName: authScreenNames.ONBOARDING,
-    component: Screen.Onboarding,
-  },
+  // {
+  //   screenName: authScreenNames.AUTH_LOADER,
+  //   component: Screen.AuthLoader,
+  // },
+  // {
+  //   screenName: authScreenNames.ONBOARDING,
+  //   component: Screen.Onboarding,
+  // },
   {
     screenName: authScreenNames.LOGIN,
     component: Screen.Login,

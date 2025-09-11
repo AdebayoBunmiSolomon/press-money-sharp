@@ -1,7 +1,7 @@
 import { useFontLoading } from "@src/hooks/services";
 import { Router } from "@src/router/router";
 import { AppLoader } from "@src/screens/App-Loader";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   configureReanimatedLogger,
@@ -52,10 +52,11 @@ export default function App() {
 
 // main app content
 function MainApp() {
-  const { isAuthenticated } = useAuthStore();
-  const { isFontLoadingComplete, loadResourcesAndDataAsync } = useFontLoading();
+  const { isAuthenticated, setIsAuthenticated } = useAuthStore();
+  const { loadResourcesAndDataAsync } = useFontLoading();
   const modalRef = useRef<IGlobalModalMessageRef | null>(null);
-  const { Login, isPending } = useLogin(); // ✅ now inside provider
+  const { Login, isPending } = useLogin();
+  const [fontLoaded, setFontLoaded] = useState<boolean>(false);
 
   // Expose modalRef globally
   ModalMessageProvider.setRef(modalRef);
@@ -64,6 +65,7 @@ function MainApp() {
   useEffect(() => {
     const timer = setTimeout(() => {
       loadResourcesAndDataAsync();
+      setFontLoaded(true);
     }, 5000);
     return () => clearTimeout(timer);
   }, []);
@@ -71,16 +73,18 @@ function MainApp() {
   // check if there is a login credentials
   useEffect(() => {
     const checkCredentials = async () => {
-      if (isFontLoadingComplete) {
+      if (fontLoaded) {
         const { email, password } = await AuthStorage.getUserCredentials();
         if (email && password) {
           Login({ email, password });
+        } else {
+          setIsAuthenticated(false);
         }
       }
     };
 
     checkCredentials();
-  }, [isFontLoadingComplete]);
+  }, [fontLoaded]);
 
   return (
     <>
@@ -95,10 +99,14 @@ function MainApp() {
           }}
         />
       </View>
-      {!isFontLoadingComplete ? (
+      {!fontLoaded ? (
         <AppLoader />
+      ) : fontLoaded && isPending ? (
+        <AppLoader />
+      ) : fontLoaded && !isPending ? (
+        <Router isAuthenticated={isAuthenticated} />
       ) : (
-        <Router isAuthenticated={isAuthenticated} isLoggingIn={isPending} />
+        <AppLoader />
       )}
     </>
   );
