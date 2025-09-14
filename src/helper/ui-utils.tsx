@@ -4,6 +4,11 @@ import { showMessage } from "react-native-flash-message";
 import { Image } from "expo-image";
 import { colors } from "@src/resources/color/color";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { RefObject } from "react";
+import { IGlobalModalMessageRef } from "@src/common";
+import { CustomText } from "@src/components/shared";
+
+let modalRef: RefObject<IGlobalModalMessageRef | null> | null = null;
 
 interface IShowMsgOptionsProps {
   msgType: "SUCCESS" | "FAILED" | "ERROR";
@@ -135,11 +140,6 @@ export const showFlashMsg = ({
   }
 };
 
-import { RefObject } from "react";
-import { IGlobalModalMessageRef } from "@src/common";
-
-let modalRef: RefObject<IGlobalModalMessageRef | null> | null = null;
-
 export const ModalMessageProvider = {
   setRef: (ref: RefObject<IGlobalModalMessageRef | null>) => {
     modalRef = ref;
@@ -147,4 +147,44 @@ export const ModalMessageProvider = {
   showModalMsg: (msg: Parameters<IGlobalModalMessageRef["show"]>[0]) => {
     modalRef?.current?.show(msg);
   },
+};
+
+export const returnStatus = (status: string) => {
+  if (status.toLowerCase() === "available") {
+    return (
+      <CustomText
+        type='regular'
+        size={12}
+        style={{
+          paddingVertical: moderateScale(3),
+          paddingHorizontal: moderateScale(10),
+          borderWidth: DVW(0.2),
+          borderRadius: moderateScale(50),
+          borderColor: "#66BB6A",
+          color: "#1E7A1E",
+          backgroundColor: "#E6F9E8",
+          marginTop: moderateScale(-5),
+        }}>
+        {status.toLowerCase()}
+      </CustomText>
+    );
+  } else {
+    return (
+      <CustomText
+        type='regular'
+        size={12}
+        style={{
+          paddingVertical: moderateScale(3),
+          paddingHorizontal: moderateScale(10),
+          borderWidth: DVW(0.2),
+          borderRadius: moderateScale(50),
+          borderColor: "#EF5350",
+          color: "#B71C1C",
+          backgroundColor: "#FDECEA",
+          marginTop: moderateScale(-5),
+        }}>
+        {status.toLowerCase()}
+      </CustomText>
+    );
+  }
 };

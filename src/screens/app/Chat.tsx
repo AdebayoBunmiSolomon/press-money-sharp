@@ -20,7 +20,7 @@ import { CustomButton, CustomInput } from "@src/components/shared";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useGetUserServiceMessages } from "@src/api/hooks/queries/app";
 import { useAuthStore } from "@src/api/store/auth";
-import { queryClient } from "@src/helper/utils";
+import { queryClient, truncateText } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 import { ReceiverBubble, SenderBubble } from "@src/components/app/chats";
 import { useIsFocused } from "@react-navigation/native";
@@ -238,7 +238,10 @@ export const Chat = ({
         }>
         <Screen style={styles.screen} bgColor={colors.white}>
           <Header
-            title={"Chats"}
+            title={`Chat ${truncateText(
+              `(${userServiceMessagesStore[0]?.service?.brand} ${userServiceMessagesStore[0]?.service?.model})`,
+              20
+            )}`}
             headerStyle={styles.header}
             color={colors.white}
             leftIcon={

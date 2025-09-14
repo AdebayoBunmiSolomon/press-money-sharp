@@ -26,7 +26,6 @@ export const SignUp = ({
 }: AuthScreenProps<authScreenNames.SIGN_UP>) => {
   const { SignUp, isPending } = useSignUp();
   const {
-    clearErrors,
     getValues,
     setValue,
     control,
@@ -39,6 +38,7 @@ export const SignUp = ({
 
   useEffect(() => {
     setValue("phone", "");
+    setValue("gender", "male");
   }, []);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export const SignUp = ({
         email: data?.email,
         password: data?.password,
         referral_code: String(data?.referral_code),
-        gender: data?.gender,
+        gender: String(data?.gender),
         phone: data?.phone, // removePlusSign(data?.phone),
       });
     }
@@ -141,7 +141,7 @@ export const SignUp = ({
             defaultValue=''
           />
 
-          <Controller
+          {/* <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
@@ -165,7 +165,7 @@ export const SignUp = ({
             )}
             name='gender'
             defaultValue=''
-          />
+          /> */}
 
           {/* <Controller
             control={control}

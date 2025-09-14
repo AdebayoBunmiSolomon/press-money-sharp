@@ -26,7 +26,7 @@ import {
   useRecentlyViewedServicesIdCache,
 } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
-import { queryClient } from "@src/helper/utils";
+import { checkForUpdate, queryClient } from "@src/helper/utils";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
 
 export const Home = ({
@@ -92,9 +92,14 @@ export const Home = ({
     }
   }, [userPreferencesData]);
 
+  const checkForUpdatesAsync = async () => {
+    await checkForUpdate();
+  };
+
   useEffect(() => {
     clearLikedServiceIdFromCache();
     clearRecentlyViewedServiceIdFromCache();
+    checkForUpdatesAsync();
   }, []);
 
   return (
@@ -124,7 +129,12 @@ export const Home = ({
             placeholder='Search here'
             placeHolderTextColor={"#BDBDBD"}
             searchInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                pointerEvents: "none",
+              },
+            ]}
             disabled={true}
           />
         </TouchableOpacity>

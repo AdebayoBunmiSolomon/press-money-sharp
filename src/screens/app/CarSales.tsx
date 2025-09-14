@@ -57,7 +57,7 @@ export const CarSales = ({
   // ✅ Pagination hook - reset when category changes
   const pagination = usePaginationControl({
     data: filteredServicesData || [],
-    itemsPerPage: 3,
+    itemsPerPage: Platform.OS ? 5 : 10,
     resetOnDataChange: true,
   });
 

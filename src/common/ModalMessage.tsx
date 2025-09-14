@@ -21,55 +21,60 @@ export interface IModalMessageProps {
   containerStyle?: StyleProp<ViewStyle>;
   animationType?: "fade" | "slide" | "";
   btnStyle?: StyleProp<ViewStyle>;
+  onClick?: () => void;
+  btnText?: string;
 }
 
 export interface IGlobalModalMessageRef {
   show: (_config: IModalMessageProps) => void;
 }
 
-export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
-  const [visible, setVisible] = useState(false);
-  const [modalData, setModalData] = useState<IModalMessageProps>({
-    msgType: "SUCCESS",
-    title: "",
-    description: "",
-    icon: undefined,
-    btnColor: "",
-    containerStyle: {},
-    animationType: "",
-    btnStyle: {},
-  });
+export const ModalMessage = forwardRef<IGlobalModalMessageRef>(
+  (_props, ref) => {
+    const [visible, setVisible] = useState(false);
+    const [modalData, setModalData] = useState<IModalMessageProps>({
+      msgType: "SUCCESS",
+      title: "",
+      description: "",
+      icon: undefined,
+      btnColor: "",
+      containerStyle: {},
+      animationType: "",
+      btnStyle: {},
+      onClick: undefined,
+      btnText: "",
+    });
 
-  useImperativeHandle(ref, () => ({
-    show: (config) => {
-      setModalData(config);
-      setVisible(true);
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      show: (config) => {
+        setModalData(config);
+        setVisible(true);
+      },
+    }));
 
-  return (
-    <View>
-      <Modal
-        visible={visible}
-        transparent
-        animationType={modalData?.animationType || "fade"}>
-        <View style={styles.container}>
-          <View style={[styles.content, modalData.containerStyle]}>
-            <Image
-              source={
-                modalData.icon
-                  ? modalData?.icon
-                  : modalData.msgType === "ERROR"
-                  ? require("@src/assets/png/danger.png")
-                  : modalData?.msgType === "FAILED"
-                  ? require("@src/assets/png/warning.png")
-                  : modalData?.msgType === "SUCCESS"
-                  ? require("@src/assets/png/success.png")
-                  : null
-              }
-              style={styles.icon}
-            />
-            {/* <CustomText
+    return (
+      <View>
+        <Modal
+          visible={visible}
+          transparent
+          animationType={modalData?.animationType || "fade"}>
+          <View style={styles.container}>
+            <View style={[styles.content, modalData.containerStyle]}>
+              <Image
+                source={
+                  modalData.icon
+                    ? modalData?.icon
+                    : modalData.msgType === "ERROR"
+                    ? require("@src/assets/png/danger.png")
+                    : modalData?.msgType === "FAILED"
+                    ? require("@src/assets/png/warning.png")
+                    : modalData?.msgType === "SUCCESS"
+                    ? require("@src/assets/png/success.png")
+                    : null
+                }
+                style={styles.icon}
+              />
+              {/* <CustomText
             size={14}
             type='regular'
             black
@@ -78,43 +83,47 @@ export const ModalMessage = forwardRef<IGlobalModalMessageRef>((props, ref) => {
             }}>
             {modalData.title}
           </CustomText> */}
-            <CustomText
-              size={14}
-              type='regular'
-              black
-              style={{
-                textAlign: "center",
-              }}>
-              {modalData.description}
-            </CustomText>
-            <CustomButton
-              title='OK'
-              onPress={() => setVisible(false)}
-              buttonType='Solid'
-              textType='medium'
-              textWhite
-              btnStyle={[
-                styles.button,
-                {
-                  backgroundColor: modalData?.btnColor
-                    ? modalData.btnColor
-                    : modalData?.msgType === "SUCCESS"
-                    ? "#0C8242"
-                    : modalData?.msgType === "ERROR"
-                    ? colors.red
-                    : modalData?.msgType === "FAILED"
-                    ? "#CDDC27"
-                    : colors.danger,
-                },
-                modalData?.btnStyle,
-              ]}
-            />
+              <CustomText
+                size={14}
+                type='regular'
+                black
+                style={{
+                  textAlign: "center",
+                }}>
+                {modalData.description}
+              </CustomText>
+              <CustomButton
+                title={modalData?.btnText ? modalData?.btnText : "OK"}
+                onPress={() => {
+                  setVisible(false);
+                  modalData.onClick?.();
+                }}
+                buttonType='Solid'
+                textType='medium'
+                textWhite
+                btnStyle={[
+                  styles.button,
+                  {
+                    backgroundColor: modalData?.btnColor
+                      ? modalData.btnColor
+                      : modalData?.msgType === "SUCCESS"
+                      ? "#0C8242"
+                      : modalData?.msgType === "ERROR"
+                      ? colors.red
+                      : modalData?.msgType === "FAILED"
+                      ? "#CDDC27"
+                      : colors.danger,
+                  },
+                  modalData?.btnStyle,
+                ]}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
-    </View>
-  );
-});
+        </Modal>
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

@@ -28,7 +28,11 @@ import {
   WhatsAppAction,
 } from "@src/components/app/actions";
 import { useViewService } from "@src/api/hooks/queries/app";
-import { formatAmountWithCommas, queryClient } from "@src/helper/utils";
+import {
+  formatAmountWithCommas,
+  queryClient,
+  truncateText,
+} from "@src/helper/utils";
 import { FullScreenLoader, ImageViewer, Loader } from "@src/common";
 import ReanimatedCarousel from "react-native-reanimated-carousel";
 import { appQueryKeys } from "@src/api/hooks/queries/query-key";
@@ -41,6 +45,7 @@ import { useLikedServicesIdCache } from "@src/cache";
 import { useAuthStore } from "@src/api/store/auth";
 import { useSettingsStore, useUserWishListStore } from "@src/api/store/app";
 import { useCartCache } from "@src/cache/cartCache";
+import { returnStatus } from "@src/helper/ui-utils";
 
 export const CarDetails = ({
   navigation,
@@ -109,12 +114,26 @@ export const CarDetails = ({
       <Screen style={styles.screen}>
         <Header
           leftIcon={
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: moderateScale(5),
+              }}>
               <AntDesign
                 name='arrowleft'
                 size={moderateScale(20)}
                 color={colors.black}
               />
+              <CustomText type='regular' size={20} lightBlack>
+                {isFetching
+                  ? "Loading..."
+                  : truncateText(
+                      `${serviceInfo?.brand} ${serviceInfo?.model}`,
+                      20
+                    )}
+              </CustomText>
             </TouchableOpacity>
           }
           headerStyle={styles.header}
@@ -123,9 +142,6 @@ export const CarDetails = ({
           <FullScreenLoader visible={isFetching} />
         ) : (
           <View style={styles.contentContainer}>
-            <CustomText type='regular' size={20} lightBlack>
-              {`${serviceInfo?.brand} ${serviceInfo?.model}`}
-            </CustomText>
             <ScrollContainer
               style={{
                 gap: moderateScale(20),
@@ -251,6 +267,23 @@ export const CarDetails = ({
                     }}>
                     {serviceInfo?.location ? serviceInfo?.location : "Anywhere"}
                   </CustomText>
+                </View>
+              </View>
+              {/* product category, and status */}
+              <View style={styles.pricePercentLocationContainer}>
+                <View style={styles.locationContainer}>
+                  <CustomText type='medium' size={12} black>
+                    Category:
+                  </CustomText>
+                  <CustomText type='regular' size={12} lightBlack>
+                    Car {serviceInfo?.category}
+                  </CustomText>
+                </View>
+                <View style={styles.locationContainer}>
+                  <CustomText type='medium' size={12} black>
+                    Status:
+                  </CustomText>
+                  {returnStatus(String(serviceInfo?.status))}
                 </View>
               </View>
               {/* product info card container */}
@@ -492,7 +525,7 @@ const styles = StyleSheet.create({
     paddingTop:
       Platform?.OS === "android" ? moderateScale(50) : moderateScale(50),
     paddingHorizontal: moderateScale(12),
-    paddingBottom: moderateScale(10),
+    paddingBottom: moderateScale(5),
   },
   contentContainer: {
     paddingHorizontal: moderateScale(15),

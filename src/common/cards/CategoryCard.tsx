@@ -5,6 +5,7 @@ import { CustomText } from "@src/components/shared";
 import { DVH, DVW, moderateScale } from "@src/resources/responsiveness";
 import { colors } from "@src/resources/color/color";
 import { Feather } from "@expo/vector-icons";
+import { truncateText } from "@src/helper/utils";
 
 interface ICategoryCardProps {
   item: any;
@@ -27,7 +28,7 @@ export const CategoryCard: React.FC<ICategoryCardProps> = ({
       <Image source={randomImage} contentFit='fill' style={styles.img} />
       <View style={styles.cardTitleContainer}>
         <CustomText type='medium' size={12} black>
-          {`Car ${item}`}
+          {truncateText(`Car ${item}`)}
         </CustomText>
         <View style={styles.actionBtn}>
           <Feather

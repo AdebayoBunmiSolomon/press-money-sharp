@@ -2,10 +2,11 @@ import { QueryClient } from "@tanstack/react-query";
 import * as Network from "expo-network";
 import moment from "moment";
 import { Alert, Linking, Platform } from "react-native";
-import { showFlashMsg } from "./ui-utils";
+import { ModalMessageProvider, showFlashMsg } from "./ui-utils";
 import { apiGetUserNotificationsResponse } from "@src/api/types/app";
 import _ from "lodash";
 import * as SecureStore from "expo-secure-store";
+import VersionCheck from "react-native-version-check";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -398,3 +399,42 @@ export const AuthStorage = {
     }
   },
 };
+
+/**
+ * this helps to check for app update in play store and app store
+ */
+export async function checkForUpdate() {
+  try {
+    // Get current version installed on the device
+    const currentVersion = VersionCheck.getCurrentVersion();
+
+    // Get the latest version from the App Store / Play Store
+    const latestVersion = await VersionCheck.getLatestVersion({
+      provider: Platform.OS === "ios" ? "appStore" : "playStore",
+      // forceUpdate: true,
+    });
+
+    // Check if update is needed
+    const updateNeeded = await VersionCheck.needUpdate();
+
+    if (updateNeeded.isNeeded) {
+      ModalMessageProvider.showModalMsg({
+        msgType: "SUCCESS",
+        title:
+          Platform.OS === "ios"
+            ? "iOS Update Available"
+            : "Android Update Available",
+        description: `A new version (${latestVersion}) is available. You are using version ${currentVersion}. Please update to continue.`,
+        animationType: "slide",
+        onClick: () => {
+          Linking.openURL(updateNeeded.storeUrl);
+          // console.log(updateNeeded.storeUrl);
+        },
+        btnText: "Update Now",
+      });
+    }
+  } catch (_error) {
+    Alert.alert("Error", _error?.toString());
+    // console.log("Error checking app update:", error);
+  }
+}
