@@ -427,7 +427,13 @@ export async function checkForUpdate() {
         description: `A new version (${latestVersion}) is available. You are using version ${currentVersion}. Please update to continue.`,
         animationType: "slide",
         onClick: () => {
-          Linking.openURL(updateNeeded.storeUrl);
+          Linking.canOpenURL(updateNeeded.storeUrl).then((supported) => {
+            if (supported) {
+              Linking.openURL(updateNeeded.storeUrl);
+            } else {
+              // console.log("Cannot handle URL:", updateNeeded.storeUrl);
+            }
+          });
           // console.log(updateNeeded.storeUrl);
         },
         btnText: "Update Now",

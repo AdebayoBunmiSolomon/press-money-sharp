@@ -31,7 +31,7 @@ import { useLikedServicesIdCache } from "@src/cache";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
 import { openWhatsApp } from "@src/helper/utils";
-import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { FlashList } from "@shopify/flash-list";
 import { usePaginationControl } from "@src/components/shared/hooks";
 
 export const Categories = ({
@@ -39,7 +39,7 @@ export const Categories = ({
   route,
 }: RootStackScreenProps<appScreenNames.CATEGORIES>) => {
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
-  const flashListRef = useRef<FlashListRef<apiGetAllServicesResponse>>(null);
+  const flashListRef = useRef<FlashList<apiGetAllServicesResponse>>(null);
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { likedServiceId } = useLikedServicesIdCache();
   const { categories } = useCategoriesStore();
@@ -257,6 +257,7 @@ export const Categories = ({
             <FlashList
               ref={flashListRef}
               data={pagination.paginatedData}
+              estimatedItemSize={200}
               contentContainerStyle={{
                 paddingBottom: DVH(5),
               }}
@@ -271,6 +272,10 @@ export const Categories = ({
               }}
               // ✅ Performance optimizations
               drawDistance={200}
+              estimatedListSize={{
+                height: DVH(80),
+                width: DVW(100),
+              }}
             />
           ) : (
             <View style={styles.emptyContainer}>

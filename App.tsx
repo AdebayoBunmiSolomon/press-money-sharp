@@ -19,6 +19,7 @@ import { IGlobalModalMessageRef, ModalMessage } from "@src/common";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
 import { useLogin } from "@src/api/hooks/mutation/auth";
+import "react-native-reanimated";
 
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
