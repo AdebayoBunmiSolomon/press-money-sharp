@@ -54,13 +54,18 @@ export const SignUp = ({
         first_name: data?.first_name,
         last_name: data?.last_name,
         email: data?.email,
-        password: data?.password,
+        password: "Test@1234", //data?.password,
         referral_code: String(data?.referral_code),
         gender: String(data?.gender),
         phone: data?.phone, // removePlusSign(data?.phone),
       });
     }
   };
+
+  useEffect(() => {
+    setValue("password", "Test@1234");
+    setValue("confirm_password", "Test@1234");
+  }, []);
 
   return (
     <Screen style={styles.screenContainer} safeArea>
