@@ -53,7 +53,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     searchKeys as any
   );
 
-  // ✅ Use the pagination hook
+  //Use the pagination hook
   const pagination = usePaginationControl({
     data: filteredData || [],
     itemsPerPage: 10,
@@ -66,13 +66,13 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
   const { AddProductToWishList, isPending } = useAddProductToWishList();
   const { likedServiceId } = useLikedServicesIdCache();
 
-  // ✅ Memoize liked IDs set for faster lookup
+  //Memoize liked IDs set for faster lookup
   const likedSet = useMemo(
     () => new Set(likedServiceId || []),
     [likedServiceId]
   );
 
-  // ✅ Scroll to top when changing pages
+  //Scroll to top when changing pages
   const handlePageChange = useCallback(() => {
     flashListRef.current?.scrollToOffset({
       offset: 0,
@@ -80,7 +80,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     });
   }, []);
 
-  // ✅ Enhanced page navigation with scroll
+  //Enhanced page navigation with scroll
   const handleNextPage = useCallback(() => {
     pagination.goToNextPage();
     handlePageChange();
@@ -99,7 +99,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
   //   [pagination.goToPage, handlePageChange]
   // );
 
-  // ✅ Handler for navigating to details
+  //Handler for navigating to details
   const handleCardClick = useCallback(
     (uuid: string) => {
       navigation.navigate(appScreenNames.CAR_DETAILS, { service_uuid: uuid });
@@ -108,7 +108,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     [navigation, onClose]
   );
 
-  // ✅ Handler for liking products
+  //Handler for liking products
   const handleLike = useCallback(
     (item: apiGetAllServicesResponse, index: number, isLiked: boolean) => {
       const globalIndex = pagination.startIndex + index;
@@ -131,7 +131,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     ]
   );
 
-  // ✅ Memoized renderItem
+  //Memoized renderItem
   const renderItem = useCallback(
     ({ item, index }: { item: apiGetAllServicesResponse; index: number }) => {
       const isLiked = likedSet.has(item?.id);
@@ -161,7 +161,7 @@ export const FilterModal: React.FC<IFilterModalProps> = ({
     ]
   );
 
-  // ✅ Better keyExtractor
+  //Better keyExtractor
   const keyExtractor = useCallback(
     (item: apiGetAllServicesResponse, index: number) =>
       item?.uuid || item?.id?.toString() || index.toString(),
