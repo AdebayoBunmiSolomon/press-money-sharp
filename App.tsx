@@ -19,7 +19,7 @@ import { IGlobalModalMessageRef, ModalMessage } from "@src/common";
 import { ModalMessageProvider } from "@src/helper/ui-utils";
 import { useAuthStore } from "@src/api/store/auth";
 import { useLogin } from "@src/api/hooks/mutation/auth";
-import "react-native-reanimated";
+// import "react-native-reanimated";
 
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
@@ -41,7 +41,8 @@ export default function App() {
         queryClient
           .resumePausedMutations()
           .then(() => queryClient.invalidateQueries())
-      }>
+      }
+    >
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <MainApp />
@@ -92,7 +93,7 @@ function MainApp() {
       <ModalMessage ref={modalRef} />
       <View style={styles.flashMsgContainer}>
         <FlashMessage
-          position='top'
+          position="top"
           style={{
             paddingTop:
               Platform.OS === "ios" ? verticalScale(10) : verticalScale(40),

@@ -80,7 +80,7 @@ export const Referrals = ({
           leftIcon={
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.black}
               />
@@ -98,25 +98,26 @@ export const Referrals = ({
         <ScrollContainer>
           <View style={styles.cta}>
             <CustomText
-              type='medium'
+              type="medium"
               size={20}
               white
               style={{
                 verticalAlign: "middle",
                 paddingLeft: moderateScale(15),
-              }}>
+              }}
+            >
               {`Invite friends to\nAutoMotor and\nearn rewards`}
             </CustomText>
             <View style={styles.ctaImgContainer}>
               <Image
                 style={styles.ctaImg}
                 source={require("@src/assets/png/referral-cta.png")}
-                contentFit='fill'
+                contentFit="fill"
               />
             </View>
           </View>
           <View style={styles.contentContainer}>
-            <CustomText type='regular' size={14} lightBlack>
+            <CustomText type="regular" size={14} lightBlack>
               Invite Friends and earn rewards!!!
             </CustomText>
             <View style={styles.earnContainer}>
@@ -126,21 +127,23 @@ export const Referrals = ({
                     <TouchableOpacity
                       key={index}
                       style={styles.earningSystemBtn}
-                      activeOpacity={0.6}>
+                      activeOpacity={0.6}
+                    >
                       <View style={styles.earningSystemImgContainer}>
                         <Image
                           source={item?.image}
-                          contentFit='cover'
+                          contentFit="cover"
                           style={styles.earningSystemImg}
                         />
                       </View>
                       <CustomText
-                        type='regular'
+                        type="regular"
                         size={10}
                         lightBlack
                         style={{
                           textAlign: "left",
-                        }}>
+                        }}
+                      >
                         {item?.title}
                       </CustomText>
                     </TouchableOpacity>
@@ -150,7 +153,7 @@ export const Referrals = ({
                 title={`View reward`}
                 red
                 textWhite
-                buttonType='Solid'
+                buttonType="Solid"
                 onPress={() => {
                   ModalMessageProvider.showModalMsg({
                     msgType: "SUCCESS",
@@ -159,7 +162,7 @@ export const Referrals = ({
                     animationType: "slide",
                   });
                 }}
-                textType='medium'
+                textType="medium"
                 textSize={13}
                 btnStyle={styles.earnBtn}
               />
@@ -170,8 +173,9 @@ export const Referrals = ({
                 {
                   alignItems: "center",
                 },
-              ]}>
-              <CustomText type='regular' size={14} lightBlack>
+              ]}
+            >
+              <CustomText type="regular" size={14} lightBlack>
                 Referral Code
               </CustomText>
               <View
@@ -179,15 +183,17 @@ export const Referrals = ({
                   paddingVertical: moderateScale(25),
                   gap: moderateScale(10),
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <View style={styles.iconTextContainer}>
-                  <CustomText type='medium' size={14} lightBlack>
+                  <CustomText type="medium" size={14} lightBlack>
                     {userData?.referral_code || "N/A"}
                   </CustomText>
                   <TouchableOpacity
-                    onPress={async () => await copyToClipboard()}>
+                    onPress={async () => await copyToClipboard()}
+                  >
                     <Ionicons
-                      name='copy-outline'
+                      name="copy-outline"
                       size={moderateScale(15)}
                       color={colors.red}
                     />
@@ -202,13 +208,14 @@ export const Referrals = ({
                       paddingHorizontal: moderateScale(10),
                       borderRadius: moderateScale(50),
                     },
-                  ]}>
-                  <CustomText type='regular' size={11} white>
+                  ]}
+                >
+                  <CustomText type="regular" size={11} white>
                     Share invitation code
                   </CustomText>
                   <TouchableOpacity style={{}}>
                     <EvilIcons
-                      name='share-google'
+                      name="share-google"
                       size={moderateScale(15)}
                       color={colors.white}
                     />
@@ -221,11 +228,11 @@ export const Referrals = ({
                 title={`Referral history`}
                 lightGray
                 textLightBlack
-                buttonType='Solid'
+                buttonType="Solid"
                 onPress={() => {
                   // setShowReferralHistory(!showReferralHistory);
                 }}
-                textType='medium'
+                textType="medium"
                 textSize={13}
                 btnStyle={[
                   styles.earnBtn,
@@ -239,12 +246,13 @@ export const Referrals = ({
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                    }}>
-                    <CustomText type='medium' size={12} lightBlack>
+                    }}
+                  >
+                    <CustomText type="medium" size={12} lightBlack>
                       {`(${userReferral && userReferral?.referrals?.length})`}
                     </CustomText>
                     <MaterialIcons
-                      name='keyboard-arrow-right'
+                      name="keyboard-arrow-right"
                       color={colors.lightBlack}
                       size={moderateScale(25)}
                     />

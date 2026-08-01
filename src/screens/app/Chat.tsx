@@ -61,7 +61,7 @@ export const Chat = ({
 
   const { isFetching } = useGetUserServiceMessages(
     service_uuid,
-    userData?.token
+    userData?.token,
   );
 
   const {
@@ -83,13 +83,13 @@ export const Chat = ({
       "keyboardDidShow",
       () => {
         setKeyboardVisible(true);
-      }
+      },
     );
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
         setKeyboardVisible(false);
-      }
+      },
     );
 
     return () => {
@@ -137,7 +137,7 @@ export const Chat = ({
         <ReceiverBubble data={item.message} />
       );
     },
-    [userData?.uuid]
+    [userData?.uuid],
   );
 
   const keyExtractor = React.useCallback((item: FlatListItem) => item.id, []);
@@ -235,19 +235,20 @@ export const Chat = ({
         enabled={isKeyboardVisible} // This is the key fix!
         keyboardVerticalOffset={
           Platform.OS === "ios" ? moderateScale(0) : moderateScale(0)
-        }>
+        }
+      >
         <Screen style={styles.screen} bgColor={colors.white}>
           <Header
             title={`Chat ${truncateText(
               `(${userServiceMessagesStore[0]?.service?.brand} ${userServiceMessagesStore[0]?.service?.model})`,
-              20
+              20,
             )}`}
             headerStyle={styles.header}
             color={colors.white}
             leftIcon={
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <AntDesign
-                  name='arrowleft'
+                  name="arrow-left"
                   size={moderateScale(20)}
                   color={colors.white}
                 />
@@ -257,7 +258,7 @@ export const Chat = ({
           <View style={styles.chatContainer}>
             {isFetching && (
               <ActivityIndicator
-                size='small'
+                size="small"
                 color={colors.lightGray}
                 style={styles.refreshIndicator}
               />
@@ -285,7 +286,7 @@ export const Chat = ({
               windowSize={10}
               removeClippedSubviews={Platform.OS === "android"}
               updateCellsBatchingPeriod={50}
-              decelerationRate='normal'
+              decelerationRate="normal"
               scrollEventThrottle={16}
             />
           </View>
@@ -304,27 +305,28 @@ export const Chat = ({
                   : moderateScale(60) // Adjust for nav bar
                 : moderateScale(40),
           },
-        ]}>
+        ]}
+      >
         <View style={{ width: "80%" }}>
           <CustomInput
             value={message}
             onChangeText={(enteredValue) => {
               setMessage(enteredValue);
             }}
-            type='custom'
-            placeholder='Type a message'
+            type="custom"
+            placeholder="Type a message"
             placeHolderTextColor={"#BDBDBD"}
-            keyboardType='default'
+            keyboardType="default"
             showErrorText
             style={styles.input}
           />
         </View>
         <CustomButton
-          buttonType='Solid'
+          buttonType="Solid"
           white
           rightIcon={
             <AntDesign
-              name='paperclip'
+              name="paper-clip"
               size={moderateScale(25)}
               color={colors.black}
             />
@@ -339,11 +341,11 @@ export const Chat = ({
           }}
         />
         <CustomButton
-          buttonType='Solid'
+          buttonType="Solid"
           white
           rightIcon={
             <Ionicons
-              name='send'
+              name="send"
               size={moderateScale(25)}
               color={colors.black}
             />
@@ -364,6 +366,7 @@ export const Chat = ({
         onClose={() => setFileUploadVisible(!fileUploadVisible)}
         onClickCamera={async () => {
           const imgRes = await pickFromCamera();
+          // console.log("Image result from camera:", imgRes);
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);
@@ -371,6 +374,7 @@ export const Chat = ({
         }}
         onClickGallery={async () => {
           const imgRes = await pickFromGallery();
+          // console.log("Image result from gallery:", imgRes);
           if (imgRes) {
             setFileUploadVisible(!fileUploadVisible);
             setImgResult(imgRes);

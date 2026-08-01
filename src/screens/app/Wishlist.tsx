@@ -46,19 +46,19 @@ export const Wishlist = ({
 
   return (
     <>
-      <StatusBar style='dark' />
+      <StatusBar style="dark" />
       <Screen style={styles.screenContainer}>
         <Header
           leftIcon={
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.white}
               />
             </TouchableOpacity>
           }
-          title='Wish List'
+          title="Wish List"
           headerStyle={styles.header}
           color={colors.white}
         />
@@ -70,8 +70,9 @@ export const Wishlist = ({
                 height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
-              }}>
-              <Loader size='large' color={colors.red} />
+              }}
+            >
+              <Loader size="large" color={colors.red} />
             </View>
           ) : userWishList && userWishList.length > 0 ? (
             <FlatList
@@ -96,7 +97,7 @@ export const Wishlist = ({
                 index: number;
               }) => {
                 const data = getServiceInfoFromAllServiceStore(
-                  item?.our_service_id
+                  item?.our_service_id,
                 );
                 const isLiked =
                   likedServiceId &&
@@ -143,8 +144,9 @@ export const Wishlist = ({
                 height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
-              }}>
-              <CustomText type='medium' size={14} lightGray>
+              }}
+            >
+              <CustomText type="medium" size={14} lightGray>
                 No wishlist exists for you
               </CustomText>
             </View>

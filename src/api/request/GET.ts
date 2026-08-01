@@ -1,16 +1,18 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "@env";
 
 export const GET = async (
   endpoint: string,
   config?: AxiosRequestConfig,
-  payload?: Record<string, any>
+  payload?: Record<string, any>,
 ): Promise<{ status: number; data?: any }> => {
   try {
-    const { status, data } = await axios.get(`${BASE_URL}${endpoint}`, {
-      ...config,
-      params: payload,
-    });
+    const { status, data } = await axios.get(
+      `${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`,
+      {
+        ...config,
+        params: payload,
+      },
+    );
 
     return { status, data };
   } catch (error: any) {

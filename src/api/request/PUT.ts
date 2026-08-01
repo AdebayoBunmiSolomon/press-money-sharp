@@ -1,16 +1,16 @@
+import { APILogger } from "@src/helper/utils";
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "@env";
 
 export const PUT = async (
   endpoint: string,
   payload: Record<string, any>,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<{ status: number; data?: any }> => {
   try {
     const { status, data } = await axios.put(
-      `${BASE_URL}${endpoint}`,
+      `${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`,
       payload,
-      config
+      config,
     );
 
     return { status, data };
@@ -18,7 +18,13 @@ export const PUT = async (
     // console.error("Error updating data:", error);
 
     if (axios.isCancel(error)) {
-      console.log("Request was canceled due to timeout");
+      APILogger(
+        400,
+        false,
+        "Axios Error",
+        "Request was canceled due to timeout",
+      );
+      // console.log();
     }
 
     return {

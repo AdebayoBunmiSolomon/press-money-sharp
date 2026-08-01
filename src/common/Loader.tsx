@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Modal,
-  Platform,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
 import { Image } from "expo-image";
-import { DVH, DVW } from "@src/resources/responsiveness";
+import { DVH, DVW, verticalScale } from "@src/resources/responsiveness";
 import { CustomText } from "@src/components/shared";
 
 interface ILoaderProps {
@@ -46,11 +40,18 @@ export const FullScreenLoader: React.FC<IFullScreenLoaderProps> = ({
             <View style={fullScreenStyles.iconContainer}>
               <Image
                 source={require("@src/assets/png/round-logo.png")}
-                contentFit='cover'
+                contentFit="cover"
                 style={fullScreenStyles.icon}
               />
             </View>
-            <CustomText type='regular' size={15} white>
+            <CustomText
+              type="regular"
+              size={15}
+              white
+              style={{
+                marginVertical: verticalScale(10),
+              }}
+            >
               Loading, Please wait...
             </CustomText>
           </View>
@@ -72,7 +73,7 @@ const fullScreenStyles = StyleSheet.create({
     alignItems: "center",
   },
   iconContainer: {
-    width: Platform.OS === "ios" ? DVW(19.5) : DVW(18),
+    width: DVW(20),
     height: DVH(9),
     overflow: "hidden",
     alignSelf: "center",

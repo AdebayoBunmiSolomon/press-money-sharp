@@ -37,18 +37,20 @@ export const FloatActionButton: React.FC<IFloatActionBtnProps> = ({
             borderColor: colors.lightGray,
           },
         ]}
-        onPress={() => onPressArrowUp()}>
+        onPress={() => onPressArrowUp()}
+      >
         <AntDesign
-          name='arrowup'
-          size={moderateScale(25)}
+          name="arrow-up"
+          size={moderateScale(24)}
           color={colors.black}
         />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.floatBtn}
-        onPress={() => onPressWhatsApp()}>
+        onPress={() => onPressWhatsApp()}
+      >
         <Ionicons
-          name='logo-whatsapp'
+          name="logo-whatsapp"
           size={moderateScale(25)}
           color={"#25D366"}
         />
@@ -60,8 +62,9 @@ export const FloatActionButton: React.FC<IFloatActionBtnProps> = ({
             navigation.navigate(bottomTabScreenNames.MESSAGES_STACK, {
               screen: appScreenNames.MESSAGES,
             })
-          }>
-          <Entypo name='chat' size={moderateScale(25)} color={colors.black} />
+          }
+        >
+          <Entypo name="chat" size={moderateScale(25)} color={colors.black} />
         </TouchableOpacity>
       )}
     </View>
@@ -94,5 +97,7 @@ const styles = StyleSheet.create({
 
     // 💡 Android shadow (elevation)
     elevation: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

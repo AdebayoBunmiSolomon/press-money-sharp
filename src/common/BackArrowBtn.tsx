@@ -28,14 +28,15 @@ export const BackArrowBtn: React.FC<IBackArrowBtnProps> = ({
     <View style={[styles.backBtnContainer, style]}>
       <TouchableOpacity
         style={styles.backBtn}
-        onPress={() => onPressBackArrow()}>
+        onPress={() => onPressBackArrow()}
+      >
         <AntDesign
-          name='arrowleft'
+          name="arrow-left"
           size={moderateScale(20)}
           color={color || colors.black}
         />
       </TouchableOpacity>
-      <CustomText type='regular' size={14} red style={{ color: color }}>
+      <CustomText type="regular" size={14} red style={{ color: color }}>
         {title}
       </CustomText>
     </View>

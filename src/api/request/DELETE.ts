@@ -1,14 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "@env";
 
 export const DELETE = async (
   endpoint: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<{ status: number; data?: any }> => {
   try {
     const { status, data } = await axios.delete(
-      `${BASE_URL}${endpoint}`,
-      config
+      `${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`,
+      config,
     );
 
     return { status, data };

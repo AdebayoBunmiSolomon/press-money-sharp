@@ -43,9 +43,10 @@ export const Notification = ({
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate(bottomTabScreenNames.HOME_STACK)
-              }>
+              }
+            >
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.white}
               />
@@ -88,14 +89,16 @@ export const Notification = ({
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <CustomText
-              type='medium'
+              type="medium"
               size={14}
               lightGray
               style={{
                 alignSelf: "center",
-              }}>
+              }}
+            >
               No notifications found for{" "}
               {userData?.first_name + " " + userData?.last_name}
             </CustomText>

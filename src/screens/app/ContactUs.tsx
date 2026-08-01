@@ -29,15 +29,16 @@ export const ContactUs = ({
   const { settings } = useSettingsStore();
   // console.log("settings", settings);
   const whatsAppUrl = String(
-    settings && settings.find((i) => i.type.toLowerCase() === "whatsapp")?.value
+    settings &&
+      settings.find((i) => i.type.toLowerCase() === "whatsapp")?.value,
   );
 
   const openSocialMediaLink = (socialMediaType: settingsType) => {
     const url = String(
       settings &&
         settings.find(
-          (i) => i.type.toLowerCase() === socialMediaType.toLowerCase()
-        )?.value
+          (i) => i.type.toLowerCase() === socialMediaType.toLowerCase(),
+        )?.value,
     );
     Linking.canOpenURL(url)
       .then((supported) => {
@@ -57,7 +58,7 @@ export const ContactUs = ({
           title: "Error",
           description: `An error occurred: ${err}`,
           msgType: "ERROR",
-        })
+        }),
       );
   };
 
@@ -68,7 +69,7 @@ export const ContactUs = ({
           leftIcon={
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.black}
               />
@@ -84,10 +85,10 @@ export const ContactUs = ({
           }}
         />
         <View style={styles.textContainer}>
-          <CustomText type='medium' size={17} lightBlack style={styles.text}>
+          <CustomText type="medium" size={17} lightBlack style={styles.text}>
             Get In Touch
           </CustomText>
-          <CustomText type='regular' size={14} lightBlack style={styles.text}>
+          <CustomText type="regular" size={14} lightBlack style={styles.text}>
             {`Ready to Purchase or Make Consultation?\nContact Us today!`}
           </CustomText>
         </View>
@@ -95,15 +96,15 @@ export const ContactUs = ({
         <View style={styles.textContainer}>
           <View style={styles.iconTextContainer}>
             <MaterialCommunityIcons
-              name='office-building'
+              name="office-building"
               size={moderateScale(20)}
               color={colors.black}
             />
-            <CustomText type='medium' size={17} lightBlack>
+            <CustomText type="medium" size={17} lightBlack>
               Head Office
             </CustomText>
           </View>
-          <CustomText type='regular' size={14} lightBlack style={styles.text}>
+          <CustomText type="regular" size={14} lightBlack style={styles.text}>
             {settings && settings.find((i) => i.type === "Address")?.value}
           </CustomText>
         </View>
@@ -111,15 +112,15 @@ export const ContactUs = ({
         <View style={styles.textContainer}>
           <View style={styles.iconTextContainer}>
             <MaterialCommunityIcons
-              name='email-outline'
+              name="email-outline"
               size={moderateScale(20)}
               color={colors.black}
             />
-            <CustomText type='medium' size={17} lightBlack>
+            <CustomText type="medium" size={17} lightBlack>
               Email Us
             </CustomText>
           </View>
-          <CustomText type='regular' size={14} lightBlack style={styles.text}>
+          <CustomText type="regular" size={14} lightBlack style={styles.text}>
             {(settings && settings.find((i) => i.type === "Email")?.value) ||
               "info@automotor.ng"}
           </CustomText>
@@ -128,15 +129,15 @@ export const ContactUs = ({
         <View style={styles.textContainer}>
           <View style={styles.iconTextContainer}>
             <Feather
-              name='phone'
+              name="phone"
               size={moderateScale(20)}
               color={colors.black}
             />
-            <CustomText type='medium' size={17} lightBlack>
+            <CustomText type="medium" size={17} lightBlack>
               Call Us
             </CustomText>
           </View>
-          <CustomText type='regular' size={14} lightBlack style={styles.text}>
+          <CustomText type="regular" size={14} lightBlack style={styles.text}>
             {settings && settings.find((i) => i.type === "Phone")?.value}
           </CustomText>
         </View>
@@ -162,8 +163,9 @@ export const ContactUs = ({
           style={{
             paddingVertical: moderateScale(20),
             paddingHorizontal: moderateScale(10),
-          }}>
-          <CustomText type='medium' size={17} lightBlack>
+          }}
+        >
+          <CustomText type="medium" size={17} lightBlack>
             Follow our Social Media
           </CustomText>
           <View style={styles.socialMediaBtnContainer}>
@@ -178,9 +180,10 @@ export const ContactUs = ({
             </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openWhatsApp(whatsAppUrl)}>
+              onPress={() => openWhatsApp(whatsAppUrl)}
+            >
               <FontAwesome
-                name='whatsapp'
+                name="whatsapp"
                 size={moderateScale(17)}
                 color={"#25D366"}
               />
@@ -196,18 +199,20 @@ export const ContactUs = ({
             </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openSocialMediaLink("Instagram")}>
+              onPress={() => openSocialMediaLink("Instagram")}
+            >
               <Entypo
-                name='instagram'
+                name="instagram"
                 size={moderateScale(17)}
                 color={colors.lightBlack}
               />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.socialMediaBtn}
-              onPress={() => openSocialMediaLink("Tiktok")}>
+              onPress={() => openSocialMediaLink("Tiktok")}
+            >
               <MaterialIcons
-                name='tiktok'
+                name="tiktok"
                 size={moderateScale(22)}
                 color={colors.lightBlack}
               />

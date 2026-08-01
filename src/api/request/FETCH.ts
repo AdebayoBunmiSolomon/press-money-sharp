@@ -1,5 +1,3 @@
-import { BASE_URL } from "@env";
-
 type FetchMethod = "POST" | "GET" | "DELETE" | "PUT";
 
 interface FetchOptions {
@@ -32,7 +30,7 @@ export const FETCH = async ({
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`, {
     method,
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     headers,
@@ -40,6 +38,7 @@ export const FETCH = async ({
 
   if (!res.ok) {
     const text = await res.text();
+    // console.log("Error:", `Server error: ${res.status} - ${text}`);
     throw new Error(`Server error: ${res.status} - ${text}`);
   }
 

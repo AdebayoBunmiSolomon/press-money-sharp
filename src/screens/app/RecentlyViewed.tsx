@@ -36,7 +36,7 @@ export const RecentlyViewed = ({
   const flatListRef = useRef<FlatList>(null);
   const { userData } = useAuthStore();
   const { userRecentlyViewed, isFetching } = useGetUserRecentlyViewed(
-    userData?.token
+    userData?.token,
   );
   const { DeleteFromRecentlyViewed, isPending: isDeleting } =
     useDeleteRecentlyViewed();
@@ -74,7 +74,7 @@ export const RecentlyViewed = ({
             text: "No",
             onPress: () => {},
           },
-        ]
+        ],
       );
     } catch (err: unknown) {
       Alert.alert("Error", err?.toString());
@@ -91,7 +91,7 @@ export const RecentlyViewed = ({
         leftIcon={
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <AntDesign
-              name='arrowleft'
+              name="arrow-left"
               size={moderateScale(20)}
               color={colors.white}
             />
@@ -133,12 +133,12 @@ export const RecentlyViewed = ({
               index: number;
             }) => {
               const data = getServiceInfoFromAllServiceStore(
-                item?.our_service_id
+                item?.our_service_id,
               );
               const isLiked =
                 recentlyViewedServiceId &&
                 recentlyViewedServiceId.some(
-                  (id) => id === item?.our_service_id
+                  (id) => id === item?.our_service_id,
                 );
               return (
                 <ProductCard
@@ -182,14 +182,16 @@ export const RecentlyViewed = ({
               height: "100%",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <CustomText
-              type='medium'
+              type="medium"
               size={14}
               lightGray
               style={{
                 textAlign: "center",
-              }}>
+              }}
+            >
               No recently viewed service{"\n"}available for you
             </CustomText>
           </View>
@@ -213,12 +215,12 @@ export const RecentlyViewed = ({
           }}
         />
         <CustomButton
-          title='Clear All'
+          title="Clear All"
           white
           textRed
-          buttonType='Solid'
+          buttonType="Solid"
           textSize={16}
-          textType='medium'
+          textType="medium"
           onPress={async () => await clearAllRecentlyViewed()}
           btnStyle={styles.clearBtn}
           loaderColor={colors.red}

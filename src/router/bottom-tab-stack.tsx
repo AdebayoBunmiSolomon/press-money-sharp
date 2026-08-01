@@ -5,7 +5,13 @@ import { moderateScale } from "@src/resources/responsiveness";
 import { CustomText } from "@src/components/shared";
 import { bottomTabScreenNames } from "@src/navigation";
 import { bottomTabScreens } from "@src/navigation/bottom-tab-screens";
-import { AntDesign, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { colors } from "@src/resources/color/color";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getFirstCapitalSegment } from "@src/helper/utils";
@@ -25,13 +31,13 @@ export const BottomTabStack = () => {
         },
         tabBarLabel: ({ focused }) =>
           focused ? (
-            <CustomText type='regular' size={10} red>
+            <CustomText type="regular" size={10} red>
               {route?.name === "CategoriesStack"
                 ? "Services"
                 : getFirstCapitalSegment(route?.name)}
             </CustomText>
           ) : (
-            <CustomText type='regular' size={10} lightGray>
+            <CustomText type="regular" size={10} lightGray>
               {route?.name === "CategoriesStack"
                 ? "Services"
                 : getFirstCapitalSegment(route?.name)}
@@ -40,69 +46,70 @@ export const BottomTabStack = () => {
         tabBarIcon: ({ focused }) =>
           focused && route.name === bottomTabScreenNames.HOME_STACK ? (
             <AntDesign
-              name='home'
+              name="home"
               color={colors.red}
               size={moderateScale(20)}
             />
           ) : !focused && route.name === bottomTabScreenNames.HOME_STACK ? (
             <AntDesign
-              name='home'
+              name="home"
               color={colors.lightGray}
               size={moderateScale(20)}
             />
           ) : focused &&
             route.name === bottomTabScreenNames.CATEGORIES_STACK ? (
             <MaterialIcons
-              name='category'
+              name="category"
               size={moderateScale(20)}
               color={colors.red}
             />
           ) : !focused &&
             route.name === bottomTabScreenNames.CATEGORIES_STACK ? (
             <MaterialIcons
-              name='category'
+              name="category"
               size={moderateScale(20)}
               color={colors.lightGray}
             />
           ) : focused && route.name === bottomTabScreenNames.WISH_LIST_STACK ? (
-            <AntDesign
-              name='hearto'
+            <FontAwesome
+              name="heart-o"
               size={moderateScale(20)}
               color={colors.red}
             />
           ) : !focused &&
             route.name === bottomTabScreenNames.WISH_LIST_STACK ? (
-            <AntDesign
-              name='hearto'
+            <FontAwesome
+              name="heart-o"
               size={moderateScale(20)}
               color={colors.lightGray}
             />
           ) : focused && route.name === bottomTabScreenNames.MESSAGES_STACK ? (
-            <AntDesign
-              name='message1'
+            <Ionicons
+              name="chatbubble-ellipses-outline"
               size={moderateScale(20)}
               color={colors.red}
             />
           ) : !focused && route.name === bottomTabScreenNames.MESSAGES_STACK ? (
-            <AntDesign
-              name='message1'
+            <Ionicons
+              name="chatbubble-ellipses-outline"
               size={moderateScale(20)}
               color={colors.lightGray}
             />
           ) : focused && route.name === bottomTabScreenNames.PROFILE_STACK ? (
             <FontAwesome5
-              name='user'
+              name="user"
               size={moderateScale(20)}
               color={colors.red}
             />
           ) : !focused && route.name === bottomTabScreenNames.PROFILE_STACK ? (
             <FontAwesome5
-              name='user'
+              name="user"
               size={moderateScale(20)}
               color={colors.lightGray}
             />
           ) : undefined,
-      })}>
+      })}
+    >
       {bottomTabScreens &&
         bottomTabScreens.map((screen, index) => (
           <Tab.Screen

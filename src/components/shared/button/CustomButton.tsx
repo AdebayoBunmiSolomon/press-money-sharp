@@ -75,7 +75,7 @@ export const CustomButton: React.FC<ICustomButtonProps> = ({
     textLightBlack,
     textBlack,
     textLightGray,
-    textDanger
+    textDanger,
   );
   const btnBgColor = getButtonColor(
     red,
@@ -83,7 +83,7 @@ export const CustomButton: React.FC<ICustomButtonProps> = ({
     lightBlack,
     black,
     lightGray,
-    danger
+    danger,
   );
   return (
     <>
@@ -98,16 +98,18 @@ export const CustomButton: React.FC<ICustomButtonProps> = ({
             },
             btnStyle,
           ]}
-          disabled={isLoading}>
+          disabled={isLoading}
+        >
           {isLoading ? (
-            <Loader size='small' color={String(loaderColor)} />
+            <Loader size="small" color={String(loaderColor)} />
           ) : (
             <>
               {leftIcon && leftIcon}
               <CustomText
-                size={textSize ? textSize : moderateScale(14)}
+                size={textSize ? moderateScale(textSize) : moderateScale(14)}
                 type={textType}
-                style={[{ color: textColor || textColorValue }, textStyle]}>
+                style={[{ color: textColor || textColorValue }, textStyle]}
+              >
                 {title}
               </CustomText>
               {rightIcon && rightIcon}
@@ -126,21 +128,23 @@ export const CustomButton: React.FC<ICustomButtonProps> = ({
             },
             btnStyle,
           ]}
-          disabled={isLoading}>
+          disabled={isLoading}
+        >
           {isLoading ? (
-            <Loader size='small' color={String(loaderColor)} />
+            <Loader size="small" color={String(loaderColor)} />
           ) : (
             <>
               {leftIcon && leftIcon}
               <CustomText
-                size={textSize ? textSize : moderateScale(14)}
+                size={textSize ? moderateScale(textSize) : moderateScale(14)}
                 type={textType}
                 style={[
                   {
                     color: textColor || textColorValue,
                   },
                   textStyle,
-                ]}>
+                ]}
+              >
                 {title}
               </CustomText>
               {rightIcon && rightIcon}

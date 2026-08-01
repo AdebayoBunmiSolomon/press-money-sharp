@@ -73,7 +73,10 @@
           "microphonePermission": "AutoMotor needs access to your microphone so you can record voice notes, communicate with buyers and sellers through voice messages, and enhance your listing experience."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-community/datetimepicker",
+      "expo-image",
+      "expo-status-bar"
     ],
     "extra": {
       "eas": {

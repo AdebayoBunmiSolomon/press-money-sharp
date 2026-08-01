@@ -289,7 +289,7 @@ export const useDeleteRecentlyViewed = () => {
     mutationFn: (payload: apiDeleteFromRecentlyViewed) =>
       deleteProductFromRecentlyViewed(
         payload?.recentlyViewed_uuid,
-        userData?.token
+        userData?.token,
       ),
     onSuccess: (response, variables) => {
       const { service_id } = variables;
@@ -336,7 +336,7 @@ export const useSendChatMessage = () => {
           service: payload?.service, //service_uuid
           file: payload?.file,
         },
-        userData?.token
+        userData?.token,
       ),
     onSuccess: (response, variables) => {
       const { service } = variables;
@@ -354,6 +354,7 @@ export const useSendChatMessage = () => {
       }
     },
     onError: (error) => {
+      // console.log("Error sending message:", error);
       APIRequest.RESPONSE_HANDLER({
         status: 500,
         success: false,
@@ -387,7 +388,7 @@ export const useUpdateUserProfileImg = () => {
           profile_img: payload.profile_img,
         },
         userData?.token,
-        userData?.uuid
+        userData?.uuid,
       ),
     onSuccess: (response) => {
       if (response?.data?.success) {
@@ -447,7 +448,7 @@ export const useUpdateUserProfileForm = () => {
         try {
           // 🔄 Refetch the user profile after successful update
           const { data: response } = (await refreshUserProfile(
-            userData?.token
+            userData?.token,
           )) as { data: any };
           // ✅ Save new user data in store
           setUserData({
