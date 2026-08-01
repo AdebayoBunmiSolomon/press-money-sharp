@@ -1,16 +1,15 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "@env";
 
 export const PATCH = async (
   endpoint: string,
   payload: Record<string, any>,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<{ status: number; data?: any }> => {
   try {
     const { status, data } = await axios.patch(
-      `${BASE_URL}${endpoint}`,
+      `${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`,
       payload,
-      config
+      config,
     );
 
     return { status, data };

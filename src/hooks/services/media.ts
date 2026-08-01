@@ -151,10 +151,10 @@ export type ImagePickerOptions = {
 export type UseImagePickerReturn = {
   isLoading: boolean;
   pickFromGallery: (
-    options?: ImagePickerOptions
+    options?: ImagePickerOptions,
   ) => Promise<ImagePickerResult | null>;
   pickFromCamera: (
-    options?: ImagePickerOptions
+    options?: ImagePickerOptions,
   ) => Promise<ImagePickerResult | null>;
 };
 
@@ -170,7 +170,7 @@ export const useMedia = (): UseImagePickerReturn => {
 
   // Helper function to process image result
   const processImageResult = (
-    result: ImagePicker.ImagePickerResult
+    result: ImagePicker.ImagePickerResult,
   ): ImagePickerResult | null => {
     if (result.canceled || !result.assets || result.assets.length === 0) {
       return null;
@@ -191,13 +191,13 @@ export const useMedia = (): UseImagePickerReturn => {
       size: asset.fileSize,
     };
 
-    console.log("Processed image:", imageResult); // Log to verify size
+    // console.log("Processed image:", imageResult); // Log to verify size
     return imageResult;
   };
 
   // Pick image from gallery
   const pickFromGallery = async (
-    options: ImagePickerOptions = {}
+    options: ImagePickerOptions = {},
   ): Promise<ImagePickerResult | null> => {
     try {
       setIsLoading(true);
@@ -207,7 +207,7 @@ export const useMedia = (): UseImagePickerReturn => {
       if (permission.status !== "granted") {
         Alert.alert(
           "Permission Required",
-          "Please allow access to your photo library to select images."
+          "Please allow access to your photo library to select images.",
         );
         return null;
       }
@@ -225,7 +225,10 @@ export const useMedia = (): UseImagePickerReturn => {
 
       return processImageResult(result);
     } catch (error) {
-      Alert.alert("Error", "Failed to pick image from gallery");
+      Alert.alert(
+        "Error",
+        (error as Error)?.toString() || "Failed to pick image from gallery",
+      );
       return null;
     } finally {
       setIsLoading(false);
@@ -234,7 +237,7 @@ export const useMedia = (): UseImagePickerReturn => {
 
   // Pick image from camera
   const pickFromCamera = async (
-    options: ImagePickerOptions = {}
+    options: ImagePickerOptions = {},
   ): Promise<ImagePickerResult | null> => {
     try {
       setIsLoading(true);
@@ -243,7 +246,7 @@ export const useMedia = (): UseImagePickerReturn => {
       if (permission.status !== "granted") {
         Alert.alert(
           "Permission Required",
-          "Please allow access to your camera to take photos."
+          "Please allow access to your camera to take photos.",
         );
         return null;
       }
@@ -261,7 +264,10 @@ export const useMedia = (): UseImagePickerReturn => {
 
       return processImageResult(result);
     } catch (error) {
-      Alert.alert("Error", "Failed to take photo");
+      Alert.alert(
+        "Error",
+        (error as Error)?.toString() || "Failed to take photo",
+      );
       return null;
     } finally {
       setIsLoading(false);

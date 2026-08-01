@@ -20,7 +20,7 @@ export const TermsAndConditions = ({
   const { termsAndConditions, isFetching } = useGetTermsAndConditions();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const serializedData = deserializeJSON(
-    termsAndConditions && termsAndConditions[0]?.value
+    termsAndConditions && termsAndConditions[0]?.value,
   );
   return (
     <Screen style={styles.screenContainer} safeArea>
@@ -29,17 +29,18 @@ export const TermsAndConditions = ({
           <View style={styles.headerLeftIconContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.lightBlack}
               />
             </TouchableOpacity>
             <CustomText
-              type='medium'
+              type="medium"
               size={16}
               style={{
                 color: colors.lightBlack,
-              }}>
+              }}
+            >
               Terms & Conditions
             </CustomText>
           </View>
@@ -60,7 +61,8 @@ export const TermsAndConditions = ({
         <ScrollContainer
           style={{
             flexGrow: 1,
-          }}>
+          }}
+        >
           {serializedData &&
             serializedData.map((item, index) => (
               <View key={index}>
@@ -68,8 +70,9 @@ export const TermsAndConditions = ({
                   style={styles.dropdownBtn}
                   onPress={() =>
                     setSelectedIdx(selectedIdx === index ? null : index)
-                  }>
-                  <CustomText type='medium' size={14} lightBlack>
+                  }
+                >
+                  <CustomText type="medium" size={14} lightBlack>
                     {item?.title}
                   </CustomText>
                   <MaterialIcons
@@ -86,14 +89,16 @@ export const TermsAndConditions = ({
                   <View
                     style={{
                       width: "100%",
-                    }}>
+                    }}
+                  >
                     <CustomText
-                      type='regular'
+                      type="regular"
                       size={13}
                       lightBlack
                       style={{
                         textAlign: "justify",
-                      }}>
+                      }}
+                    >
                       {item?.description as string}
                     </CustomText>
                   </View>

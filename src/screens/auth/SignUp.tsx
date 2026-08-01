@@ -62,188 +62,144 @@ export const SignUp = ({
     }
   };
 
-  useEffect(() => {
-    setValue("password", "Test@1234");
-    setValue("confirm_password", "Test@1234");
-  }, []);
+  // useEffect(() => {
+  //   setValue("password", "Test@1234");
+  //   setValue("confirm_password", "Test@1234");
+  // }, []);
 
   return (
     <Screen style={styles.screenContainer} safeArea>
       <View style={styles.iconContainer}>
         <Image
           source={require("@src/assets/png/round-logo.png")}
-          contentFit='cover'
+          contentFit="cover"
           style={styles.icon}
         />
       </View>
       <Screen style={styles.screen} bgColor={"#F4F4F4"}>
         <ScrollContainer style={styles.formContainer}>
           <BackArrowBtn
-            title='Back to Login'
+            title="Back to Login"
             onPressBackArrow={() => navigation.goBack()}
             color={colors.black}
           />
-          <CustomText type='semi-bold' size={18} red>
+          <CustomText type="semi-bold" size={18} red>
             Sign Up
           </CustomText>
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='First name'
+                title="First name"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.first_name?.message}
-                type='custom'
-                placeholder='Your first name'
+                type="custom"
+                placeholder="Your first name"
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='default'
+                keyboardType="default"
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='first_name'
-            defaultValue=''
+            name="first_name"
+            defaultValue=""
           />
 
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Last name'
+                title="Last name"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.last_name?.message}
-                type='custom'
-                placeholder='Your last name'
+                type="custom"
+                placeholder="Your last name"
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='default'
+                keyboardType="default"
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='last_name'
-            defaultValue=''
+            name="last_name"
+            defaultValue=""
           />
 
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Email'
+                title="Email"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.email?.message}
-                type='custom'
-                placeholder='Your email'
+                type="custom"
+                placeholder="Your email"
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='email-address'
+                keyboardType="email-address"
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='email'
-            defaultValue=''
+            name="email"
+            defaultValue=""
           />
-
-          {/* <Controller
-            control={control}
-            render={({ field }) => (
-              <CustomInput
-                title='Gender'
-                value={field.value}
-                dropDownItems={["male", "female"]}
-                onSelectDropDownItem={(selectedValue) => {
-                  field.onChange(selectedValue);
-                  clearErrors("gender");
-                }}
-                error={errors?.gender?.message}
-                type='dropdown'
-                placeholder='select your gender'
-                placeHolderTextColor={"#BDBDBD"}
-                showErrorText
-                style={styles.input}
-                dropDownBtnStyle={{
-                  paddingTop: moderateScale(10),
-                }}
-              />
-            )}
-            name='gender'
-            defaultValue=''
-          /> */}
-
-          {/* <Controller
-            control={control}
-            render={({ field }) => (
-              <CustomPhoneInput
-                title='Phone Number'
-                value={field.value}
-                onChangeText={(enteredValue) => field.onChange(enteredValue)}
-                error={errors?.phone?.message}
-                placeholder='800 000 0000'
-                showErrorText
-                style={styles.input}
-                placeHolderTextColor={colors.lightGray}
-              />
-            )}
-            name='phone'
-            defaultValue=''
-          /> */}
 
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Password'
+                title="Password"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.password?.message}
-                type='password'
-                placeholder='Enter your password'
+                type="password"
+                placeholder="Enter your password"
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='password'
-            defaultValue=''
+            name="password"
+            defaultValue=""
           />
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Confirm password'
+                title="Confirm password"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.confirm_password?.message}
-                type='password'
-                placeholder='Enter your confirm password'
+                type="password"
+                placeholder="Enter your confirm password"
                 placeHolderTextColor={"#BDBDBD"}
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='confirm_password'
-            defaultValue=''
+            name="confirm_password"
+            defaultValue=""
           />
           <Controller
             control={control}
             render={({ field }) => (
               <CustomInput
-                title='Referral Code(Optional)'
+                title="Referral Code(Optional)"
                 value={field.value}
                 onChangeText={(enteredValue) => field.onChange(enteredValue)}
                 error={errors?.referral_code?.message}
-                type='custom'
-                placeholder='Your referral code'
+                type="custom"
+                placeholder="Your referral code"
                 placeHolderTextColor={"#BDBDBD"}
-                keyboardType='default'
+                keyboardType="default"
                 showErrorText
                 style={styles.input}
               />
             )}
-            name='referral_code'
-            defaultValue=''
+            name="referral_code"
+            defaultValue=""
           />
           <View
             style={{
@@ -254,12 +210,12 @@ export const SignUp = ({
       </Screen>
       <View style={styles.actionBtnContainer}>
         <CustomButton
-          title='Sign Up'
+          title="Sign Up"
           red
           textWhite
-          buttonType='Solid'
+          buttonType="Solid"
           textSize={16}
-          textType='medium'
+          textType="medium"
           onPress={handleSubmit(onSubmit)}
           btnStyle={styles.signUpBtn}
           isLoading={isPending}

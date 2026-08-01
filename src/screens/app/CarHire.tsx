@@ -45,12 +45,12 @@ export const CarHire = ({
   const { categories } = useCategoriesStore();
   const { category_type } = route?.params ?? { category_type: categories?.[0] };
   const [pressedCategory, setPressedCategory] = useState<string | undefined>(
-    categories && categories[0]
+    categories && categories[0],
   );
   const { userData } = useAuthStore();
   const { filteredServicesData, getFilteredServices } = useFilterServices();
   const [selectedProdIndex, setSelectedProdIndex] = useState<number | null>(
-    null
+    null,
   );
   const { settings: settingsData } = useSettingsStore();
 
@@ -77,7 +77,7 @@ export const CarHire = ({
 
   const likedSet = useMemo(
     () => new Set(likedServiceId || []),
-    [likedServiceId]
+    [likedServiceId],
   );
 
   // ✅ Scroll to top when changing pages
@@ -104,7 +104,7 @@ export const CarHire = ({
       pagination.goToPage(page);
       handlePageChange();
     },
-    [pagination.goToPage, handlePageChange]
+    [pagination.goToPage, handlePageChange],
   );
 
   // ✅ Handler for navigating to details
@@ -112,7 +112,7 @@ export const CarHire = ({
     (uuid: string) => {
       navigation.navigate(appScreenNames.CAR_DETAILS, { service_uuid: uuid });
     },
-    [navigation]
+    [navigation],
   );
 
   // ✅ Handler for liking products with pagination adjustment
@@ -136,7 +136,7 @@ export const CarHire = ({
       setSelectedProdIndex,
       userData,
       pagination.startIndex,
-    ]
+    ],
   );
 
   // ✅ Memoized renderItem with React.memo for ProductCard
@@ -166,14 +166,14 @@ export const CarHire = ({
       selectedProdIndex,
       isPending,
       pagination.startIndex,
-    ]
+    ],
   );
 
   // ✅ Better keyExtractor
   const keyExtractor = useCallback(
     (item: apiGetAllServicesResponse, index: number) =>
       item?.uuid || item?.id?.toString() || index.toString(),
-    []
+    [],
   );
 
   // ✅ Handle category change - reset pagination and scroll to top
@@ -182,18 +182,18 @@ export const CarHire = ({
       setPressedCategory(category);
       // Reset pagination will be handled by the hook's resetOnDataChange
     },
-    [setPressedCategory]
+    [setPressedCategory],
   );
 
   return (
     <>
-      <StatusBar style='dark' />
+      <StatusBar style="dark" />
       <Screen style={styles.screenContainer}>
         <Header
           leftIcon={
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.white}
               />
@@ -218,17 +218,19 @@ export const CarHire = ({
           <View
             style={{
               paddingBottom: moderateScale(10),
-            }}>
+            }}
+          >
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <TouchableOpacity
                 style={styles.filterBtn}
-                onPress={() => setShowFilterModal(!showFilterModal)}>
+                onPress={() => setShowFilterModal(!showFilterModal)}
+              >
                 <Foundation
-                  name='filter'
+                  name="filter"
                   size={moderateScale(17)}
                   color={colors.red}
                 />
-                <CustomText size={12} type='medium' lightBlack>
+                <CustomText size={12} type="medium" lightBlack>
                   Filters
                 </CustomText>
               </TouchableOpacity>
@@ -243,8 +245,9 @@ export const CarHire = ({
                       },
                     ]}
                     key={index}
-                    onPress={() => handleCategoryPress(item)}>
-                    <CustomText size={12} type='medium' lightBlack>
+                    onPress={() => handleCategoryPress(item)}
+                  >
+                    <CustomText size={12} type="medium" lightBlack>
                       {`Car ` + item}
                     </CustomText>
                   </TouchableOpacity>
@@ -274,7 +277,7 @@ export const CarHire = ({
             />
           ) : (
             <View style={styles.emptyContainer}>
-              <CustomText type='regular' size={16} lightGray>
+              <CustomText type="regular" size={16} lightGray>
                 No record found for {`Car ${pressedCategory}`}
               </CustomText>
             </View>

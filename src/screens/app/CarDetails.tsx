@@ -119,19 +119,20 @@ export const CarDetails = ({
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                gap: moderateScale(5),
-              }}>
+                gap: moderateScale(10),
+              }}
+            >
               <AntDesign
-                name='arrowleft'
+                name="arrow-left"
                 size={moderateScale(20)}
                 color={colors.black}
               />
-              <CustomText type='regular' size={20} lightBlack>
+              <CustomText type="regular" size={20} lightBlack>
                 {isFetching
                   ? "Loading..."
                   : truncateText(
                       `${serviceInfo?.brand} ${serviceInfo?.model}`,
-                      20
+                      20,
                     )}
               </CustomText>
             </TouchableOpacity>
@@ -146,24 +147,26 @@ export const CarDetails = ({
               style={{
                 gap: moderateScale(20),
                 paddingTop: moderateScale(10),
-              }}>
+              }}
+            >
               <View style={styles.imgContainer}>
                 <ReanimatedCarousel
-                  data={serviceInfo?.image_urls}
+                  data={serviceInfo?.image_urls as string[]}
                   renderItem={({ item, index }) => {
                     const isLiked =
                       likedServiceId &&
                       likedServiceId.some((id) => id === serviceInfo?.id);
                     const wishListItem = userWishList?.find(
-                      (item) => item?.our_service_id === serviceInfo?.id
+                      (item) => item?.our_service_id === serviceInfo?.id,
                     );
                     const wishListUuid = wishListItem?.uuid;
                     return (
                       <ImageBackground
                         key={index}
                         source={{ uri: String(item) }}
-                        contentFit='cover'
-                        style={styles.img}>
+                        contentFit="cover"
+                        style={styles.img}
+                      >
                         <TouchableOpacity
                           style={styles.heartBtn}
                           onPress={() => {
@@ -177,10 +180,11 @@ export const CarDetails = ({
                                 wishList_uuid: String(wishListUuid),
                               });
                             }
-                          }}>
+                          }}
+                        >
                           {isAdding || isDeleting ? (
                             <View style={{ flex: 1 }}>
-                              <Loader size='small' color={colors.red} />
+                              <Loader size="small" color={colors.red} />
                             </View>
                           ) : (
                             <FontAwesome
@@ -200,7 +204,8 @@ export const CarDetails = ({
                               }));
                             setImagesToView(images);
                             setViewImages(!viewImages);
-                          }}>
+                          }}
+                        >
                           <FontAwesome
                             name={"eye"}
                             size={moderateScale(15)}
@@ -241,7 +246,7 @@ export const CarDetails = ({
               {/* price, percentage off, location */}
               <View style={styles.pricePercentLocationContainer}>
                 <View style={styles.percentPriceContainer}>
-                  <CustomText size={17} type='medium' lightBlack>
+                  <CustomText size={17} type="medium" lightBlack>
                     #{formatAmountWithCommas(Number(serviceInfo?.fee))}
                   </CustomText>
                   {/* <CustomText
@@ -254,17 +259,18 @@ export const CarDetails = ({
                 </View>
                 <View style={styles.locationContainer}>
                   <EvilIcons
-                    name='location'
+                    name="location"
                     size={moderateScale(16)}
                     color={colors.black}
                   />
                   <CustomText
-                    type='regular'
+                    type="regular"
                     size={13}
                     black
                     style={{
                       marginBottom: moderateScale(-3),
-                    }}>
+                    }}
+                  >
                     {serviceInfo?.location ? serviceInfo?.location : "Anywhere"}
                   </CustomText>
                 </View>
@@ -272,15 +278,15 @@ export const CarDetails = ({
               {/* product category, and status */}
               <View style={styles.pricePercentLocationContainer}>
                 <View style={styles.locationContainer}>
-                  <CustomText type='medium' size={12} black>
+                  <CustomText type="medium" size={12} black>
                     Category:
                   </CustomText>
-                  <CustomText type='regular' size={12} lightBlack>
+                  <CustomText type="regular" size={12} lightBlack>
                     Car {serviceInfo?.category}
                   </CustomText>
                 </View>
                 <View style={styles.locationContainer}>
-                  <CustomText type='medium' size={12} black>
+                  <CustomText type="medium" size={12} black>
                     Status:
                   </CustomText>
                   {returnStatus(String(serviceInfo?.status))}
@@ -288,7 +294,7 @@ export const CarDetails = ({
               </View>
               {/* product info card container */}
               <View style={styles.productInfoCardContainer}>
-                <CustomText type='medium' size={20} red>
+                <CustomText type="medium" size={20} red>
                   Specification Summary
                 </CustomText>
                 <View style={styles.headerRule} />
@@ -296,20 +302,20 @@ export const CarDetails = ({
                 <View style={styles.subInfoContainer}>
                   {serviceInfo?.brand && (
                     <View style={styles.subInfoItemContainer}>
-                      <CustomText size={16} lightBlack type='medium'>
+                      <CustomText size={16} lightBlack type="medium">
                         {serviceInfo?.brand}
                       </CustomText>
-                      <CustomText size={13} lightGray type='medium'>
+                      <CustomText size={13} lightGray type="medium">
                         Make
                       </CustomText>
                     </View>
                   )}
                   {serviceInfo?.model && (
                     <View style={styles.subInfoItemContainer}>
-                      <CustomText size={16} lightBlack type='medium'>
+                      <CustomText size={16} lightBlack type="medium">
                         {serviceInfo?.model}
                       </CustomText>
-                      <CustomText size={13} lightGray type='medium'>
+                      <CustomText size={13} lightGray type="medium">
                         Model
                       </CustomText>
                     </View>
@@ -318,10 +324,10 @@ export const CarDetails = ({
                 {serviceInfo?.type && (
                   <View style={styles.subInfoContainer}>
                     <View style={styles.subInfoItemContainer}>
-                      <CustomText size={16} lightBlack type='medium'>
+                      <CustomText size={16} lightBlack type="medium">
                         {serviceInfo?.type}
                       </CustomText>
-                      <CustomText size={13} lightGray type='medium'>
+                      <CustomText size={13} lightGray type="medium">
                         Type
                       </CustomText>
                     </View>
@@ -334,13 +340,15 @@ export const CarDetails = ({
                       {
                         width: "100%",
                       },
-                    ]}>
+                    ]}
+                  >
                     <View
                       style={{
                         flexDirection: "row",
                         flexWrap: "wrap",
                         gap: moderateScale(5),
-                      }}>
+                      }}
+                    >
                       {returnedData &&
                         returnedData.map((item: any, index: number) => (
                           <CustomText
@@ -350,7 +358,8 @@ export const CarDetails = ({
                             style={{
                               textAlign: "justify",
                             }}
-                            type='regular'>
+                            type="regular"
+                          >
                             {`${item.title.trim()} ${item.value}`}
                           </CustomText>
                         ))}
@@ -370,18 +379,18 @@ export const CarDetails = ({
 
         <View style={styles.bottomActionContainer}>
           <CustomButton
-            title='Call'
+            title="Call"
             red
             textWhite
-            textType='medium'
-            buttonType='Solid'
+            textType="medium"
+            buttonType="Solid"
             onPress={() =>
               setActionModal({
                 ...actionModal,
                 callVisible: !actionModal.callVisible,
                 value: String(
                   settingsData &&
-                    settingsData.find((i) => i.type === "Phone")?.value
+                    settingsData.find((i) => i.type === "Phone")?.value,
                 ),
               })
             }
@@ -389,17 +398,17 @@ export const CarDetails = ({
             leftIcon={
               <FontAwesome
                 size={moderateScale(15)}
-                name='phone'
+                name="phone"
                 color={colors.white}
               />
             }
           />
           <CustomButton
-            title='Message'
+            title="Message"
             red
             textRed
-            textType='medium'
-            buttonType='Outline'
+            textType="medium"
+            buttonType="Outline"
             onPress={() =>
               setActionModal({
                 ...actionModal,
@@ -408,7 +417,7 @@ export const CarDetails = ({
             }
             btnStyle={styles.actionBtn}
             leftIcon={
-              <Entypo size={moderateScale(15)} name='chat' color={colors.red} />
+              <Entypo size={moderateScale(15)} name="chat" color={colors.red} />
             }
           />
           <CustomButton
@@ -416,8 +425,8 @@ export const CarDetails = ({
             black
             textBlack
             textSize={13}
-            textType='medium'
-            buttonType='Outline'
+            textType="medium"
+            buttonType="Outline"
             onPress={() => {
               if (serviceInfo?.has_online_payment) {
                 addToCart({
@@ -434,7 +443,7 @@ export const CarDetails = ({
                   whatsAppVisible: !actionModal.whatsAppVisible,
                   value: String(
                     settingsData &&
-                      settingsData.find((i) => i.type === "Whatsapp")?.value
+                      settingsData.find((i) => i.type === "Whatsapp")?.value,
                   ),
                 });
               }
@@ -444,13 +453,13 @@ export const CarDetails = ({
               serviceInfo?.has_online_payment ? (
                 <AntDesign
                   size={moderateScale(15)}
-                  name='shoppingcart'
+                  name="shoppingcart"
                   color={colors.black}
                 />
               ) : (
                 <FontAwesome
                   size={moderateScale(15)}
-                  name='whatsapp'
+                  name="whatsapp"
                   color={"#25D366"}
                 />
               )

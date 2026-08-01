@@ -19,20 +19,20 @@ export const getCategory = async () => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      endpoint.APP.getCategories,
+      endpoint.APP.getCategories as string,
       {},
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during fetching categories"
+      err.message || "An error occurred during fetching categories",
     );
   }
 };
 
 export const scheduleConsultation = async (
-  payload: apiScheduleConsultation
+  payload: apiScheduleConsultation,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -40,14 +40,14 @@ export const scheduleConsultation = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.APP.scheduleConsultation,
+      endpoint.APP.scheduleConsultation as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during scheduling consultation"
+      err.message || "An error occurred during scheduling consultation",
     );
   }
 };
@@ -59,14 +59,14 @@ export const getAllServices = async () => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      endpoint.APP.getAllService,
+      endpoint.APP.getAllService as string,
       {},
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     );
   }
 };
@@ -80,12 +80,12 @@ export const viewService = async (service_uuid: string) => {
     const { data, status } = await APIRequest.GET(
       `${endpoint.APP.viewService}/${service_uuid}`,
       {},
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     );
   }
 };
@@ -97,18 +97,18 @@ export const sendMessage = async (payload: apiSendMessage, token: string) => {
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.APP.sendMessage,
+      endpoint.APP.sendMessage as string,
       payload,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     );
   }
 };
@@ -122,20 +122,20 @@ export const getSettings = async () => {
     const { data, status } = await APIRequest.GET(
       `${endpoint.APP.getSettings}`,
       {},
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Settings-Service service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const getUserNotifications = async (
   user_uuid: string,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -149,20 +149,20 @@ export const getUserNotifications = async (
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetNotifications-Service service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const addProductToWishList = async (
   payload: apiAddProductToWishList,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -170,19 +170,19 @@ export const addProductToWishList = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.APP.addProductToWishList,
+      endpoint.APP.addProductToWishList as string,
       payload,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("AddProduct-ToWishList service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -200,20 +200,20 @@ export const getUserWishList = async (token: string) => {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserWishList-Service service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const deleteProductFromWishList = async (
   wishListUuId: string,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -226,20 +226,20 @@ export const deleteProductFromWishList = async (
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("DeleteUserWishList-Service service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const addProductToRecentlyViewed = async (
   payload: apiAddProductToRecentlyViewed,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -247,19 +247,19 @@ export const addProductToRecentlyViewed = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.APP.addProductToRecentlyViewed,
+      endpoint.APP.addProductToRecentlyViewed as string,
       payload,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("AddProduct-ToRecentlyViewed service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -277,20 +277,20 @@ export const getUserRecentlyViewed = async (token: string) => {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetRecentlyViewed service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const deleteProductFromRecentlyViewed = async (
   recentlyViewedUuId: string,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -303,13 +303,13 @@ export const deleteProductFromRecentlyViewed = async (
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("DeleteUserRecentlyViewed-Service service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -327,13 +327,13 @@ export const getUserReferral = async (token: string) => {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetReferralHistory service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -351,13 +351,13 @@ export const getUserReferralRewardHistory = async (token: string) => {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserReferralRewardHistory service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -375,20 +375,20 @@ export const getAllUserChats = async (token: string) => {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetAllUserChats service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const getUserServiceMessages = async (
   service_uuid: string,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -402,20 +402,20 @@ export const getUserServiceMessages = async (
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("GetUserServiceMessages service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const sendChatMessage = async (
   payload: apiSendChatMessage,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -437,7 +437,7 @@ export const sendChatMessage = async (
       } as any);
 
       const { status, data } = await APIRequest.FETCH({
-        endpoint: endpoint.APP.sendChatMessage,
+        endpoint: endpoint.APP.sendChatMessage as string,
         method: "POST",
         body: formData, // FormData here
         token: token, // Adds Authorization automatically
@@ -451,13 +451,13 @@ export const sendChatMessage = async (
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status };
   } catch (err: any) {
     // console.log("SendChat-message service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     );
   }
 };
@@ -465,7 +465,7 @@ export const sendChatMessage = async (
 export const updateProfileImg = async (
   payload: apiUpdateUserProfileImg,
   token: string,
-  user_uuid: string
+  user_uuid: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -495,7 +495,7 @@ export const updateProfileImg = async (
   } catch (err: any) {
     // console.log("UpdateUser-Profile service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     );
   }
 };
@@ -507,22 +507,22 @@ export const getTermsAndConditions = async () => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      endpoint.APP.getTermsAndConditions,
+      endpoint.APP.getTermsAndConditions as string,
       {},
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Get-Terms&Conditions service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const updateUserProfileForm = async (
   payload: apiUpdateUserProfileForm,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -530,19 +530,19 @@ export const updateUserProfileForm = async (
   }
   try {
     const { data, status } = await APIRequest.PATCH(
-      endpoint.APP.updateUserProfileForm,
+      endpoint.APP.updateUserProfileForm as string,
       payload,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Update-UserProfileForm service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -554,26 +554,26 @@ export const getUserPreferences = async (token: string) => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      endpoint.APP.getUserPreferences,
+      endpoint.APP.getUserPreferences as string,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Get-UserPreferences service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
 
 export const saveUserPreferences = async (
   payload: apiSaveUserPreferences,
-  token: string
+  token: string,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -581,19 +581,19 @@ export const saveUserPreferences = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.APP.saveUserPreferences,
+      endpoint.APP.saveUserPreferences as string,
       payload,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     // console.log("Save-UserPreferences service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };
@@ -612,7 +612,7 @@ export const deleteUserAccount = async (user_uuid: string, token: string) => {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
-      }
+      },
     );
     // console.log("Hello3");
     // console.log("data", data);
@@ -621,7 +621,7 @@ export const deleteUserAccount = async (user_uuid: string, token: string) => {
   } catch (err: any) {
     // console.log("Save-UserPreferences service error:", err);
     throw new Error(
-      err.message || "An error occurred during fetching services"
+      err.message || "An error occurred during fetching services",
     ); // Return error as part of response
   }
 };

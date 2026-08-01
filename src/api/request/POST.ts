@@ -1,16 +1,15 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BASE_URL } from "@env";
 
 export const POST = async (
   endpoint: string,
   payload: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   try {
     const { data, status } = await axios.post(
-      `${BASE_URL}${endpoint}`,
+      `${process.env.EXPO_PUBLIC_BASE_URL}${endpoint}`,
       payload,
-      config
+      config,
     );
     return { status, data };
   } catch (error: any) {

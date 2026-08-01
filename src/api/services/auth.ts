@@ -18,9 +18,9 @@ export const login = async (payload: apiLoginFormTypes) => {
 
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.AUTH.login,
+      endpoint.AUTH.login as string,
       payload,
-      {}
+      {},
     );
     return { data, status };
   } catch (err: any) {
@@ -35,9 +35,9 @@ export const signUp = async (payload: apiSignUpFormTypes) => {
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.AUTH.signUp,
+      endpoint.AUTH.signUp as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
@@ -52,20 +52,20 @@ export const verifyEmail = async (payload: apiVerifyEmailFormTypes) => {
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.AUTH.verifyEmail,
+      endpoint.AUTH.verifyEmail as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during email verification"
+      err.message || "An error occurred during email verification",
     );
   }
 };
 
 export const forgotPasswordAndContinue = async (
-  payload: apiForgotPassAndContinueTypes
+  payload: apiForgotPassAndContinueTypes,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -73,20 +73,20 @@ export const forgotPasswordAndContinue = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.AUTH.requestPassword,
+      endpoint.AUTH.requestPassword as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
     throw new Error(
-      err.message || "An error occurred during password reset request"
+      err.message || "An error occurred during password reset request",
     );
   }
 };
 
 export const verifyOtpToChangePassword = async (
-  payload: apiVerifyOtpToChangePassTypes
+  payload: apiVerifyOtpToChangePassTypes,
 ) => {
   const { isNetworkConnectedAndReachable } = await getNetworkStatus();
   if (!isNetworkConnectedAndReachable) {
@@ -94,9 +94,9 @@ export const verifyOtpToChangePassword = async (
   }
   try {
     const { data, status } = await APIRequest.POST(
-      endpoint.AUTH.verifyToken,
+      endpoint.AUTH.verifyToken as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
@@ -111,9 +111,9 @@ export const updatePassword = async (payload: apiUpdatePasswordTypes) => {
   }
   try {
     const { data, status } = await APIRequest.PUT(
-      endpoint.AUTH.updatePassword,
+      endpoint.AUTH.updatePassword as string,
       payload,
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
@@ -128,13 +128,13 @@ export const refreshUserProfile = async (token: string) => {
   }
   try {
     const { data, status } = await APIRequest.GET(
-      endpoint.APP.refreshUserProfile,
+      endpoint.APP.refreshUserProfile as string,
       {
         headers: {
           Authorization: `Bearer ${token.trim()}`,
         },
       },
-      {}
+      {},
     );
     return { data, status }; // Return response instead of throwing an error
   } catch (err: any) {
