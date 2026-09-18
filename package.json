@@ -17,7 +17,8 @@
     "build:prod:ios": "eas build --profile production --platform ios",
     "prepare": "husky",
     "android:uat:apk": "cd android && ./gradlew assembleRelease",
-    "android:dev:apk": "cd android && ./gradlew assembleDebug"
+    "android:dev:apk": "cd android && ./gradlew assembleDebug",
+    "android:prod:aab": "cd android && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@birdwingo/react-native-swipe-modal": "^1.2.5",
